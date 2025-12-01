@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://bnx477vsxh2ob"]
+
+[ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://character/scripts/character.gd" id="1_t6s36"]
+[ext_resource type="Script" uid="uid://bl4h3qijae758" path="res://character/scripts/state_walk.gd" id="2_17jc6"]
+[ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://character/scripts/state_run.gd" id="3_wekc7"]
+[ext_resource type="Script" uid="uid://ckgk3v42exfka" path="res://character/scripts/state_jump.gd" id="4_saolt"]
+
+[node name="Character" type="CharacterBody2D"]
+script = ExtResource("1_t6s36")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="State" type="Node" parent="."]
+
+[node name="walk" type="Node" parent="State"]
+script = ExtResource("2_17jc6")
+
+[node name="run" type="Node" parent="State"]
+script = ExtResource("3_wekc7")
+
+[node name="jump" type="Node" parent="State"]
+script = ExtResource("4_saolt")
