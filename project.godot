@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="新建游戏项目"
+config/name="Kunio-kun-no-Nekketsu-Soccer-League-Godot"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 

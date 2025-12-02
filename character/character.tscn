@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bnx477vsxh2ob"]
+
+[node name="Character" type="CharacterBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="State" type="Node" parent="."]
+
+[node name="Walk" type="Node" parent="State"]
+
+[node name="Run" type="Node" parent="State"]
+
+[node name="Jump" type="Node" parent="State"]
+
+[node name="Idle" type="Node" parent="State"]

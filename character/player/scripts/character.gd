@@ -9,6 +9,7 @@ var previous_state: State:
 var direction: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
+	initialize_states()
 	pass
 func _unhandled_input(event: InputEvent) -> void:
 	change_state(current_state.handle_input(event))
@@ -22,9 +23,11 @@ func _physics_process(delta: float) -> void:
 	pass
 
 func initialize_states() -> void:
+	print("ni")
 	states = []
 	for c in $State.get_children():
 		states.append(c)
+		print(c)
 		c.character = self
 	if states.size() == 0:
 		return

@@ -1,9 +1,6 @@
 @icon("res://character/state.svg")
-class_name StateRun
-extends Node
-
-var character: Character
-var nex_state: State
+class_name StateJump
+extends State
 
 func init() -> void:
 	pass

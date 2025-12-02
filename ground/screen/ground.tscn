@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=4 uid="uid://bwkfvj8w2jiks"]
+[gd_scene load_steps=11 format=4 uid="uid://bwkfvj8w2jiks"]
 
 [ext_resource type="Texture2D" uid="uid://ceogm5epnxpyw" path="res://ground/assets/ground_surface.png" id="1_xm6q7"]
 [ext_resource type="Texture2D" uid="uid://ca3h7vuvg2280" path="res://ground/assets/boundary_line.png" id="2_htbg0"]
 [ext_resource type="Texture2D" uid="uid://wng7jmh2ojjb" path="res://ground/assets/goal.png" id="3_ngisx"]
+[ext_resource type="PackedScene" uid="uid://dfii5faerd564" path="res://character/player/scene/player.tscn" id="4_htbg0"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t5q6m"]
 texture = ExtResource("1_xm6q7")
@@ -199,3 +200,6 @@ tile_set = SubResource("TileSet_al1wj")
 [node name="goal" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAzAAYAAAAAAAAAAAAzAAcAAAAAAAEAAAAzAAgAAAAAAAIAAAAzAAkAAAAAAAMAAAAzAAoAAAAAAAQAAAAzAAsAAAAAAAUAAAAzAAwAAAAAAAYAAAAzAA0AAAAAAAcAAAAzAA4AAAAAAAgAAAA0AAYAAAABAAAAAAA0AAcAAAABAAEAAAA0AAgAAAABAAIAAAA0AAkAAAABAAMAAAA0AAoAAAABAAQAAAA0AAsAAAABAAUAAAA0AAwAAAABAAYAAAA0AA0AAAABAAcAAAA0AA4AAAABAAgAAAA1AAcAAAACAAEAAAA1AAgAAAACAAIAAAA1AAkAAAACAAMAAAA1AAoAAAACAAQAAAA1AAsAAAACAAUAAAA1AAwAAAACAAYAAAA1AA0AAAACAAcAAAA1AA4AAAACAAgAAAAEAAYAAAAAAAAAABADAAYAAAABAAAAABAEAAcAAAAAAAEAABADAAcAAAABAAEAABACAAcAAAACAAEAABAEAAgAAAAAAAIAABADAAgAAAABAAIAABACAAgAAAACAAIAABAEAAkAAAAAAAMAABADAAkAAAABAAMAABACAAkAAAACAAMAABAEAAoAAAAAAAQAABADAAoAAAABAAQAABACAAoAAAACAAQAABAEAAsAAAAAAAUAABADAAsAAAABAAUAABACAAsAAAACAAUAABAEAAwAAAAAAAYAABADAAwAAAABAAYAABACAAwAAAACAAYAABAEAA0AAAAAAAcAABADAA0AAAABAAcAABACAA0AAAACAAcAABAEAA4AAAAAAAgAABADAA4AAAABAAgAABACAA4AAAACAAgAABA=")
 tile_set = SubResource("TileSet_cmi3i")
+
+[node name="Player" parent="." instance=ExtResource("4_htbg0")]
+position = Vector2(176, 176)
