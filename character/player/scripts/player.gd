@@ -1,4 +1,4 @@
-class_name Character
+class_name Player
 extends CharacterBody2D
 var states: Array[State]
 var current_state: State:
@@ -7,6 +7,7 @@ var previous_state: State:
 	get: return states[1]
 
 var direction: Vector2 = Vector2.ZERO
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 func _ready() -> void:
 	initialize_states()
@@ -15,20 +16,21 @@ func _unhandled_input(event: InputEvent) -> void:
 	change_state(current_state.handle_input(event))
 	pass	
 func _process(delta: float) -> void:
+	update_direction()
 	change_state(current_state.process(delta))
 	pass
 	
 func _physics_process(delta: float) -> void:
 	change_state(current_state.physics_process(delta))
+	move_and_slide()
 	pass
 
 func initialize_states() -> void:
-	print("ni")
 	states = []
 	for c in $State.get_children():
 		states.append(c)
 		print(c)
-		c.character = self
+		c.player = self
 	if states.size() == 0:
 		return
 	for state in states:
@@ -48,4 +50,11 @@ func change_state(new_state: State) -> void:
 	states.resize(3)			
 	pass
 	
-	
+func update_direction() -> void: # 通过输入更新方向
+	direction = Input.get_vector("left","right","up","down")
+	if direction == Vector2.LEFT:
+		$Sprite2D.flip_h = true
+	elif direction == Vector2.RIGHT:
+		$Sprite2D.flip_h = false
+		
+	pass

@@ -10,10 +10,14 @@
 
 [node name="State" type="Node" parent="."]
 
+[node name="Idle" type="Node" parent="State"]
+unique_name_in_owner = true
+
 [node name="Walk" type="Node" parent="State"]
+unique_name_in_owner = true
 
 [node name="Run" type="Node" parent="State"]
+unique_name_in_owner = true
 
 [node name="Jump" type="Node" parent="State"]
-
-[node name="Idle" type="Node" parent="State"]
+unique_name_in_owner = true

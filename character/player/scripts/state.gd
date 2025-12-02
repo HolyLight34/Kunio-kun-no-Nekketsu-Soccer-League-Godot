@@ -1,9 +1,14 @@
 @icon("res://character/state.svg")
 class_name State
 extends Node
+@onready var run: StateRun = %Run
+@onready var jump: StateJump = %Jump
+@onready var idle: StateIdle = %Idle
+@onready var walk: StateWalk = %Walk
 
-var character: Character
-var nex_state: State
+
+var player: Player
+var nex_state: State = null
 
 func init() -> void:
 	pass
