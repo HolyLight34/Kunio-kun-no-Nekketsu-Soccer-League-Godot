@@ -5,11 +5,18 @@ var current_state: State:
 	get: return states.front()
 var previous_state: State:
 	get: return states[1]
-
+var facing_direction: Vector2 = Vector2.RIGHT
 var direction: Vector2 = Vector2.ZERO
+var key_to_vector: Dictionary = {
+	"A": Vector2.LEFT,
+	"D": Vector2.RIGHT,
+	"W": Vector2.UP,
+	"S": Vector2.DOWN
+}
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 func _ready() -> void:
+	current_state = %Idle
 	initialize_states()
 	pass
 func _unhandled_input(event: InputEvent) -> void:
@@ -29,7 +36,6 @@ func initialize_states() -> void:
 	states = []
 	for c in $State.get_children():
 		states.append(c)
-		print(c)
 		c.player = self
 	if states.size() == 0:
 		return
@@ -52,9 +58,9 @@ func change_state(new_state: State) -> void:
 	
 func update_direction() -> void: # 通过输入更新方向
 	direction = Input.get_vector("left","right","up","down")
-	if direction == Vector2.LEFT:
-		$Sprite2D.flip_h = true
-	elif direction == Vector2.RIGHT:
-		$Sprite2D.flip_h = false
-		
+	if !current_state is StateRun:
+		if direction == Vector2.LEFT:
+			$Sprite2D.flip_h = true
+		elif direction == Vector2.RIGHT:
+			$Sprite2D.flip_h = false
 	pass

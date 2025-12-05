@@ -8,6 +8,7 @@ func init() -> void:
 	pass
 	
 func enter() -> void:
+	print(player.direction)
 	walk_frame = (walk_frame + 1) % walk_frame_count  # 循环计数 每次切换帧
 	player.animation_player.play("walk")
 	player.animation_player.seek(walk_frame * frame_duration, true)

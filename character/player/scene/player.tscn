@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cd56s8raml18p"]
+[gd_scene load_steps=15 format=3 uid="uid://cd56s8raml18p"]
 
 [ext_resource type="PackedScene" uid="uid://bnx477vsxh2ob" path="res://character/character.tscn" id="1_cmb0f"]
 [ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://character/player/scripts/player.gd" id="2_w62lr"]
@@ -78,9 +78,26 @@ tracks/0/keys = {
 "values": [5, 6, 7, 4]
 }
 
+[sub_resource type="Animation" id="Animation_bbc2b"]
+resource_name = "brake"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_aqf0j"]
 _data = {
 &"RESET": SubResource("Animation_tdnvx"),
+&"brake": SubResource("Animation_bbc2b"),
 &"idle": SubResource("Animation_yfy1k"),
 &"run": SubResource("Animation_s751y"),
 &"walk": SubResource("Animation_antyv")
