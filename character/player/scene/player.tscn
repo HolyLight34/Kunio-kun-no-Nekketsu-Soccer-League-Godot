@@ -3,10 +3,10 @@
 [ext_resource type="PackedScene" uid="uid://bnx477vsxh2ob" path="res://character/character.tscn" id="1_cmb0f"]
 [ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://character/player/scripts/player.gd" id="2_w62lr"]
 [ext_resource type="Texture2D" uid="uid://bjfest42ver7l" path="res://character/player/assets/player.png" id="3_s0dem"]
-[ext_resource type="Script" uid="uid://bl4h3qijae758" path="res://character/player/scripts/state_walk.gd" id="4_04kej"]
-[ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://character/player/scripts/state_run.gd" id="5_xaehe"]
-[ext_resource type="Script" uid="uid://ckgk3v42exfka" path="res://character/player/scripts/state_jump.gd" id="6_r7axx"]
-[ext_resource type="Script" uid="uid://dc2notl5lvls4" path="res://character/player/scripts/state_idle.gd" id="7_6xnww"]
+[ext_resource type="Script" uid="uid://dc2notl5lvls4" path="res://character/player/scripts/state_idle.gd" id="4_bbc2b"]
+[ext_resource type="Script" uid="uid://bl4h3qijae758" path="res://character/player/scripts/state_walk.gd" id="5_iykej"]
+[ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://character/player/scripts/state_run.gd" id="6_p5x1r"]
+[ext_resource type="Script" uid="uid://ckgk3v42exfka" path="res://character/player/scripts/state_jump.gd" id="7_hmiyv"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ule6c"]
 radius = 6.0
@@ -25,6 +25,22 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_bbc2b"]
+resource_name = "brake"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
 }
 
 [sub_resource type="Animation" id="Animation_yfy1k"]
@@ -78,22 +94,6 @@ tracks/0/keys = {
 "values": [5, 6, 7, 4]
 }
 
-[sub_resource type="Animation" id="Animation_bbc2b"]
-resource_name = "brake"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [2]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_aqf0j"]
 _data = {
 &"RESET": SubResource("Animation_tdnvx"),
@@ -104,6 +104,7 @@ _data = {
 }
 
 [node name="Player" instance=ExtResource("1_cmb0f")]
+collision_layer = 4
 script = ExtResource("2_w62lr")
 
 [node name="Sprite2D" parent="." index="0"]
@@ -121,16 +122,16 @@ libraries = {
 &"": SubResource("AnimationLibrary_aqf0j")
 }
 
-[node name="Idle" parent="State" index="0"]
-script = ExtResource("7_6xnww")
+[node name="Idle" parent="States" index="0"]
+script = ExtResource("4_bbc2b")
 
-[node name="Walk" parent="State" index="1"]
-script = ExtResource("4_04kej")
+[node name="Walk" parent="States" index="1"]
+script = ExtResource("5_iykej")
 
-[node name="Run" parent="State" index="2"]
-script = ExtResource("5_xaehe")
+[node name="Run" parent="States" index="2"]
+script = ExtResource("6_p5x1r")
 
-[node name="Jump" parent="State" index="3"]
-script = ExtResource("6_r7axx")
+[node name="Jump" parent="States" index="3"]
+script = ExtResource("7_hmiyv")
 
 [node name="Camera2D" type="Camera2D" parent="." index="4"]

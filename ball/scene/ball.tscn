@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://bjiv5srw37o2d"]
+
+[ext_resource type="Texture2D" uid="uid://bepsmh7kemgmh" path="res://ball/assets/ball.png" id="1_6cd5m"]
+[ext_resource type="Script" uid="uid://6q51n0q12xa7" path="res://ball/scripts/ball.gd" id="1_ncgq8"]
+[ext_resource type="Script" uid="uid://8goknn2xmft" path="res://ball/scripts/ball_state_carried.gd" id="3_07s1p"]
+[ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://ball/scripts/ball_state_shot.gd" id="4_b5n0i"]
+[ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://ball/scripts/ball_state_freeform.gd" id="5_r3iha"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6cd5m"]
+radius = 8.0
+
+[node name="Ball" type="AnimatableBody2D"]
+collision_layer = 2
+script = ExtResource("1_ncgq8")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_6cd5m")
+hframes = 4
+vframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ncgq8")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_6cd5m")
+debug_color = Color(0.92752945, 0.14407107, 0.56757694, 0.41960785)
+
+[node name="States" type="Node" parent="."]
+
+[node name="Shot" type="Node" parent="States"]
+unique_name_in_owner = true
+script = ExtResource("4_b5n0i")
+
+[node name="Freeform" type="Node" parent="States"]
+unique_name_in_owner = true
+script = ExtResource("5_r3iha")
+
+[node name="Carried" type="Node" parent="States"]
+unique_name_in_owner = true
+script = ExtResource("3_07s1p")

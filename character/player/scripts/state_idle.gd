@@ -1,4 +1,3 @@
-@icon("res://character/state.svg")
 class_name StateIdle
 extends State
 var directional_key: String # 方向键名

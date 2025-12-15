@@ -1,12 +1,13 @@
 class_name Player
 extends CharacterBody2D
 var states: Array[State]
-var current_state: State:
+var current_state: State: # 当前状态
 	get: return states.front()
-var previous_state: State:
+var previous_state: State: # 上一次状态
 	get: return states[1]
-var facing_direction: Vector2 = Vector2.RIGHT
-var direction: Vector2 = Vector2.ZERO
+var facing_direction: Vector2 = Vector2.RIGHT # 面朝方向
+var direction: Vector2 = Vector2.ZERO # 输入方向
+# 键映射向量
 var key_to_vector: Dictionary = {
 	"A": Vector2.LEFT,
 	"D": Vector2.RIGHT,
@@ -34,7 +35,7 @@ func _physics_process(delta: float) -> void:
 
 func initialize_states() -> void:
 	states = []
-	for c in $State.get_children():
+	for c in $States.get_children():
 		states.append(c)
 		c.player = self
 	if states.size() == 0:

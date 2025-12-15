@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=4 uid="uid://bwkfvj8w2jiks"]
+[gd_scene load_steps=12 format=4 uid="uid://bwkfvj8w2jiks"]
 
 [ext_resource type="Texture2D" uid="uid://ceogm5epnxpyw" path="res://ground/assets/ground_surface.png" id="1_xm6q7"]
 [ext_resource type="Texture2D" uid="uid://ca3h7vuvg2280" path="res://ground/assets/boundary_line.png" id="2_htbg0"]
 [ext_resource type="Texture2D" uid="uid://wng7jmh2ojjb" path="res://ground/assets/goal.png" id="3_ngisx"]
 [ext_resource type="PackedScene" uid="uid://cd56s8raml18p" path="res://character/player/scene/player.tscn" id="4_htbg0"]
+[ext_resource type="PackedScene" uid="uid://bjiv5srw37o2d" path="res://ball/scene/ball.tscn" id="5_ngisx"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t5q6m"]
 texture = ExtResource("1_xm6q7")
@@ -203,3 +204,6 @@ tile_set = SubResource("TileSet_cmi3i")
 
 [node name="Player" parent="." instance=ExtResource("4_htbg0")]
 position = Vector2(176, 176)
+
+[node name="Ball" parent="." instance=ExtResource("5_ngisx")]
+position = Vector2(208, 176)

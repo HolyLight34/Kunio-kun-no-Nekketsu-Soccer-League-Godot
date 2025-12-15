@@ -8,16 +8,16 @@
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
-[node name="State" type="Node" parent="."]
+[node name="States" type="Node" parent="."]
 
-[node name="Idle" type="Node" parent="State"]
+[node name="Idle" type="Node" parent="States"]
 unique_name_in_owner = true
 
-[node name="Walk" type="Node" parent="State"]
+[node name="Walk" type="Node" parent="States"]
 unique_name_in_owner = true
 
-[node name="Run" type="Node" parent="State"]
+[node name="Run" type="Node" parent="States"]
 unique_name_in_owner = true
 
-[node name="Jump" type="Node" parent="State"]
+[node name="Jump" type="Node" parent="States"]
 unique_name_in_owner = true

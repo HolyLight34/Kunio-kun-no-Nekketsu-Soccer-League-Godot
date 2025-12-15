@@ -1,4 +1,3 @@
-@icon("res://character/state.svg")
 class_name StateJump
 extends State
 

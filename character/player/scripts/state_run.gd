@@ -1,4 +1,3 @@
-@icon("res://character/state.svg")
 class_name StateRun
 extends State
 var _animation_finished: bool
@@ -40,6 +39,5 @@ func physics_process(_delta: float) -> State:
 	return nex_state
 	
 func _on_animation_finished(_a: String) -> void:
-	print("我调用了")
 	_animation_finished = true
 	pass	
