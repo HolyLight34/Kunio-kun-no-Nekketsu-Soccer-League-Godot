@@ -5,8 +5,13 @@ var current_state: BallState:
 	get: return states.front()
 var previous_state: BallState:
 	get: return states[1]
+var carrier: Player = null # 足球携带者
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var player_detection_are: Area2D = $PlayerDetectionAre
+@onready var timer: Timer = $Timer
 
 func _ready() -> void:
+	current_state = %Freeform
 	initialize_states()
 	pass
 func _unhandled_input(event: InputEvent) -> void:

@@ -8,9 +8,8 @@
 [ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://character/player/scripts/state_run.gd" id="6_p5x1r"]
 [ext_resource type="Script" uid="uid://ckgk3v42exfka" path="res://character/player/scripts/state_jump.gd" id="7_hmiyv"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ule6c"]
-radius = 6.0
-height = 22.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
+size = Vector2(12, 3)
 
 [sub_resource type="Animation" id="Animation_tdnvx"]
 length = 0.001
@@ -114,8 +113,8 @@ hframes = 4
 vframes = 6
 
 [node name="CollisionShape2D" parent="." index="1"]
-position = Vector2(0, -11)
-shape = SubResource("CapsuleShape2D_ule6c")
+position = Vector2(-1, -8.5)
+shape = SubResource("RectangleShape2D_bbc2b")
 
 [node name="AnimationPlayer" parent="." index="2"]
 libraries = {

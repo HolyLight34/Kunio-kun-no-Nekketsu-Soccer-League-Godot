@@ -203,7 +203,7 @@ tile_map_data = PackedByteArray("AAAzAAYAAAAAAAAAAAAzAAcAAAAAAAEAAAAzAAgAAAAAAAI
 tile_set = SubResource("TileSet_cmi3i")
 
 [node name="Player" parent="." instance=ExtResource("4_htbg0")]
-position = Vector2(176, 176)
+position = Vector2(201, 195)
 
 [node name="Ball" parent="." instance=ExtResource("5_ngisx")]
-position = Vector2(208, 176)
+position = Vector2(224, 188)
