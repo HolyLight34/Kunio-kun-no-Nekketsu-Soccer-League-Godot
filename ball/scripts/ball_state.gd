@@ -2,7 +2,7 @@
 class_name BallState
 extends Node
 var ball: Ball
-@onready var shot: BallStateShot = %Shot
+@onready var shoot: BallStateShoot = %Shoot
 @onready var freeform: BallStateFreeform = %Freeform
 @onready var carried: BallStateCarried = %Carried
 

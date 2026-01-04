@@ -19,6 +19,8 @@ func handle_input(event: InputEvent) -> State:
 		return null
 	if !event.is_pressed():
 		return null
+	if event.as_text() == "J":
+		return shoot
 	if event.as_text() != directional_key:
 		directional_key = event.as_text()
 		timestamp = Time.get_ticks_msec()

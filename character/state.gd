@@ -5,6 +5,7 @@ extends Node
 @onready var jump: StateJump = %Jump
 @onready var idle: StateIdle = %Idle
 @onready var walk: StateWalk = %Walk
+@onready var shoot: StateShoot = %Shoot
 
 
 var player: Player

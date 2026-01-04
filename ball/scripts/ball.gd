@@ -9,7 +9,7 @@ var carrier: Player = null # 足球携带者
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var player_detection_are: Area2D = $PlayerDetectionAre
 @onready var timer: Timer = $Timer
-
+var player_data: Dictionary = {} # 玩家数据
 func _ready() -> void:
 	current_state = %Freeform
 	initialize_states()
@@ -49,3 +49,6 @@ func change_state(new_state: BallState) -> void: # 切换状态
 	states.resize(3)
 	pass
 	
+func receive_kick(data: Dictionary):
+	player_data = data
+	pass

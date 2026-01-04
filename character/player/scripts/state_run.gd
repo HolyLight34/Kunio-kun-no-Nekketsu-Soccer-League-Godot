@@ -17,8 +17,12 @@ func exit() -> void:
 	pass
 
 func handle_input(event: InputEvent) -> State:
+	if event is InputEventMouse:
+		return null
 	if !event.is_pressed():
 		return null
+	if event.as_text() == "J":
+		return shoot
 	if player.key_to_vector[event.as_text()] + player.facing_direction == Vector2.ZERO:
 		player.animation_player.play("brake")
 		is_braking = true
