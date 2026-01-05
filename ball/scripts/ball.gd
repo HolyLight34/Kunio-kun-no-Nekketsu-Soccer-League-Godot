@@ -6,9 +6,16 @@ var current_state: BallState:
 var previous_state: BallState:
 	get: return states[1]
 var carrier: Player = null # 足球携带者
+var z_height: float = 0.0           # 当前高度 (Z)
+var z_speed: float = 0.0            # 垂直速度
+@export var gravity: float = -800.0         # 重力加速度 (负值向上)
+@export var bounce_factor: float = 0.6      # 弹力系数 (0.6 表示每次落地能量损耗 40%)
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var player_detection_are: Area2D = $PlayerDetectionAre
 @onready var timer: Timer = $Timer
+@onready var sprite_2d: Sprite2D = $Sprite2D
+@onready var black: Sprite2D = $Black
+
 var player_data: Dictionary = {} # 玩家数据
 func _ready() -> void:
 	current_state = %Freeform

@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://bjiv5srw37o2d"]
+[gd_scene load_steps=12 format=3 uid="uid://bjiv5srw37o2d"]
 
 [ext_resource type="Texture2D" uid="uid://bepsmh7kemgmh" path="res://ball/assets/ball.png" id="1_6cd5m"]
 [ext_resource type="Script" uid="uid://6q51n0q12xa7" path="res://ball/scripts/ball.gd" id="1_ncgq8"]
 [ext_resource type="Script" uid="uid://8goknn2xmft" path="res://ball/scripts/ball_state_carried.gd" id="3_07s1p"]
 [ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://ball/scripts/ball_state_shoot.gd" id="4_b5n0i"]
 [ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://ball/scripts/ball_state_freeform.gd" id="5_r3iha"]
+[ext_resource type="Texture2D" uid="uid://dxh04hlobi8ph" path="res://ball/assets/black.png" id="6_b5n0i"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
 radius = 8.0
@@ -54,6 +55,9 @@ _data = {
 collision_layer = 2
 collision_mask = 4
 script = ExtResource("1_ncgq8")
+
+[node name="Black" type="Sprite2D" parent="."]
+texture = ExtResource("6_b5n0i")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_6cd5m")
