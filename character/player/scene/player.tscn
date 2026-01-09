@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cd56s8raml18p"]
+[gd_scene load_steps=19 format=3 uid="uid://cd56s8raml18p"]
 
 [ext_resource type="PackedScene" uid="uid://bnx477vsxh2ob" path="res://character/character.tscn" id="1_cmb0f"]
 [ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://character/player/scripts/player.gd" id="2_w62lr"]
@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://cvo2mwb2psuvi" path="res://character/player/scripts/state_shoot.gd" id="8_iykej"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
-size = Vector2(12, 3)
+size = Vector2(0, 0)
 
 [sub_resource type="Animation" id="Animation_tdnvx"]
 length = 0.001
@@ -122,7 +122,10 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iykej"]
-size = Vector2(0, 0)
+size = Vector2(12, 3)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p5x1r"]
+size = Vector2(26, 15)
 
 [node name="Player" instance=ExtResource("1_cmb0f")]
 collision_layer = 4
@@ -136,7 +139,6 @@ hframes = 4
 vframes = 6
 
 [node name="CollisionShape2D" parent="." index="1"]
-position = Vector2(-1, -8.5)
 shape = SubResource("RectangleShape2D_bbc2b")
 
 [node name="AnimationPlayer" parent="." index="2"]
@@ -162,11 +164,23 @@ script = ExtResource("8_iykej")
 [node name="Camera2D" type="Camera2D" parent="." index="4"]
 position_smoothing_enabled = true
 
-[node name="Area2D" parent="." index="5"]
-position = Vector2(-1, -8)
+[node name="PickUpArea" parent="." index="5"]
 collision_layer = 4
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape2D" parent="Area2D" index="0"]
+[node name="CollisionShape2D" parent="PickUpArea" index="0"]
+position = Vector2(-1, -8.5)
 shape = SubResource("RectangleShape2D_iykej")
+metadata/_edit_lock_ = true
+
+[node name="KickArea" parent="." index="6"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" parent="KickArea" index="0"]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_p5x1r")
+
+[connection signal="body_entered" from="PickUpArea" to="." method="_on_pick_up_area_body_entered"]

@@ -35,9 +35,7 @@ func handle_input(event: InputEvent) -> BallState:
 	
 func process(_delta: float) -> BallState:
 	ball.position = ball.carrier.position + carry_offset * Vector2(ball.carrier.facing_direction.x,1)
-	print(ball.player_data)
-	if ball.player_data != {}:
-		print(ball.player_data)
+	if ball.kick_power != 0:
 		return shoot
 	return nex_state
 	

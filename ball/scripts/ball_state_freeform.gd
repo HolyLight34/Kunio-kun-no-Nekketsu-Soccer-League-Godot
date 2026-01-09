@@ -1,31 +1,24 @@
 class_name BallStateFreeform
 extends BallState
-var player_detection_are: Area2D
-var is_player: bool = false
 func init() -> void:
-	player_detection_are = ball.player_detection_are
-	player_detection_are.body_entered.connect(on_player_enter)
-	#player_detection_are.area_entered.connect(on_are_enter)
 	pass
 	
 func enter() -> void:
-	player_detection_are.body_entered.connect(on_player_enter)
-	#player_detection_are.area_entered.connect(on_are_enter)
+	ball.kick_power = 0
+	ball.kick_direction = Vector2.ZERO
+	ball.z_height = 0
 	pass
 	
 func exit() -> void:
-	is_player = false
-	player_detection_are.body_entered.disconnect(on_player_enter)
-	#player_detection_are.area_entered.disconnect(on_are_enter)
 	pass
 
 func handle_input(_event: InputEvent) -> BallState:
 	return nex_state
 	
 func process(_delta: float) -> BallState:
-	if is_player:
+	if ball.carrier:
 		return carried
-	if ball.player_data != {}:
+	if ball.kick_power != 0:
 		return shoot
 	return nex_state
 	
@@ -43,14 +36,3 @@ func physics_process(delta: float) -> BallState:
 				ball.z_speed = 0
 	ball.sprite_2d.position.y = -ball.z_height
 	return nex_state
-
-func on_player_enter(body: Player) -> void:
-	ball.carrier = body
-	if body is Player:
-		is_player = true
-	pass
-#func on_are_enter(are: Area2D) -> void:
-	#print("踢")
-	#if are is Area2D:
-		#is_kicked = true
-	#pass

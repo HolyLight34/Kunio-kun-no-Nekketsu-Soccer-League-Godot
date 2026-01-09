@@ -1,31 +1,36 @@
 class_name Player
 extends CharacterBody2D
-var states: Array[State]
-signal ball_fired(data: Dictionary)
+var states: Array[State] # 状态数组
 var current_state: State: # 当前状态
 	get: return states.front()
-var previous_state: State: # 上一次状态
+var previous_state: State: # 上一个状态
 	get: return states[1]
 var facing_direction: Vector2 = Vector2.RIGHT # 面朝方向
 var direction: Vector2 = Vector2.ZERO # 输入方向
-@export var kick_power: float
+@export var kick_power: float # 踢球的力量
 # 键映射向量
 var key_to_vector: Dictionary = {
-	"A": Vector2.LEFT,
-	"D": Vector2.RIGHT,
-	"W": Vector2.UP,
-	"S": Vector2.DOWN
+	"left": Vector2.LEFT,
+	"right": Vector2.RIGHT,
+	"up": Vector2.UP,
+	"down": Vector2.DOWN
 }
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var area_2d: Area2D = $Area2D
-@onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
+@onready var kick_area: Area2D = $KickArea
+@onready var pick_up_area: Area2D = $PickUpArea
+@onready var collision_shape_2d: CollisionShape2D = $KickArea/CollisionShape2D
+
 func _ready() -> void:
 	current_state = %Idle
 	initialize_states()
 	pass
+	
+	
 func _unhandled_input(event: InputEvent) -> void:
 	change_state(current_state.handle_input(event))
 	pass	
+	
+	
 func _process(delta: float) -> void:
 	update_direction()
 	change_state(current_state.process(delta))
@@ -36,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	pass
 
-func initialize_states() -> void:
+func initialize_states() -> void: # 状态机初始化
 	states = []
 	for c in $States.get_children():
 		states.append(c)
@@ -48,17 +53,16 @@ func initialize_states() -> void:
 	change_state(current_state)
 	pass
 	
-func change_state(new_state: State) -> void:
+func change_state(new_state: State) -> void: # 切换状态
 	if new_state == null:
 		return
 	elif new_state == current_state:
 		return
 	if current_state:
-		print("我推出了")
 		current_state.exit()
 	states.push_front(new_state)
 	current_state.enter()
-	states.resize(3)			
+	states.resize(3)
 	pass
 	
 func update_direction() -> void: # 通过输入更新方向
@@ -69,3 +73,10 @@ func update_direction() -> void: # 通过输入更新方向
 		elif direction == Vector2.RIGHT:
 			$Sprite2D.flip_h = false
 	pass
+
+
+func _on_pick_up_area_body_entered(body: Node) -> void: # 球拾取检测
+	var ball = body as Ball
+	if ball:
+		ball.carrier = self
+	pass # Replace with function body.

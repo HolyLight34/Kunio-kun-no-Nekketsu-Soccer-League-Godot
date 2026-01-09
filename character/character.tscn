@@ -25,6 +25,10 @@ unique_name_in_owner = true
 [node name="Shoot" type="Node" parent="States"]
 unique_name_in_owner = true
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="PickUpArea" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickUpArea"]
+
+[node name="KickArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KickArea"]

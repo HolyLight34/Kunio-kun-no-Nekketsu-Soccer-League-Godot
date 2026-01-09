@@ -19,14 +19,16 @@ func exit() -> void:
 func handle_input(event: InputEvent) -> State:
 	if event is InputEventMouse:
 		return null
-	if !event.is_pressed():
-		return null
-	if event.as_text() == "J":
+	if event.is_action_pressed("shoot"):
 		return shoot
-	if player.key_to_vector[event.as_text()] + player.facing_direction == Vector2.ZERO:
-		player.animation_player.play("brake")
-		is_braking = true
-		player.velocity = player.facing_direction * 50
+	for action in player.key_to_vector.keys():
+		if event.is_action_pressed(action):
+			var press_dir = player.key_to_vector[action] # 当前输入方向
+			if press_dir + player.facing_direction == Vector2.ZERO:
+				player.animation_player.play("brake")
+				is_braking = true
+				player.velocity = player.facing_direction * 50
+				return
 	return nex_state
 	
 func process(_delta: float) -> State:
