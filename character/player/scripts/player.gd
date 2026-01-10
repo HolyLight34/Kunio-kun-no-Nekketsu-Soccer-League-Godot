@@ -1,45 +1,87 @@
 class_name Player
 extends CharacterBody2D
+
+enum Controller {
+	P1,
+	P2,
+	CPU,
+}
+enum Action {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	PASS,
+	# 传球/切换人（通常是A键）
+	SHOOT,
+	# 射门/铲球（通常是B键）
+	START,
+	# 暂停
+	SELECT # 战术设置,,
+}
+
+@export var controlled_by: Controller = Controller.CPU
+@export var kick_power: float # 踢球的力量
+
 var states: Array[State] # 状态数组
 var current_state: State: # 当前状态
-	get: return states.front()
+	get:
+		return states.front()
 var previous_state: State: # 上一个状态
-	get: return states[1]
+	get:
+		return states[1]
 var facing_direction: Vector2 = Vector2.RIGHT # 面朝方向
 var direction: Vector2 = Vector2.ZERO # 输入方向
-@export var kick_power: float # 踢球的力量
 # 键映射向量
-var key_to_vector: Dictionary = {
-	"left": Vector2.LEFT,
-	"right": Vector2.RIGHT,
-	"up": Vector2.UP,
-	"down": Vector2.DOWN
-}
+var key_to_vector: Dictionary
+var p1_map = { Action.UP: "1p_up", Action.DOWN: "1p_down", Action.LEFT: "1p_left", Action.RIGHT: "1p_right", Action.SHOOT: "1p_shoot" }
+var p2_map = { Action.UP: "2p_up", Action.DOWN: "2p_down", Action.LEFT: "2p_left", Action.RIGHT: "2p_right", Action.SHOOT: "2p_shoot" }
+var direction_dic: Dictionary
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var kick_area: Area2D = $KickArea
 @onready var pick_up_area: Area2D = $PickUpArea
 @onready var collision_shape_2d: CollisionShape2D = $KickArea/CollisionShape2D
 
+
 func _ready() -> void:
 	current_state = %Idle
 	initialize_states()
+	match controlled_by:
+		Controller.P1:
+			direction_dic = p1_map
+			key_to_vector = {
+				direction_dic[Action.LEFT]: Vector2.LEFT,
+				direction_dic[Action.RIGHT]: Vector2.RIGHT,
+				direction_dic[Action.UP]: Vector2.UP,
+				direction_dic[Action.DOWN]: Vector2.DOWN,
+			}
+
+			pass
+		Controller.P2:
+			direction_dic = p2_map
+			pass
+		Controller.CPU:
+			pass
 	pass
-	
-	
-func _unhandled_input(event: InputEvent) -> void:
-	change_state(current_state.handle_input(event))
-	pass	
-	
-	
+
+
 func _process(delta: float) -> void:
-	update_direction()
+	update_direction(direction_dic)
 	change_state(current_state.process(delta))
 	pass
-	
+
+
 func _physics_process(delta: float) -> void:
 	change_state(current_state.physics_process(delta))
 	move_and_slide()
 	pass
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	change_state(current_state.handle_input(event))
+	pass
+
 
 func initialize_states() -> void: # 状态机初始化
 	states = []
@@ -49,10 +91,11 @@ func initialize_states() -> void: # 状态机初始化
 	if states.size() == 0:
 		return
 	for state in states:
-		state.init()	
+		state.init()
 	change_state(current_state)
 	pass
-	
+
+
 func change_state(new_state: State) -> void: # 切换状态
 	if new_state == null:
 		return
@@ -64,9 +107,10 @@ func change_state(new_state: State) -> void: # 切换状态
 	current_state.enter()
 	states.resize(3)
 	pass
-	
-func update_direction() -> void: # 通过输入更新方向
-	direction = Input.get_vector("left","right","up","down")
+
+
+func update_direction(dic: Dictionary) -> void: # 通过输入更新方向
+	direction = Input.get_vector(dic[Action.LEFT], dic[Action.RIGHT], dic[Action.UP], dic[Action.DOWN])
 	if !current_state is StateRun:
 		if direction == Vector2.LEFT:
 			$Sprite2D.flip_h = true

@@ -1,27 +1,33 @@
 class_name BallStateFreeform
 extends BallState
+
 func init() -> void:
 	pass
-	
+
+
 func enter() -> void:
 	ball.kick_power = 0
 	ball.kick_direction = Vector2.ZERO
 	ball.z_height = 0
 	pass
-	
+
+
 func exit() -> void:
 	pass
 
+
 func handle_input(_event: InputEvent) -> BallState:
 	return nex_state
-	
+
+
 func process(_delta: float) -> BallState:
 	if ball.carrier:
 		return carried
 	if ball.kick_power != 0:
 		return shoot
 	return nex_state
-	
+
+
 func physics_process(delta: float) -> BallState:
 	# 1. 处理垂直重力逻辑 (Z 轴)
 	if ball.z_height > 0 or ball.z_speed != 0:

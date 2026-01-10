@@ -130,6 +130,7 @@ size = Vector2(26, 15)
 [node name="Player" instance=ExtResource("1_cmb0f")]
 collision_layer = 4
 script = ExtResource("2_w62lr")
+controlled_by = 0
 kick_power = 100.0
 
 [node name="Sprite2D" parent="." index="0"]
