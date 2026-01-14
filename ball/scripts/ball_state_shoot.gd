@@ -11,11 +11,12 @@ func init() -> void:
 func enter() -> void:
 	ball.carrier = null
 	current_ball_position = ball.position
-
+	ball.collision_layer = 4
 	pass
 
 
 func exit() -> void:
+	ball.collision_layer = 2
 	pass
 
 
