@@ -16,6 +16,7 @@ var kick_direction: Vector2 # 踢力方向
 var carrier: Player = null # 足球携带者
 var z_height: float = 0.0 # 当前高度 (Z)
 var z_speed: float = 0.0 # 垂直速度
+var landing_point: Vector2 = Vector2.ZERO # 传球落点
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var timer: Timer = $Timer

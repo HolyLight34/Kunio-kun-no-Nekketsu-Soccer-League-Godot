@@ -24,6 +24,8 @@ func handle_input(event: InputEvent) -> State:
 		return null
 	if event.is_action_pressed(player.direction_dic[player.Action.SHOOT]):
 		return shoot
+	if event.is_action_pressed(player.direction_dic[player.Action.PASS]) and player.is_carried:
+		return passing
 	for action in player.key_to_vector.keys(): # 遍历方向键名
 		if event.is_action_pressed(action):
 			var current_time = Time.get_ticks_msec() # 记录当前按下时间

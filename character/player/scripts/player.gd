@@ -34,10 +34,10 @@ var facing_direction: Vector2 = Vector2.RIGHT # 面朝方向
 var direction: Vector2 = Vector2.ZERO # 输入方向
 # 键映射向量
 var key_to_vector: Dictionary
-var p1_map = { Action.UP: "1p_up", Action.DOWN: "1p_down", Action.LEFT: "1p_left", Action.RIGHT: "1p_right", Action.SHOOT: "1p_shoot" }
-var p2_map = { Action.UP: "2p_up", Action.DOWN: "2p_down", Action.LEFT: "2p_left", Action.RIGHT: "2p_right", Action.SHOOT: "2p_shoot" }
+var p1_map: Dictionary = { Action.UP: "1p_up", Action.DOWN: "1p_down", Action.LEFT: "1p_left", Action.RIGHT: "1p_right", Action.SHOOT: "1p_shoot", Action.PASS: "1p_pass" }
+var p2_map: Dictionary = { Action.UP: "2p_up", Action.DOWN: "2p_down", Action.LEFT: "2p_left", Action.RIGHT: "2p_right", Action.SHOOT: "2p_shoot", Action.PASS: "2p_pass" }
 var direction_dic: Dictionary
-
+var is_carried: bool = false
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var kick_area: Area2D = $KickArea
 @onready var pick_up_area: Area2D = $PickUpArea
@@ -47,6 +47,7 @@ var direction_dic: Dictionary
 func _ready() -> void:
 	current_state = %Idle
 	initialize_states()
+	add_to_group("players")
 	match controlled_by:
 		Controller.P1:
 			direction_dic = p1_map
@@ -123,4 +124,5 @@ func _on_pick_up_area_body_entered(body: Node) -> void: # 球拾取检测
 	var ball = body as Ball
 	if ball:
 		ball.carrier = self
+		is_carried = true
 	pass # Replace with function body.

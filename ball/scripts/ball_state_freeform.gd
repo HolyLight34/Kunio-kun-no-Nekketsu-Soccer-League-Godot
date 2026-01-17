@@ -41,4 +41,8 @@ func physics_process(delta: float) -> BallState:
 			else:
 				ball.z_speed = 0
 	ball.sprite_2d.position.y = -ball.z_height
+	if ball.landing_point != Vector2.ZERO:
+		ball.position = ball.position.move_toward(ball.landing_point,100*delta)
+		if ball.carrier:
+			ball.landing_point = Vector2.ZERO
 	return nex_state

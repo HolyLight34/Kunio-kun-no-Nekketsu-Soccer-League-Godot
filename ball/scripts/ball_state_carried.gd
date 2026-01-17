@@ -17,6 +17,7 @@ func enter() -> void:
 
 
 func exit() -> void:
+	ball.carrier = null
 	pass
 
 
@@ -42,11 +43,13 @@ func handle_input(event: InputEvent) -> BallState:
 
 
 func process(_delta: float) -> BallState:
-	ball.position = ball.carrier.position + carry_offset * Vector2(ball.carrier.facing_direction.x, 1)
 	if ball.kick_power != 0:
 		return shoot
+	if ball.landing_point != Vector2.ZERO:
+		return freeform
 	return nex_state
 
 
 func physics_process(_delta: float) -> BallState:
+	ball.position = ball.carrier.position + carry_offset * Vector2(ball.carrier.facing_direction.x, 1)
 	return nex_state
