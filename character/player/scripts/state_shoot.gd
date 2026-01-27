@@ -9,6 +9,7 @@ func init() -> void:
 
 
 func enter() -> void:
+	player.want_to_shoot = false
 	player.velocity = Vector2.ZERO
 	is_kick = true
 	player.pick_up_area.monitoring = false # 关闭拾球检测

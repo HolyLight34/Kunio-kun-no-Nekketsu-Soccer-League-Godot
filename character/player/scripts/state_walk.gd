@@ -26,8 +26,8 @@ func handle_input(_event: InputEvent) -> State:
 
 
 func process(_delta: float) -> State:
-	player.velocity = player.direction * 30
-	if player.direction == Vector2.ZERO:
+	player.velocity = player.input_dir * 30
+	if player.input_dir == Vector2.ZERO:
 		return idle
 	return nex_state
 

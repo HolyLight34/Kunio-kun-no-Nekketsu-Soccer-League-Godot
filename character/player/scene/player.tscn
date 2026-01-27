@@ -1,6 +1,5 @@
 [gd_scene load_steps=21 format=3 uid="uid://cd56s8raml18p"]
 
-[ext_resource type="PackedScene" uid="uid://bnx477vsxh2ob" path="res://character/character.tscn" id="1_cmb0f"]
 [ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://character/player/scripts/player.gd" id="2_w62lr"]
 [ext_resource type="Texture2D" uid="uid://bjfest42ver7l" path="res://character/player/assets/player.png" id="3_s0dem"]
 [ext_resource type="Script" uid="uid://dc2notl5lvls4" path="res://character/player/scripts/state_idle.gd" id="4_bbc2b"]
@@ -9,6 +8,7 @@
 [ext_resource type="Script" uid="uid://ckgk3v42exfka" path="res://character/player/scripts/state_jump.gd" id="7_hmiyv"]
 [ext_resource type="Script" uid="uid://cvo2mwb2psuvi" path="res://character/player/scripts/state_shoot.gd" id="8_iykej"]
 [ext_resource type="Script" uid="uid://b4748yyrelfg7" path="res://character/player/scripts/state_pass.gd" id="9_p5x1r"]
+[ext_resource type="PackedScene" uid="uid://cw7a6dfgpk8xw" path="res://character/player/scene/input_handler.tscn" id="10_hmiyv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
@@ -146,64 +146,73 @@ size = Vector2(12, 3)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p5x1r"]
 size = Vector2(26, 15)
 
-[node name="Player" instance=ExtResource("1_cmb0f")]
+[node name="Player" type="CharacterBody2D"]
 collision_layer = 4
 script = ExtResource("2_w62lr")
-controlled_by = 0
 kick_power = 100.0
 
-[node name="Sprite2D" parent="." index="0"]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -16)
 texture = ExtResource("3_s0dem")
 hframes = 4
 vframes = 6
 
-[node name="CollisionShape2D" parent="." index="1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_bbc2b")
 
-[node name="AnimationPlayer" parent="." index="2"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_aqf0j")
 }
 
-[node name="Idle" parent="States" index="0"]
+[node name="States" type="Node" parent="."]
+
+[node name="Idle" type="Node" parent="States"]
+unique_name_in_owner = true
 script = ExtResource("4_bbc2b")
 
-[node name="Walk" parent="States" index="1"]
+[node name="Walk" type="Node" parent="States"]
+unique_name_in_owner = true
 script = ExtResource("5_iykej")
 
-[node name="Run" parent="States" index="2"]
+[node name="Run" type="Node" parent="States"]
+unique_name_in_owner = true
 script = ExtResource("6_p5x1r")
 
-[node name="Jump" parent="States" index="3"]
+[node name="Jump" type="Node" parent="States"]
+unique_name_in_owner = true
 script = ExtResource("7_hmiyv")
 
-[node name="Shoot" parent="States" index="4"]
+[node name="Shoot" type="Node" parent="States"]
+unique_name_in_owner = true
 script = ExtResource("8_iykej")
 
-[node name="Pass" parent="States" index="5"]
+[node name="Pass" type="Node" parent="States"]
+unique_name_in_owner = true
 script = ExtResource("9_p5x1r")
 
-[node name="Camera2D" type="Camera2D" parent="." index="4"]
+[node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 
-[node name="PickUpArea" parent="." index="5"]
+[node name="PickUpArea" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape2D" parent="PickUpArea" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickUpArea"]
 position = Vector2(-1, -8.5)
 shape = SubResource("RectangleShape2D_iykej")
 metadata/_edit_lock_ = true
 
-[node name="KickArea" parent="." index="6"]
+[node name="KickArea" type="Area2D" parent="."]
 collision_layer = 4
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape2D" parent="KickArea" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KickArea"]
 position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_p5x1r")
+
+[node name="InputHandler" parent="." instance=ExtResource("10_hmiyv")]
 
 [connection signal="body_entered" from="PickUpArea" to="." method="_on_pick_up_area_body_entered"]

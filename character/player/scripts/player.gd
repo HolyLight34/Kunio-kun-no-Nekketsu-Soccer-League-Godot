@@ -6,21 +6,8 @@ enum Controller {
 	P2,
 	CPU,
 }
-enum Action {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	PASS,
-	# 传球/切换人（通常是A键）
-	SHOOT,
-	# 射门/铲球（通常是B键）
-	START,
-	# 暂停
-	SELECT # 战术设置,,
-}
 
-@export var controlled_by: Controller = Controller.CPU
+@export var controlled_by: Controller
 @export var kick_power: float # 踢球的力量
 
 var states: Array[State] # 状态数组
@@ -31,44 +18,28 @@ var previous_state: State: # 上一个状态
 	get:
 		return states[1]
 var facing_direction: Vector2 = Vector2.RIGHT # 面朝方向
-var direction: Vector2 = Vector2.ZERO # 输入方向
-# 键映射向量
-var key_to_vector: Dictionary
-var p1_map: Dictionary = { Action.UP: "1p_up", Action.DOWN: "1p_down", Action.LEFT: "1p_left", Action.RIGHT: "1p_right", Action.SHOOT: "1p_shoot", Action.PASS: "1p_pass" }
-var p2_map: Dictionary = { Action.UP: "2p_up", Action.DOWN: "2p_down", Action.LEFT: "2p_left", Action.RIGHT: "2p_right", Action.SHOOT: "2p_shoot", Action.PASS: "2p_pass" }
-var direction_dic: Dictionary
+var input_dir: Vector2 = Vector2.ZERO # 输入方向
+var want_to_pass: bool = false
+var want_to_run: bool = false
+var want_to_shoot: bool = false
 var is_carried: bool = false
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var kick_area: Area2D = $KickArea
 @onready var pick_up_area: Area2D = $PickUpArea
 @onready var collision_shape_2d: CollisionShape2D = $KickArea/CollisionShape2D
+@onready var sprite_2d: Sprite2D = $Sprite2D
 
 
 func _ready() -> void:
 	current_state = %Idle
 	initialize_states()
 	add_to_group("players")
-	match controlled_by:
-		Controller.P1:
-			direction_dic = p1_map
-			key_to_vector = {
-				direction_dic[Action.LEFT]: Vector2.LEFT,
-				direction_dic[Action.RIGHT]: Vector2.RIGHT,
-				direction_dic[Action.UP]: Vector2.UP,
-				direction_dic[Action.DOWN]: Vector2.DOWN,
-			}
-
-			pass
-		Controller.P2:
-			direction_dic = p2_map
-			pass
-		Controller.CPU:
-			pass
 	pass
 
 
 func _process(delta: float) -> void:
-	update_direction(direction_dic)
+	update_facing()
 	change_state(current_state.process(delta))
 	pass
 
@@ -109,14 +80,10 @@ func change_state(new_state: State) -> void: # 切换状态
 	states.resize(3)
 	pass
 
-
-func update_direction(dic: Dictionary) -> void: # 通过输入更新方向
-	direction = Input.get_vector(dic[Action.LEFT], dic[Action.RIGHT], dic[Action.UP], dic[Action.DOWN])
-	if !current_state is StateRun:
-		if direction == Vector2.LEFT:
-			$Sprite2D.flip_h = true
-		elif direction == Vector2.RIGHT:
-			$Sprite2D.flip_h = false
+func update_facing() -> void: # 通过输入更新方向
+	if input_dir.x != 0:
+		# 方案 A：使用 Sprite 的 flip_h 属性（最简单）
+		sprite_2d.flip_h = (input_dir.x < 0)
 	pass
 
 
