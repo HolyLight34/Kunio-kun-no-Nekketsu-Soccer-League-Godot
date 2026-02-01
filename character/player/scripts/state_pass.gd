@@ -2,6 +2,7 @@ class_name StatePass
 extends State
 var is_kick: bool # 是否踢
 func init() -> void:
+	can_flip = false
 	pass
 
 

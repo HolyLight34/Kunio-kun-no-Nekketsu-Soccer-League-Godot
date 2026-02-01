@@ -35,11 +35,11 @@ func _process(_delta):
 			handle_direction_tap(action)
 
 
-func handle_direction_tap(action):
+func handle_direction_tap(action): # 双击方向键奔跑
 	var now = Time.get_ticks_msec() / 1000.0
 	if action == last_action and now - last_tap_time < DOUBLE_TAP_THRESHOLD:
 		player.want_to_run = true
-		last_action = ""
+		last_action = "" # 触发后重置，防止“三连按”触发两次
 	else:
 		last_action = action
 	last_tap_time = now

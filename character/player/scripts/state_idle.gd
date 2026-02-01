@@ -3,12 +3,13 @@ extends State
 
 
 func init() -> void:
+	can_flip = true
 	pass
 
 
 func enter() -> void:
-	player.animation_player.play("idle")
 	player.velocity = Vector2.ZERO
+	player.animation_player.play("idle")
 	pass
 
 
@@ -22,8 +23,6 @@ func handle_input(_event: InputEvent) -> State:
 
 func process(_delta: float) -> State:
 	if player.input_dir != Vector2.ZERO:
-		if player.input_dir != Vector2.DOWN and player.input_dir != Vector2.UP:
-			player.facing_direction = player.input_dir
 		return walk
 	if player.want_to_run:
 		return run

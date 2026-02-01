@@ -7,6 +7,7 @@ var i: int = 0 # 循环周期中的索引
 
 
 func init() -> void:
+	can_flip = true
 	pass
 
 

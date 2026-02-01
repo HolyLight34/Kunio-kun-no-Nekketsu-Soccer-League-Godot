@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cd56s8raml18p"]
+[gd_scene load_steps=22 format=3 uid="uid://cd56s8raml18p"]
 
 [ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://character/player/scripts/player.gd" id="2_w62lr"]
 [ext_resource type="Texture2D" uid="uid://bjfest42ver7l" path="res://character/player/assets/player.png" id="3_s0dem"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://character/player/scripts/state_run.gd" id="6_p5x1r"]
 [ext_resource type="Script" uid="uid://ckgk3v42exfka" path="res://character/player/scripts/state_jump.gd" id="7_hmiyv"]
 [ext_resource type="Script" uid="uid://cvo2mwb2psuvi" path="res://character/player/scripts/state_shoot.gd" id="8_iykej"]
+[ext_resource type="Script" uid="uid://cmi6kmwh30t0f" path="res://character/player/scripts/state_skid.gd" id="9_hmiyv"]
 [ext_resource type="Script" uid="uid://b4748yyrelfg7" path="res://character/player/scripts/state_pass.gd" id="9_p5x1r"]
 [ext_resource type="PackedScene" uid="uid://cw7a6dfgpk8xw" path="res://character/player/scene/input_handler.tscn" id="10_hmiyv"]
 
@@ -190,6 +191,10 @@ script = ExtResource("8_iykej")
 [node name="Pass" type="Node" parent="States"]
 unique_name_in_owner = true
 script = ExtResource("9_p5x1r")
+
+[node name="Skid" type="Node" parent="States"]
+unique_name_in_owner = true
+script = ExtResource("9_hmiyv")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true

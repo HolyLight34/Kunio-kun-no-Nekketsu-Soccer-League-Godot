@@ -39,8 +39,9 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	update_facing()
 	change_state(current_state.process(delta))
+	if current_state.can_flip:
+		update_facing()
 	pass
 
 
@@ -80,10 +81,12 @@ func change_state(new_state: State) -> void: # 切换状态
 	states.resize(3)
 	pass
 
+
 func update_facing() -> void: # 通过输入更新方向
 	if input_dir.x != 0:
 		# 方案 A：使用 Sprite 的 flip_h 属性（最简单）
 		sprite_2d.flip_h = (input_dir.x < 0)
+		facing_direction = Vector2.RIGHT if !sprite_2d.flip_h else Vector2.LEFT
 	pass
 
 

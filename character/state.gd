@@ -8,7 +8,8 @@ extends Node
 @onready var walk: StateWalk = %Walk
 @onready var shoot: StateShoot = %Shoot
 @onready var passing: StatePass = %Pass
-
+@onready var skid: StateSkid = %Skid
+var can_flip: bool = true
 var player: Player
 var nex_state: State = null
 
