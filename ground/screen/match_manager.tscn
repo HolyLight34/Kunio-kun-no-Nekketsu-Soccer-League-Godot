@@ -1,0 +1,59 @@
+[gd_scene load_steps=7 format=3 uid="uid://drvfssess1urv"]
+
+[ext_resource type="Script" uid="uid://cfmgacrl3kq4n" path="res://ground/scripts/match_manager.gd" id="1_5n5ds"]
+[ext_resource type="PackedScene" uid="uid://cd56s8raml18p" path="res://character/player/scene/player.tscn" id="2_bsk1g"]
+[ext_resource type="Script" uid="uid://b5fo8hetbrt2k" path="res://character/player/scripts/player_stats.gd" id="3_h3bre"]
+[ext_resource type="Resource" uid="uid://4384rxoixaav" path="res://character/player/scripts/kunio.tres" id="4_3ejit"]
+[ext_resource type="PackedScene" uid="uid://1kfwe0wq2sfv" path="res://ground/screen/pitch.tscn" id="5_ofem0"]
+[ext_resource type="PackedScene" uid="uid://bjiv5srw37o2d" path="res://ball/scene/ball.tscn" id="6_hwlof"]
+
+[node name="MatchManager" type="Node"]
+script = ExtResource("1_5n5ds")
+sc = ExtResource("2_bsk1g")
+team1 = Array[ExtResource("3_h3bre")]([ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit")])
+team2 = Array[ExtResource("3_h3bre")]([ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit")])
+
+[node name="Pitch" parent="." instance=ExtResource("5_ofem0")]
+
+[node name="HomeTeam" type="Node2D" parent="."]
+
+[node name="Marker2D" type="Marker2D" parent="HomeTeam"]
+position = Vector2(353, 251)
+
+[node name="Marker2D2" type="Marker2D" parent="HomeTeam"]
+position = Vector2(230, 138)
+
+[node name="Marker2D3" type="Marker2D" parent="HomeTeam"]
+position = Vector2(326, 192)
+
+[node name="Marker2D4" type="Marker2D" parent="HomeTeam"]
+position = Vector2(340, 124)
+
+[node name="Marker2D5" type="Marker2D" parent="HomeTeam"]
+position = Vector2(232, 265)
+
+[node name="GK_Marker" type="Marker2D" parent="HomeTeam"]
+position = Vector2(92, 186)
+
+[node name="AwayTeam" type="Node2D" parent="."]
+
+[node name="Marker2D" type="Marker2D" parent="AwayTeam"]
+position = Vector2(546, 126)
+
+[node name="Marker2D2" type="Marker2D" parent="AwayTeam"]
+position = Vector2(636, 97)
+
+[node name="Marker2D3" type="Marker2D" parent="AwayTeam"]
+position = Vector2(655, 289)
+
+[node name="Marker2D4" type="Marker2D" parent="AwayTeam"]
+position = Vector2(598, 184)
+
+[node name="Marker2D5" type="Marker2D" parent="AwayTeam"]
+position = Vector2(544, 247)
+
+[node name="GK_Marker" type="Marker2D" parent="AwayTeam"]
+position = Vector2(790, 191)
+
+[node name="Ball" parent="." instance=ExtResource("6_hwlof")]
+position = Vector2(393, 192)

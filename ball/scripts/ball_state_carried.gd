@@ -51,5 +51,5 @@ func process(_delta: float) -> BallState:
 
 
 func physics_process(_delta: float) -> BallState:
-	ball.position = ball.carrier.position + carry_offset * Vector2(ball.carrier.facing_direction.x, 1)
+	ball.global_position = ball.carrier.global_position + carry_offset * Vector2(ball.carrier.facing_direction.x, 1)
 	return nex_state

@@ -9,7 +9,8 @@ enum Controller {
 
 @export var controlled_by: Controller
 @export var kick_power: float # 踢球的力量
-
+var player_name: String = ""
+var speed: float
 var states: Array[State] # 状态数组
 var current_state: State: # 当前状态
 	get:
@@ -24,17 +25,27 @@ var want_to_run: bool = false
 var want_to_shoot: bool = false
 var is_carried: bool = false
 
+@export var stats: PlayerStats
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var kick_area: Area2D = $KickArea
 @onready var pick_up_area: Area2D = $PickUpArea
 @onready var collision_shape_2d: CollisionShape2D = $KickArea/CollisionShape2D
 @onready var sprite_2d: Sprite2D = $Sprite2D
 
-
+func _init() -> void:
+	pass
 func _ready() -> void:
 	current_state = %Idle
 	initialize_states()
 	add_to_group("players")
+	# 1. 替换贴图
+	sprite_2d.texture = stats.sprite_sheet
+	player_name = stats.player_name 
+	kick_power = stats.kick_power
+	speed = stats.speed
+	# 2. 动态设置分帧（确保 AnimationPlayer 播放的帧位置正确）
+	sprite_2d.hframes = stats.h_frames
+	sprite_2d.vframes = stats.v_frames
 	pass
 
 

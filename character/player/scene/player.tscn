@@ -1,5 +1,6 @@
-[gd_scene load_steps=22 format=3 uid="uid://cd56s8raml18p"]
+[gd_scene load_steps=23 format=3 uid="uid://cd56s8raml18p"]
 
+[ext_resource type="Resource" uid="uid://4384rxoixaav" path="res://character/player/scripts/kunio.tres" id="2_k3ida"]
 [ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://character/player/scripts/player.gd" id="2_w62lr"]
 [ext_resource type="Texture2D" uid="uid://bjfest42ver7l" path="res://character/player/assets/player.png" id="3_s0dem"]
 [ext_resource type="Script" uid="uid://dc2notl5lvls4" path="res://character/player/scripts/state_idle.gd" id="4_bbc2b"]
@@ -150,7 +151,7 @@ size = Vector2(26, 15)
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 4
 script = ExtResource("2_w62lr")
-kick_power = 100.0
+stats = ExtResource("2_k3ida")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -16)
@@ -195,9 +196,6 @@ script = ExtResource("9_p5x1r")
 [node name="Skid" type="Node" parent="States"]
 unique_name_in_owner = true
 script = ExtResource("9_hmiyv")
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position_smoothing_enabled = true
 
 [node name="PickUpArea" type="Area2D" parent="."]
 collision_layer = 4
