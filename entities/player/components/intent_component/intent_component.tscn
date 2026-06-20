@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bokbnkhtyfu57"]
+
+[ext_resource type="Script" uid="uid://cssy73d07raqs" path="res://entities/player/components/intent_component/intent_component.gd" id="1_8llot"]
+
+[node name="IntentComponent" type="Node" unique_id=698967064]
+script = ExtResource("1_8llot")
+
+[node name="Timer" type="Timer" parent="." unique_id=225457883]
+wait_time = 0.25
+one_shot = true

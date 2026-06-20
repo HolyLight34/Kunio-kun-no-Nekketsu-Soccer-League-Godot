@@ -1,30 +1,17 @@
 @tool
 extends Node
 
-const TEAM_SIZE: int = 6
 @onready var ball: Ball = $Ball
 
 @export var sc: PackedScene
-@export var team1: Array[PlayerStats]:
-	set(value):
-		if value.size() > TEAM_SIZE:
-			value = value.slice(0, TEAM_SIZE)
-		team1 = value
-@export var team2: Array[PlayerStats]:
-	set(value):
-		if value.size() > TEAM_SIZE:
-			value = value.slice(0, TEAM_SIZE)
-		team2 = value
+
 
 
 func _ready() -> void:
 	for t in self.get_children():
 		var team_data
-		if t.name == "HomeTeam":
-			team_data = team1
-			spawn_team(t, team_data)
-		elif t.name == "HomeTeam":
-			team_data = team2
+		if t is Team:
+			team_data = t.team
 			spawn_team(t, team_data)
 	ball.carrier = $HomeTeam/Marker2D.get_child(0)
 	pass

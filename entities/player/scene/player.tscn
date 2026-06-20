@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://cd56s8raml18p"]
+
+[ext_resource type="Script" uid="uid://b5fo8hetbrt2k" path="res://entities/player/scripts/player_stats.gd" id="2_k3ida"]
+[ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://entities/player/scripts/player.gd" id="2_w62lr"]
+[ext_resource type="Texture2D" uid="uid://bjfest42ver7l" path="res://entities/player/assets/player.png" id="3_s0dem"]
+[ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://entities/player/components/state_machine/state_machine.tscn" id="4_74h0t"]
+[ext_resource type="Script" uid="uid://dc2notl5lvls4" path="res://entities/player/components/states/player_idle_state.gd" id="4_bbc2b"]
+[ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://entities/player/assets/head.png" id="5_864cw"]
+[ext_resource type="Script" uid="uid://bl4h3qijae758" path="res://entities/player/components/states/player_walk_state.gd" id="5_iykej"]
+[ext_resource type="Texture2D" uid="uid://dsracyushqt3e" path="res://entities/player/assets/body.png" id="6_focbt"]
+[ext_resource type="AnimationLibrary" uid="uid://clq760ydupmc7" path="res://player_anims.res" id="7_ptkv0"]
+[ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://entities/player/components/states/player_run_state.gd" id="8_llfb5"]
+[ext_resource type="Script" uid="uid://cmi6kmwh30t0f" path="res://entities/player/components/states/player_brake_state.gd" id="9_fkbio"]
+[ext_resource type="Script" uid="uid://cvo2mwb2psuvi" path="res://entities/player/components/states/player_kick_state.gd" id="9_qptj5"]
+[ext_resource type="Script" uid="uid://blvvckdk3cqyi" path="res://entities/player/components/states/player_jump_state.gd" id="10_vwqy1"]
+[ext_resource type="PackedScene" uid="uid://dl8wemvojp0xc" path="res://entities/player/components/input_component/input_component.tscn" id="11_k3ida"]
+[ext_resource type="Script" uid="uid://sbey23vww8d" path="res://entities/player/components/states/player_elbow_dive_state.gd" id="11_tudq8"]
+[ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://entities/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
+[ext_resource type="Script" uid="uid://cu4heanaio8fv" path="res://entities/player/components/states/player_send_pass_state.gd" id="12_i0l08"]
+[ext_resource type="Script" uid="uid://c1ovn4hmpr3vy" path="res://entities/player/components/states/player_bicycle_kick_state.gd" id="13_fkbio"]
+[ext_resource type="PackedScene" uid="uid://d1rmbyts7ryn6" path="res://entities/player/components/movement_component/movement_component.tscn" id="13_q1tvd"]
+[ext_resource type="Script" uid="uid://dd5sf8frv84fy" path="res://entities/player/components/states/player_land_state.gd" id="17_v0pxu"]
+[ext_resource type="PackedScene" uid="uid://cbo5wiy0tu73u" path="res://entities/player/components/visual_component/visual_component.tscn" id="18_dg4u3"]
+[ext_resource type="Script" uid="uid://cawkdxaliusnj" path="res://entities/player/components/states/player_dribble_idle_state.gd" id="20_sgsyk"]
+[ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://entities/player/components/states/player_dribble_run_state.gd" id="21_pw4o6"]
+[ext_resource type="Script" uid="uid://d2v14o8ksrwd1" path="res://entities/player/components/states/player_dribble_jump_state.gd" id="22_c8mko"]
+[ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://entities/player/components/states/player_dribble_walk_state.gd" id="23_h2l6i"]
+[ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://entities/player/components/states/player_dribble_brake_state.gd" id="24_pw4o6"]
+
+[sub_resource type="Resource" id="Resource_h3bre"]
+script = ExtResource("2_k3ida")
+speed = 30.0
+sprite_sheet = ExtResource("3_s0dem")
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
+size = Vector2(0, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p5x1r"]
+size = Vector2(48, 15.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgsyk"]
+
+[node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input", "parser", "sm", "movement", "vh")]
+collision_layer = 4
+script = ExtResource("2_w62lr")
+stats = SubResource("Resource_h3bre")
+input = NodePath("Components/InputHandler")
+parser = NodePath("Components/IntentParser")
+sm = NodePath("Components/StateMachine")
+movement = NodePath("Components/MovementComponent")
+vh = NodePath("VisualHandler")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=237613255]
+shape = SubResource("RectangleShape2D_bbc2b")
+
+[node name="KickArea" type="Area2D" parent="." unique_id=1813484858]
+collision_layer = 32
+collision_mask = 4
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KickArea" unique_id=1416298575]
+position = Vector2(0, -7.75)
+shape = SubResource("RectangleShape2D_p5x1r")
+
+[node name="VisualHandler" parent="." unique_id=974886213 instance=ExtResource("18_dg4u3")]
+head_texture = ExtResource("5_864cw")
+head_hframes = 5
+body_texture = ExtResource("6_focbt")
+body_hframes = 3
+body_vframes = 10
+anim_library = ExtResource("7_ptkv0")
+
+[node name="Components" type="Node" parent="." unique_id=1587151273]
+
+[node name="MovementComponent" parent="Components" unique_id=746939023 node_paths=PackedStringArray("body") instance=ExtResource("13_q1tvd")]
+body = NodePath("../..")
+
+[node name="StateMachine" parent="Components" unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("4_74h0t")]
+initial_state = NodePath("Idle")
+
+[node name="Walk" type="Node" parent="Components/StateMachine" unique_id=691485942]
+script = ExtResource("5_iykej")
+state = 1
+
+[node name="Idle" type="Node" parent="Components/StateMachine" unique_id=28491428]
+script = ExtResource("4_bbc2b")
+
+[node name="Run" type="Node" parent="Components/StateMachine" unique_id=369123949]
+script = ExtResource("8_llfb5")
+state = 2
+
+[node name="Brake" type="Node" parent="Components/StateMachine" unique_id=1404277443]
+script = ExtResource("9_fkbio")
+state = 3
+allow_facing_update = false
+
+[node name="Kick" type="Node" parent="Components/StateMachine" unique_id=1196085760]
+script = ExtResource("9_qptj5")
+state = 4
+allow_facing_update = false
+
+[node name="Jump" type="Node" parent="Components/StateMachine" unique_id=178965631]
+script = ExtResource("10_vwqy1")
+state = 5
+allow_facing_update = false
+
+[node name="ElbowDive" type="Node" parent="Components/StateMachine" unique_id=1341820092]
+script = ExtResource("11_tudq8")
+state = 7
+
+[node name="SendPass" type="Node" parent="Components/StateMachine" unique_id=871910098]
+script = ExtResource("12_i0l08")
+state = 11
+allow_facing_update = false
+
+[node name="BicycleKick" type="Node" parent="Components/StateMachine" unique_id=1132752740]
+script = ExtResource("13_fkbio")
+state = 13
+
+[node name="Land" type="Node" parent="Components/StateMachine" unique_id=942304559]
+script = ExtResource("17_v0pxu")
+state = 9
+
+[node name="DribbleIdle" type="Node" parent="Components/StateMachine" unique_id=1216375198]
+script = ExtResource("20_sgsyk")
+state = 6
+
+[node name="DribbleRun" type="Node" parent="Components/StateMachine" unique_id=585454395]
+script = ExtResource("21_pw4o6")
+state = 8
+
+[node name="DribbleJump" type="Node" parent="Components/StateMachine" unique_id=890441022]
+script = ExtResource("22_c8mko")
+state = 9
+
+[node name="DribbleWalk" type="Node" parent="Components/StateMachine" unique_id=969166530]
+script = ExtResource("23_h2l6i")
+state = 7
+
+[node name="DribbleBrake" type="Node" parent="Components/StateMachine" unique_id=151558281]
+script = ExtResource("24_pw4o6")
+state = 10
+allow_facing_update = false
+
+[node name="InputHandler" parent="Components" unique_id=1137772524 instance=ExtResource("11_k3ida")]
+action_up = &"up"
+action_down = &"down"
+action_left = &"left"
+action_right = &"right"
+
+[node name="IntentParser" parent="Components" unique_id=698967064 node_paths=PackedStringArray("input", "player") instance=ExtResource("12_33t0o")]
+input = NodePath("../InputHandler")
+player = NodePath("../..")
+
+[node name="PickUpArea" type="Area2D" parent="." unique_id=405457032]
+collision_layer = 8
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickUpArea" unique_id=1365573373]
+shape = SubResource("RectangleShape2D_sgsyk")

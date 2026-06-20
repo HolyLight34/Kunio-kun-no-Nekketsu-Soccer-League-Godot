@@ -1,59 +1,133 @@
-[gd_scene load_steps=7 format=3 uid="uid://drvfssess1urv"]
+[gd_scene format=3 uid="uid://drvfssess1urv"]
 
 [ext_resource type="Script" uid="uid://cfmgacrl3kq4n" path="res://ground/scripts/match_manager.gd" id="1_5n5ds"]
-[ext_resource type="PackedScene" uid="uid://cd56s8raml18p" path="res://character/player/scene/player.tscn" id="2_bsk1g"]
-[ext_resource type="Script" uid="uid://b5fo8hetbrt2k" path="res://character/player/scripts/player_stats.gd" id="3_h3bre"]
-[ext_resource type="Resource" uid="uid://4384rxoixaav" path="res://character/player/scripts/kunio.tres" id="4_3ejit"]
+[ext_resource type="PackedScene" uid="uid://cd56s8raml18p" path="res://entities/player/scene/player.tscn" id="2_bsk1g"]
+[ext_resource type="Script" uid="uid://b5fo8hetbrt2k" path="res://entities/player/scripts/player_stats.gd" id="3_h3bre"]
+[ext_resource type="Texture2D" uid="uid://bjfest42ver7l" path="res://entities/player/assets/player.png" id="4_bsk1g"]
 [ext_resource type="PackedScene" uid="uid://1kfwe0wq2sfv" path="res://ground/screen/pitch.tscn" id="5_ofem0"]
+[ext_resource type="Script" uid="uid://cy163e4w0753j" path="res://ground/scripts/team.gd" id="6_bsk1g"]
 [ext_resource type="PackedScene" uid="uid://bjiv5srw37o2d" path="res://ball/scene/ball.tscn" id="6_hwlof"]
 
-[node name="MatchManager" type="Node"]
+[sub_resource type="Resource" id="Resource_3ejit"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_ofem0"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_hwlof"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_bqil2"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_grj7h"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_ia862"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_4525d"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 1
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_ng53g"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_cbhv7"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_348jw"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_fd3a8"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[sub_resource type="Resource" id="Resource_bsk1g"]
+script = ExtResource("3_h3bre")
+sprite_sheet = ExtResource("4_bsk1g")
+controlled_by = 2
+metadata/_custom_type_script = "uid://b5fo8hetbrt2k"
+
+[node name="MatchManager" type="Node" unique_id=1497306140]
 script = ExtResource("1_5n5ds")
 sc = ExtResource("2_bsk1g")
-team1 = Array[ExtResource("3_h3bre")]([ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit")])
-team2 = Array[ExtResource("3_h3bre")]([ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit"), ExtResource("4_3ejit")])
 
-[node name="Pitch" parent="." instance=ExtResource("5_ofem0")]
+[node name="Pitch" parent="." unique_id=1828790337 instance=ExtResource("5_ofem0")]
 
-[node name="HomeTeam" type="Node2D" parent="."]
+[node name="HomeTeam" type="Node2D" parent="." unique_id=1095852264]
+script = ExtResource("6_bsk1g")
+team = Array[ExtResource("3_h3bre")]([SubResource("Resource_3ejit"), SubResource("Resource_ofem0"), SubResource("Resource_hwlof"), SubResource("Resource_bqil2"), SubResource("Resource_grj7h"), SubResource("Resource_ia862")])
 
-[node name="Marker2D" type="Marker2D" parent="HomeTeam"]
+[node name="Marker2D" type="Marker2D" parent="HomeTeam" unique_id=1059302056]
 position = Vector2(353, 251)
 
-[node name="Marker2D2" type="Marker2D" parent="HomeTeam"]
+[node name="Marker2D2" type="Marker2D" parent="HomeTeam" unique_id=1629446264]
 position = Vector2(230, 138)
 
-[node name="Marker2D3" type="Marker2D" parent="HomeTeam"]
+[node name="Marker2D3" type="Marker2D" parent="HomeTeam" unique_id=390446149]
 position = Vector2(326, 192)
 
-[node name="Marker2D4" type="Marker2D" parent="HomeTeam"]
+[node name="Marker2D4" type="Marker2D" parent="HomeTeam" unique_id=222561353]
 position = Vector2(340, 124)
 
-[node name="Marker2D5" type="Marker2D" parent="HomeTeam"]
+[node name="Marker2D5" type="Marker2D" parent="HomeTeam" unique_id=311538400]
 position = Vector2(232, 265)
 
-[node name="GK_Marker" type="Marker2D" parent="HomeTeam"]
+[node name="GK_Marker" type="Marker2D" parent="HomeTeam" unique_id=1900233887]
 position = Vector2(92, 186)
 
-[node name="AwayTeam" type="Node2D" parent="."]
+[node name="AwayTeam" type="Node2D" parent="." unique_id=1560995880]
+script = ExtResource("6_bsk1g")
+team = Array[ExtResource("3_h3bre")]([SubResource("Resource_4525d"), SubResource("Resource_ng53g"), SubResource("Resource_cbhv7"), SubResource("Resource_348jw"), SubResource("Resource_fd3a8"), SubResource("Resource_bsk1g")])
 
-[node name="Marker2D" type="Marker2D" parent="AwayTeam"]
+[node name="Marker2D" type="Marker2D" parent="AwayTeam" unique_id=265657629]
 position = Vector2(546, 126)
 
-[node name="Marker2D2" type="Marker2D" parent="AwayTeam"]
+[node name="Marker2D2" type="Marker2D" parent="AwayTeam" unique_id=709537482]
 position = Vector2(636, 97)
 
-[node name="Marker2D3" type="Marker2D" parent="AwayTeam"]
+[node name="Marker2D3" type="Marker2D" parent="AwayTeam" unique_id=1202237227]
 position = Vector2(655, 289)
 
-[node name="Marker2D4" type="Marker2D" parent="AwayTeam"]
+[node name="Marker2D4" type="Marker2D" parent="AwayTeam" unique_id=1799611048]
 position = Vector2(598, 184)
 
-[node name="Marker2D5" type="Marker2D" parent="AwayTeam"]
+[node name="Marker2D5" type="Marker2D" parent="AwayTeam" unique_id=308553908]
 position = Vector2(544, 247)
 
-[node name="GK_Marker" type="Marker2D" parent="AwayTeam"]
+[node name="GK_Marker" type="Marker2D" parent="AwayTeam" unique_id=1368966039]
 position = Vector2(790, 191)
 
-[node name="Ball" parent="." instance=ExtResource("6_hwlof")]
+[node name="Ball" parent="." unique_id=71469053 instance=ExtResource("6_hwlof")]
 position = Vector2(393, 192)

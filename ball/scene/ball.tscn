@@ -1,92 +1,47 @@
-[gd_scene load_steps=11 format=3 uid="uid://bjiv5srw37o2d"]
+[gd_scene format=3 uid="uid://bjiv5srw37o2d"]
 
-[ext_resource type="Texture2D" uid="uid://bepsmh7kemgmh" path="res://ball/assets/ball.png" id="1_6cd5m"]
 [ext_resource type="Script" uid="uid://6q51n0q12xa7" path="res://ball/scripts/ball.gd" id="1_ncgq8"]
-[ext_resource type="Script" uid="uid://8goknn2xmft" path="res://ball/scripts/ball_state_carried.gd" id="3_07s1p"]
-[ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://ball/scripts/ball_state_shoot.gd" id="4_b5n0i"]
-[ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://ball/scripts/ball_state_freeform.gd" id="5_r3iha"]
-[ext_resource type="Texture2D" uid="uid://dxh04hlobi8ph" path="res://ball/assets/black.png" id="6_b5n0i"]
+[ext_resource type="Script" uid="uid://8goknn2xmft" path="res://ball/scripts/ball_hold_state.gd" id="3_07s1p"]
+[ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://ball/scripts/ball_launch_state.gd" id="4_b5n0i"]
+[ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://ball/scripts/ball_idle_state.gd" id="5_r3iha"]
+[ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://entities/player/components/state_machine/state_machine.tscn" id="7_r3iha"]
+[ext_resource type="Texture2D" uid="uid://bepsmh7kemgmh" path="res://ball/assets/ball.png" id="8_iwjb2"]
+[ext_resource type="Script" uid="uid://bolux0fdd00pl" path="res://ball/scripts/ball_roll_state.gd" id="8_qd6qv"]
+[ext_resource type="PackedScene" uid="uid://cbo5wiy0tu73u" path="res://entities/player/components/visual_component/visual_component.tscn" id="9_iwjb2"]
+[ext_resource type="AnimationLibrary" uid="uid://m286de4cmdgp" path="res://ball_anims.res" id="9_ni7dn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
 radius = 9.0
 
-[sub_resource type="Animation" id="Animation_b5n0i"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
-[sub_resource type="Animation" id="Animation_07s1p"]
-resource_name = "scroll"
-length = 0.4
-step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_r3iha"]
-_data = {
-&"RESET": SubResource("Animation_b5n0i"),
-&"scroll": SubResource("Animation_07s1p")
-}
-
-[node name="Ball" type="AnimatableBody2D"]
-collision_layer = 2
-collision_mask = 4
+[node name="Ball" type="CharacterBody2D" unique_id=630695448]
+collision_layer = 4
+collision_mask = 8
 script = ExtResource("1_ncgq8")
 
-[node name="Shadow" type="Sprite2D" parent="."]
-position = Vector2(0, 5)
-texture = ExtResource("6_b5n0i")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_6cd5m")
-hframes = 4
-vframes = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1823340034]
+position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_ncgq8")
-metadata/_edit_lock_ = true
 
-[node name="States" type="Node" parent="."]
+[node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("7_r3iha")]
+initial_state = NodePath("Idle")
 
-[node name="Freeform" type="Node" parent="States"]
-unique_name_in_owner = true
+[node name="Idle" type="Node" parent="StateMachine" unique_id=297881210]
 script = ExtResource("5_r3iha")
 
-[node name="Carried" type="Node" parent="States"]
-unique_name_in_owner = true
+[node name="Hold" type="Node" parent="StateMachine" unique_id=1743281351]
 script = ExtResource("3_07s1p")
+state = 1
 
-[node name="Shoot" type="Node" parent="States"]
-unique_name_in_owner = true
+[node name="Launch" type="Node" parent="StateMachine" unique_id=408952036]
 script = ExtResource("4_b5n0i")
+state = 2
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_r3iha")
-}
+[node name="Roll" type="Node" parent="StateMachine" unique_id=1076245735]
+script = ExtResource("8_qd6qv")
+state = 3
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 0.1
-one_shot = true
-
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="VisualHandler" parent="." unique_id=974886213 instance=ExtResource("9_iwjb2")]
+body_texture = ExtResource("8_iwjb2")
+body_hframes = 4
+body_vframes = 2
+anim_library = ExtResource("9_ni7dn")

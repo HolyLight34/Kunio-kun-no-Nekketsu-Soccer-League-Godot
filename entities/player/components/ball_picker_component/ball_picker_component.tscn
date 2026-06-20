@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bk3acx5jan4k1"]
+
+[ext_resource type="Script" uid="uid://ck73gxgdd3my4" path="res://entities/player/components/ball_picker_component/ball_picker_component.gd" id="1_uspfe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ul6th"]
+
+[node name="BallPickerComponent" type="Area2D" unique_id=1788377861]
+collision_layer = 8
+collision_mask = 4
+script = ExtResource("1_uspfe")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=130137718]
+shape = SubResource("RectangleShape2D_ul6th")
