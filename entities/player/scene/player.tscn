@@ -5,27 +5,21 @@
 [ext_resource type="Texture2D" uid="uid://bjfest42ver7l" path="res://entities/player/assets/player.png" id="3_s0dem"]
 [ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://entities/player/components/state_machine/state_machine.tscn" id="4_74h0t"]
 [ext_resource type="Script" uid="uid://dc2notl5lvls4" path="res://entities/player/components/states/player_idle_state.gd" id="4_bbc2b"]
-[ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://entities/player/assets/head.png" id="5_864cw"]
 [ext_resource type="Script" uid="uid://bl4h3qijae758" path="res://entities/player/components/states/player_walk_state.gd" id="5_iykej"]
-[ext_resource type="Texture2D" uid="uid://dsracyushqt3e" path="res://entities/player/assets/body.png" id="6_focbt"]
+[ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://entities/player/assets/head.png" id="5_ptkv0"]
+[ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://entities/player/assets/body.png" id="6_wkl3h"]
 [ext_resource type="AnimationLibrary" uid="uid://clq760ydupmc7" path="res://player_anims.res" id="7_ptkv0"]
 [ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://entities/player/components/states/player_run_state.gd" id="8_llfb5"]
 [ext_resource type="Script" uid="uid://cmi6kmwh30t0f" path="res://entities/player/components/states/player_brake_state.gd" id="9_fkbio"]
 [ext_resource type="Script" uid="uid://cvo2mwb2psuvi" path="res://entities/player/components/states/player_kick_state.gd" id="9_qptj5"]
 [ext_resource type="Script" uid="uid://blvvckdk3cqyi" path="res://entities/player/components/states/player_jump_state.gd" id="10_vwqy1"]
 [ext_resource type="PackedScene" uid="uid://dl8wemvojp0xc" path="res://entities/player/components/input_component/input_component.tscn" id="11_k3ida"]
-[ext_resource type="Script" uid="uid://sbey23vww8d" path="res://entities/player/components/states/player_elbow_dive_state.gd" id="11_tudq8"]
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://entities/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="Script" uid="uid://cu4heanaio8fv" path="res://entities/player/components/states/player_send_pass_state.gd" id="12_i0l08"]
-[ext_resource type="Script" uid="uid://c1ovn4hmpr3vy" path="res://entities/player/components/states/player_bicycle_kick_state.gd" id="13_fkbio"]
 [ext_resource type="PackedScene" uid="uid://d1rmbyts7ryn6" path="res://entities/player/components/movement_component/movement_component.tscn" id="13_q1tvd"]
-[ext_resource type="Script" uid="uid://dd5sf8frv84fy" path="res://entities/player/components/states/player_land_state.gd" id="17_v0pxu"]
 [ext_resource type="PackedScene" uid="uid://cbo5wiy0tu73u" path="res://entities/player/components/visual_component/visual_component.tscn" id="18_dg4u3"]
-[ext_resource type="Script" uid="uid://cawkdxaliusnj" path="res://entities/player/components/states/player_dribble_idle_state.gd" id="20_sgsyk"]
-[ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://entities/player/components/states/player_dribble_run_state.gd" id="21_pw4o6"]
-[ext_resource type="Script" uid="uid://d2v14o8ksrwd1" path="res://entities/player/components/states/player_dribble_jump_state.gd" id="22_c8mko"]
-[ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://entities/player/components/states/player_dribble_walk_state.gd" id="23_h2l6i"]
-[ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://entities/player/components/states/player_dribble_brake_state.gd" id="24_pw4o6"]
+[ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://entities/player/components/states/player_action_a_state.gd" id="22_imh8g"]
+[ext_resource type="Script" uid="uid://brlddk1s0yv6g" path="res://entities/player/components/states/player_action_b_state.gd" id="23_sgsyk"]
 
 [sub_resource type="Resource" id="Resource_h3bre"]
 script = ExtResource("2_k3ida")
@@ -65,11 +59,11 @@ position = Vector2(0, -7.75)
 shape = SubResource("RectangleShape2D_p5x1r")
 
 [node name="VisualHandler" parent="." unique_id=974886213 instance=ExtResource("18_dg4u3")]
-head_texture = ExtResource("5_864cw")
-head_hframes = 5
-body_texture = ExtResource("6_focbt")
-body_hframes = 3
-body_vframes = 10
+head_texture = ExtResource("5_ptkv0")
+head_hframes = 4
+body_texture = ExtResource("6_wkl3h")
+body_hframes = 4
+body_vframes = 8
 anim_library = ExtResource("7_ptkv0")
 
 [node name="Components" type="Node" parent="." unique_id=1587151273]
@@ -79,10 +73,6 @@ body = NodePath("../..")
 
 [node name="StateMachine" parent="Components" unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("4_74h0t")]
 initial_state = NodePath("Idle")
-
-[node name="Walk" type="Node" parent="Components/StateMachine" unique_id=691485942]
-script = ExtResource("5_iykej")
-state = 1
 
 [node name="Idle" type="Node" parent="Components/StateMachine" unique_id=28491428]
 script = ExtResource("4_bbc2b")
@@ -106,43 +96,22 @@ script = ExtResource("10_vwqy1")
 state = 5
 allow_facing_update = false
 
-[node name="ElbowDive" type="Node" parent="Components/StateMachine" unique_id=1341820092]
-script = ExtResource("11_tudq8")
-state = 7
-
 [node name="SendPass" type="Node" parent="Components/StateMachine" unique_id=871910098]
 script = ExtResource("12_i0l08")
 state = 11
 allow_facing_update = false
 
-[node name="BicycleKick" type="Node" parent="Components/StateMachine" unique_id=1132752740]
-script = ExtResource("13_fkbio")
-state = 13
+[node name="Walk" type="Node" parent="Components/StateMachine" unique_id=691485942]
+script = ExtResource("5_iykej")
+state = 1
 
-[node name="Land" type="Node" parent="Components/StateMachine" unique_id=942304559]
-script = ExtResource("17_v0pxu")
-state = 9
+[node name="ActionA" type="Node" parent="Components/StateMachine" unique_id=1962139031]
+script = ExtResource("22_imh8g")
+state = 15
 
-[node name="DribbleIdle" type="Node" parent="Components/StateMachine" unique_id=1216375198]
-script = ExtResource("20_sgsyk")
-state = 6
-
-[node name="DribbleRun" type="Node" parent="Components/StateMachine" unique_id=585454395]
-script = ExtResource("21_pw4o6")
-state = 8
-
-[node name="DribbleJump" type="Node" parent="Components/StateMachine" unique_id=890441022]
-script = ExtResource("22_c8mko")
-state = 9
-
-[node name="DribbleWalk" type="Node" parent="Components/StateMachine" unique_id=969166530]
-script = ExtResource("23_h2l6i")
-state = 7
-
-[node name="DribbleBrake" type="Node" parent="Components/StateMachine" unique_id=151558281]
-script = ExtResource("24_pw4o6")
-state = 10
-allow_facing_update = false
+[node name="ActionB" type="Node" parent="Components/StateMachine" unique_id=832557240]
+script = ExtResource("23_sgsyk")
+state = 16
 
 [node name="InputHandler" parent="Components" unique_id=1137772524 instance=ExtResource("11_k3ida")]
 action_up = &"up"

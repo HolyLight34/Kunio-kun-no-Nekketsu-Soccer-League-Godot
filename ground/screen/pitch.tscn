@@ -189,9 +189,6 @@ texture = ExtResource("3_3sqpy")
 [sub_resource type="TileSet" id="TileSet_cmi3i"]
 sources/0 = SubResource("TileSetAtlasSource_7fp5k")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3sqpy"]
-size = Vector2(39, 62)
-
 [node name="Pitch" type="Node" unique_id=765779945]
 
 [node name="GroundSurface" type="TileMapLayer" parent="." unique_id=1583068592]
@@ -214,13 +211,7 @@ position = Vector2(183, 133)
 
 [node name="Area2D" type="Area2D" parent="." unique_id=792340361]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1737200780]
-position = Vector2(58, 193)
-shape = SubResource("RectangleShape2D_3sqpy")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D" unique_id=1653557748]
-position = Vector2(839.5, 193)
-shape = SubResource("RectangleShape2D_3sqpy")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D" unique_id=787521963]
 
 [node name="Ball" parent="." unique_id=630695448 instance=ExtResource("5_3sqpy")]
 

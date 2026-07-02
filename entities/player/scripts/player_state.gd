@@ -16,7 +16,9 @@ enum State {
 	SEND_PASS,
 	ELBOW_DIVE,
 	BICYCLE_KICK,
-	Land,
+	LAND,
+	ACTION_A,
+	ACTION_B,
 } 
 
 @export var state: State # 当前状态设置
@@ -25,7 +27,5 @@ enum State {
 var player: Player:
 	get:
 		return actor as Player
-# PlayerState.gd (状态基类)
-
 # 默认所有状态都允许转身
 @export var allow_facing_update: bool = true

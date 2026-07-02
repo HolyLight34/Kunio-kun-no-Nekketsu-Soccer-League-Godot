@@ -62,7 +62,7 @@ func be_kicked(initial_velocity: int, upward_force: float) -> void:
 	kick_power = upward_force
 	# 2. 把力道作为初始化参数，交给自己内部的 Launch 状态！
 	# 3. 瞬间切入足球自己的 Launch 状态！
-	sm.change_state(BallState.State.LAUNCH)
+	sm.change_state(BallState.State.SHOT)
 func _ready() -> void:
 	$StateMachine.init(self)
 	pass

@@ -26,7 +26,12 @@ var target_velocity: Vector2 = Vector2.ZERO
 # Player.gd (球员脚本)
 # 只有一行！利用“计算属性”直接映射，不需要写任何信号连接
 var is_running: bool
-
+enum BallPossession {
+	HAS_BALL,    # 我方持球（进攻）：A传球，B必杀射门
+	ENEMY_HAS_BALL,  # 敌方持球（防守）：A肘击，B滑铲
+	NO_BALL   # 人球分离（球在远端）：A指挥队友传/铲，B指挥队友射门
+}
+var ball_possession: BallPossession = BallPossession.NO_BALL# 球权
 @onready var kick_area: Area2D = $KickArea
 @onready var pick_up_area: Area2D = $PickUpArea
 @onready var collision_shape_2d: CollisionShape2D = $KickArea/CollisionShape2D
@@ -37,6 +42,7 @@ var is_running: bool
 func _ready() -> void:
 	pick_up_area.body_entered.connect(_on_ball_entered_pickup_area)
 	sm.init(self) # 状态机初始化
+	#hfsm.init(self)
 	add_to_group("players")
 	# 1. 替换贴图
 	#sprite_2d.texture = stats.sprite_sheet
@@ -61,6 +67,7 @@ func _physics_process(delta: float) -> void:
 
 	# 2. 告诉执行官：玩家想做这个，你处理一下。
 	sm.handle_intent(intent, delta)
+	#hfsm.handle_intent(intent, delta)
 	pass
 
 
@@ -71,22 +78,6 @@ func _on_ball_entered_pickup_area(ball: Ball) -> void:
 	if ball.carrier != null:
 		return
 	ball.set_carried_by(self)
+	ball_possession = BallPossession.HAS_BALL
 	has_ball = true
 	ball_instance = ball
-
-	# 🎯 【核心智能路由】：根据当前的物理速度或输入，决定进化到哪个带球状态
-	var current_speed = velocity.length()
-	var input_dir = input.move_dir
-
-	if input_dir == Vector2.ZERO and current_speed < 10.0:
-		# 1. 情况一：原地站着，球被传过来了
-		sm.change_state(PlayerState.State.DRIBBLE_IDLE)
-	else:
-		# 2. 情况二：人在运动中接到了球
-		# 这里的判断标准取决于你的无球状态（如果你分了 Walk 和 Run）
-		# 如果你当前正在 Run 状态，或者速度很快，就切到 DribbleRun
-		if sm.current_state.name == "Run":
-			sm.change_state(PlayerState.State.DRIBBLE_RUN)
-		elif sm.current_state.name == "Walk":
-			# 否则，如果是慢速走动，切到 DribbleWalk
-			sm.change_state(PlayerState.State.DRIBBLE_WALK)
