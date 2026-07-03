@@ -1,7 +1,7 @@
 extends BallState
 
 func enter(params: Dictionary = {}) -> void:
-	ball.z_height = 0
+	ball.z_height = 5
 	pass
 
 

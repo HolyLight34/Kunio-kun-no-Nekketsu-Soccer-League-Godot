@@ -39,8 +39,8 @@ size = Vector2(48, 15.5)
 collision_layer = 4
 script = ExtResource("2_w62lr")
 stats = SubResource("Resource_h3bre")
-input = NodePath("Components/InputHandler")
-parser = NodePath("Components/IntentParser")
+input = NodePath("Components/InputComponent")
+parser = NodePath("Components/IntentComponent")
 sm = NodePath("Components/StateMachine")
 movement = NodePath("Components/MovementComponent")
 vh = NodePath("VisualHandler")
@@ -113,14 +113,11 @@ state = 15
 script = ExtResource("23_sgsyk")
 state = 16
 
-[node name="InputHandler" parent="Components" unique_id=1137772524 instance=ExtResource("11_k3ida")]
-action_up = &"up"
-action_down = &"down"
-action_left = &"left"
-action_right = &"right"
+[node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
+player = NodePath("../..")
 
-[node name="IntentParser" parent="Components" unique_id=698967064 node_paths=PackedStringArray("input", "player") instance=ExtResource("12_33t0o")]
-input = NodePath("../InputHandler")
+[node name="IntentComponent" parent="Components" unique_id=698967064 node_paths=PackedStringArray("input", "player") instance=ExtResource("12_33t0o")]
+input = NodePath("../InputComponent")
 player = NodePath("../..")
 
 [node name="PickUpArea" type="Area2D" parent="." unique_id=405457032]

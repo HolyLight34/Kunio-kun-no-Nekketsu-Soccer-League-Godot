@@ -11,7 +11,7 @@ extends Node
 @export var action_b: StringName = "btn_b"
 @export var action_start: StringName = "btn_start"
 @export var action_select: StringName = "btn_select"
-
+@export var player:Player
 # --- 1. 方向意图 ---
 var move_dir: Vector2 = Vector2.ZERO
 var dir_up_just: bool = false
@@ -32,7 +32,16 @@ var btn_start_just: bool = false # 瞬按 Start
 var btn_select: bool = false # 长按 Select
 var btn_select_just: bool = false # 瞬按 Select
 
-
+func _ready() -> void:
+	action_up= "p%d_move_up" % player.player_id
+	action_down= "p%d_move_down" % player.player_id
+	action_left= "p%d_move_left" % player.player_id
+	action_right= "p%d_move_right" % player.player_id
+	action_a= "p%d_button_a" % player.player_id
+	action_b= "p%d_button_b" % player.player_id
+	action_start= "p%d_button_start" % player.player_id
+	action_select= "p%d_button_select" % player.player_id
+	pass
 func _physics_process(_delta: float) -> void:
 	# --- 方向处理 ---
 	move_dir = Input.get_vector(action_left, action_right, action_up, action_down)

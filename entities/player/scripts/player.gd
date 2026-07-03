@@ -11,7 +11,7 @@ extends CharacterBody2D
 @export var sm: StateMachine # 引用状态机（如果是自定义类可以写具体的类名）
 @export var movement: MovementComponent
 @export var vh: VisualComponent
-
+@export var player_id: int = 1
 var kick_power: float # 踢球的力量
 var player_name: String = ""
 var speed: float
