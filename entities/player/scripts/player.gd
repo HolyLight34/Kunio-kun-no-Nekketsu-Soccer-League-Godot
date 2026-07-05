@@ -1,6 +1,6 @@
 class_name Player
 extends CharacterBody2D
-
+@export var team_id: MatchManager.Team = MatchManager.Team.PLAYER_TEAM
 @export var stats: PlayerStats
 @export var walk_speed: float = 30.0
 @export var run_speed: float = 90.0
@@ -16,7 +16,7 @@ var kick_power: float # 踢球的力量
 var player_name: String = ""
 var speed: float
 var has_ball: bool = false
-var ball_instance: Ball = null
+#var ball_instance: Ball = null
 var facing_direction: int:
 	get:
 		return sign(vh.scale.x) if vh.scale.x != 0 else 1
@@ -26,12 +26,7 @@ var target_velocity: Vector2 = Vector2.ZERO
 # Player.gd (球员脚本)
 # 只有一行！利用“计算属性”直接映射，不需要写任何信号连接
 var is_running: bool
-enum BallPossession {
-	HAS_BALL,    # 我方持球（进攻）：A传球，B必杀射门
-	ENEMY_HAS_BALL,  # 敌方持球（防守）：A肘击，B滑铲
-	NO_BALL   # 人球分离（球在远端）：A指挥队友传/铲，B指挥队友射门
-}
-var ball_possession: BallPossession = BallPossession.NO_BALL# 球权
+
 @onready var kick_area: Area2D = $KickArea
 @onready var pick_up_area: Area2D = $PickUpArea
 @onready var collision_shape_2d: CollisionShape2D = $KickArea/CollisionShape2D
@@ -64,7 +59,6 @@ func _physics_process(delta: float) -> void:
 	# 状态机此时已经运行完毕，确定了 target_velocity
 	#vh.update_facing(input.move_dir)
 	var intent = parser.get_intent()
-
 	# 2. 告诉执行官：玩家想做这个，你处理一下。
 	sm.handle_intent(intent, delta)
 	#hfsm.handle_intent(intent, delta)
@@ -75,9 +69,10 @@ func _physics_process(delta: float) -> void:
 	#sm.change_state(PlayerState.State.DRIBBLE_IDLE)
 func _on_ball_entered_pickup_area(ball: Ball) -> void:
 	## 1. 如果这个球正被别人带着，不能直接吸（必须等对方脱手或者被滑铲）
+	if ball.sm.current_state.name == "Shot":
+		return
 	if ball.carrier != null:
 		return
 	ball.set_carried_by(self)
-	ball_possession = BallPossession.HAS_BALL
 	has_ball = true
-	ball_instance = ball
+	#ball_instance = ball

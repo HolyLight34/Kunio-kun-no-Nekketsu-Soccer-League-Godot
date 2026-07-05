@@ -1,19 +1,21 @@
 extends PlayerState
-
-
 func enter(_params: Dictionary = {}) -> void:
-	match player.ball_possession:
-		player.BallPossession.HAS_BALL:
+	match MatchManager.get_possession_for(player):
+		MatchManager.BallPossession.MYSELF:
+			print("我运行了一次") 
+			allow_facing_update = false
 			_do_pass()
-		player.BallPossession.ENEMY_HAS_BALL:
-			print("我铲")
-		player.BallPossession.NO_BALL:
-			_do_pass()
+		MatchManager.BallPossession.ENEMY_TEAM:
+			print("我撞")
+			self.call_deferred("change_state", State.IDLE)
+		MatchManager.BallPossession.NONE:
 			print("对话")
+			self.call_deferred("change_state", State.IDLE)
 	pass
 
 
 func exit() -> void:
+	#player.ball_possession = player.BallPossession.NO_BALL
 	pass
 
 

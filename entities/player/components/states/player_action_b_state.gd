@@ -2,17 +2,22 @@ extends PlayerState
 
 
 func enter(_params: Dictionary = {}) -> void:
-	match player.ball_possession:
-		player.BallPossession.HAS_BALL: 
+	match MatchManager.get_possession_for(player):
+		MatchManager.BallPossession.MYSELF:
+			print("我运行了一次") 
+			allow_facing_update = false
 			_do_kick()
-		player.BallPossession.ENEMY_HAS_BALL:
+		MatchManager.BallPossession.ENEMY_TEAM:
 			print("我铲")
-		player.BallPossession.NO_BALL:
+			self.call_deferred("change_state", State.IDLE)
+		MatchManager.BallPossession.NONE:
+			allow_facing_update = false
 			_do_kick()
 	pass
 
 
 func exit() -> void:
+	#player.ball_possession = player.BallPossession.NO_BALL
 	pass
 
 
@@ -29,7 +34,7 @@ func _do_kick() -> void:
 		if body is Ball:
 			# 🎯 逮到球了！立刻执行爆射
 			body.be_kicked(player.facing_direction, 200.0)
-			return # 踢到了就功成身退，不需要再等超时
+			 # 踢到了就功成身退，不需要再等超时
 	
 	await player.vh.anim_player.animation_finished
 	change_state(State.IDLE) 

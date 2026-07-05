@@ -18,6 +18,10 @@ config/name="Kunio-kun-no-Nekketsu-Soccer-League-Godot"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+MatchManager="*uid://0e4gwen0gfhl"
+
 [display]
 
 window/size/viewport_width=256

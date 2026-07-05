@@ -1,6 +1,7 @@
 extends BallState
 
 func enter(params: Dictionary = {}) -> void:
+	ball.velocity = Vector2.ZERO
 	ball.vh.play_anim("idle")
 	pass
 

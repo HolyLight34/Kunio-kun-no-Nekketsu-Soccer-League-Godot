@@ -17,7 +17,7 @@ func handle_intent(_intent: int, _delta: float) -> void:
 	pass
 
 
-func change_state(target: PlayerState.State) -> void:
+func change_state(target: Variant) -> void:
 	transition_requested.emit(self, target)
 
 

@@ -9,7 +9,10 @@ var kick_power: float
 # --- 【2.5D 物理核心参数】 ---
 var z_height: float = 0.0      # 足球当前的绝对 Z 轴高度（单位：像素）
 var z_velocity: float = 0.0    # 足球在 Z 轴方向的速度（正数向上飞，负数向下落）
-
+## 📡 信号：球权被某人夺取了
+signal possession_changed(new_carrier: Node)
+## 📡 信号：球脱离了控制（被踢飞、漏球、无主滚动）
+signal possession_lost()
 # --- 【环境物理配置】 ---
 @export var GRAVITY_Z: float = 980.0       # Z轴重力加速度
 @export var BOUNCE_COEFF: float = 0.6      # 弹力系数（每次落地保留 60% 的速度反弹）
@@ -17,7 +20,6 @@ var z_velocity: float = 0.0    # 足球在 Z 轴方向的速度（正数向上�
 var z_speed: float = 0.0 # 垂直速度
 var last_kicker: Player # 上一个踢球者
 var current_owner: Player = null # 足球携带者
-
 
 var is_free: bool = true
 var carrier: Player = null
@@ -27,13 +29,6 @@ var carrier: Player = null
 const CARRY_OFFSET: Vector2 = Vector2(8, 0)
 
 func _physics_process(_delta: float) -> void:
-	if not is_free and carrier:
-		# 关键：足球放弃自己的物理，坐标死死同步给持球人
-		# 根据球员朝向，决定球在左脚还是右脚
-		var facing_sign = sign(carrier.vh.scale.x)
-		global_position = carrier.global_position + Vector2(CARRY_OFFSET.x * facing_sign, CARRY_OFFSET.y)
-	else:
-		# 自由球的普通滚动、摩擦力物理逻辑...
 		move_and_slide()
 
 # 被捡起时的切换接口
@@ -42,6 +37,7 @@ func set_carried_by(new_carrier: Player) -> void:
 	carrier = new_carrier
 	velocity = Vector2.ZERO
 	z_height = 0.0 # 落地
+	sm.change_state(BallState.State.HOLD)
 
 # 被踢出去或传出去时的释放接口
 func release(initial_velocity: Vector2) -> void:
@@ -56,7 +52,7 @@ func be_kicked(initial_velocity: int, upward_force: float) -> void:
 	# 1. 彻底斩断和主人的联系（如果有的话）
 	if carrier != null:
 		carrier.has_ball = false
-		carrier.ball_instance = null
+		#carrier.ball_instance = null
 		carrier = null
 	kick_direction = initial_velocity
 	kick_power = upward_force
