@@ -9,8 +9,9 @@ func enter(_params: Dictionary = {}) -> void:
 			print("我撞")
 			self.call_deferred("change_state", State.IDLE)
 		MatchManager.BallPossession.NONE:
+			_do_pass()
 			print("对话")
-			self.call_deferred("change_state", State.IDLE)
+			#self.call_deferred("change_state", State.IDLE)
 	pass
 
 
@@ -32,7 +33,7 @@ func physics_process(_delta: float) -> void:
 
 
 func _do_pass() -> void:
-	player.vh.play_anim("pass")
-	await player.vh.anim_player.animation_finished
+	player.animation_player.play("pass")
+	await player.animation_player.animation_finished
 	change_state(State.IDLE)
 	pass

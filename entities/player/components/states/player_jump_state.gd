@@ -32,7 +32,7 @@ var total_ticks: int = 0
 
 func enter(_params: Dictionary = {}) -> void:
 	total_ticks = 0
-	player.vh.play_anim("idle")
+	player.animation_player.play("idle")
 	pass
 
 
@@ -55,22 +55,22 @@ func physics_process(_delta: float) -> void:
 		var z_height = FC_JUMP_ABSOLUTE_TABLE[table_index]
 
 		# 把当前帧拿到的高度，暴力塞给大管家去刷新画面
-		player.vh.update_z_height(z_height)
+		player.action_component.update_z_height(z_height)
 
 		# 3. 【动画切片控制】：用绝对是整数的表索引来控衣服，100% 精准！
 		if table_index == 2:
 			# 对应原 6 帧：蓄力结束，离地刹那，切成空中空翻
-			player.vh.play_anim("jump_up")
+			player.action_component.play_action("jump_up")
 		elif table_index == 7:
 			# 对应原 21 帧：到达或即将到达最高点
-			player.vh.play_anim("jump_peak")
+			player.action_component.play_action("jump_peak")
 		elif table_index == 9:
 			# 对应原 27 帧：开始急速下坠
-			player.vh.play_anim("jump_down")
+			player.action_component.play_action("jump_down")
 		elif table_index == 18:
 			# 对应原 54 帧：落地死板僵直，完美还原热血足球
 			print(z_height)
-			player.vh.play_anim("jump_land")
+			player.action_component.play_action("jump_land")
 		# 4. 横向物理：虽然人在天上，但影子和碰撞盒在地上依然可以被玩家操控横移
 		#var input_dir = player.parser.get_movement_intent()
 		#player.movement_component.apply_movement(input_dir, player.stats.speed)
@@ -83,7 +83,7 @@ func physics_process(_delta: float) -> void:
 	pass
 
 func land() -> void:
-	player.vh.update_z_height(0.0) # 确保高度完全归零
+	player.action_component.update_z_height(0.0) # 确保高度完全归零
 	#allow_facing_update = true     # 解锁转身限制
 	
 	# 抛出信号，让状态机把你切回 Idle 状态

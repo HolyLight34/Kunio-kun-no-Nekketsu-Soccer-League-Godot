@@ -6,8 +6,9 @@ var i: int = 0 # 循环周期中的索引
 
 
 func enter(_params: Dictionary = {}) -> void:
+	print(player.facing_direction)
 	#i = (i + 1) % n # 循环计数 每次切换帧
-	player.vh.play_anim("walk")
+	player.animation_player.play("walk")
 	#actor.animation_player.seek(i * frame_interval, true)
 	pass
 

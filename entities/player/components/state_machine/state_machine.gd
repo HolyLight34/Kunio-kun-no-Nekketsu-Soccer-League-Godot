@@ -40,17 +40,17 @@ func init(actor_node: CharacterBody2D) -> void:
 		current_state = initial_state
 
 ## 【完美解耦】：人球通用、安全不崩溃的转身函数
-func auto_update_facing():
+func auto_update_facing() -> void:
 	# 🎯 安全检查三部曲：
 	# 1. 确保 actor 没死
 	# 2. 确保 actor 身上有输入层 "input"（足球会自动判定为 false 跳过）
 	# 3. 确保 actor 身上有视觉总管 "vh"
-	if actor and "input" in actor and actor.input != null and "vh" in actor:
-		var input_dir = actor.input.move_dir
-		if input_dir.x != 0 and actor.vh.has_method("set_facing"):
-			actor.vh.set_facing(input_dir.x)
+	if actor is Player:
+		var input_dir: Vector2 = actor.input.move_dir
+		if input_dir.x != 0:
+			actor.set_facing(input_dir.x)
 
-func handle_intent(intent, delta) -> void:
+func handle_intent(intent: IntentComponent.Intent, delta: float) -> void:
 	if current_state:
 		# 状态机把球传给当前状态，实现你想要的“拦截”
 		current_state.handle_intent(intent, delta)

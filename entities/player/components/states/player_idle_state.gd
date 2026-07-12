@@ -4,7 +4,8 @@ extends PlayerState
 func enter(_params: Dictionary = {}) -> void:
 	player.target_velocity = Vector2.ZERO
 	print("我运行了")
-	player.vh.play_anim("idle")
+	player.animation_player.play("idle")
+	
 	pass
 
 
@@ -28,8 +29,6 @@ func handle_intent(intent: int, _delta: float) -> void:
 			change_state(State.ACTION_A)
 		IntentComponent.Intent.JUMP:
 			change_state(State.JUMP)
-		IntentComponent.Intent.ELBOW_DIVE:
-			change_state(State.ELBOW_DIVE)
 
 
 func physics_process(_delta: float) -> void:

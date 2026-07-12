@@ -2,6 +2,7 @@ extends BallState
 var elapsed_time: float = 0.0
 var flat_fly_time: float = 0.5
 func enter(params: Dictionary = {}) -> void:
+	print("5点伤害")
 	ball.z_height = 5
 	elapsed_time = 0
 	pass

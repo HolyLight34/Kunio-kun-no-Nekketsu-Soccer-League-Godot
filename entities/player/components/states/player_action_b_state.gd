@@ -8,8 +8,9 @@ func enter(_params: Dictionary = {}) -> void:
 			allow_facing_update = false
 			_do_kick()
 		MatchManager.BallPossession.ENEMY_TEAM:
-			print("我铲")
-			self.call_deferred("change_state", State.IDLE)
+			allow_facing_update = false
+			print("肘击")
+			_do_elbow_strike()
 		MatchManager.BallPossession.NONE:
 			allow_facing_update = false
 			_do_kick()
@@ -23,20 +24,16 @@ func exit() -> void:
 
 func process(_delta: float) -> void:
 	pass
+func _do_elbow_strike() -> void:
+	player.animation_player.play("elbow_strike")
+	await player.animation_player.animation_finished
+	change_state(State.IDLE) 
+	pass
 func _do_kick() -> void:
-	player.vh.play_anim("kick")
+	player.animation_player.play("kick")
 	player.velocity = Vector2.ZERO
-	player.kick_area.monitoring = true
-	await get_tree().physics_frame
-	var targets = player.kick_area.get_overlapping_bodies()
-	
-	for body in targets:
-		if body is Ball:
-			# 🎯 逮到球了！立刻执行爆射
-			body.be_kicked(player.facing_direction, 200.0)
-			 # 踢到了就功成身退，不需要再等超时
-	
-	await player.vh.anim_player.animation_finished
+	player.hit_box.setup(0, player.endurance + 10 , Vector2.RIGHT )
+	await player.animation_player.animation_finished
 	change_state(State.IDLE) 
 	pass
 

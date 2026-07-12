@@ -6,20 +6,43 @@
 [ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://ball/scripts/ball_free_state.gd" id="5_r3iha"]
 [ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://entities/player/components/state_machine/state_machine.tscn" id="7_r3iha"]
 [ext_resource type="Texture2D" uid="uid://bepsmh7kemgmh" path="res://ball/assets/ball.png" id="8_iwjb2"]
-[ext_resource type="PackedScene" uid="uid://cbo5wiy0tu73u" path="res://entities/player/components/visual_component/visual_component.tscn" id="9_iwjb2"]
-[ext_resource type="AnimationLibrary" uid="uid://m286de4cmdgp" path="res://ball_anims.res" id="9_ni7dn"]
+[ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://entities/player/assets/blob_shadow.png" id="9_iwjb2"]
+[ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://hit_box.tscn" id="9_m05fq"]
+[ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://hurt_box.tscn" id="10_d7d46"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
 radius = 9.0
 
+[sub_resource type="Animation" id="Animation_iwjb2"]
+resource_name = "roll"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ni7dn"]
+_data = {
+&"roll": SubResource("Animation_iwjb2")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ni7dn"]
+radius = 9.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iwjb2"]
+radius = 9.0
+
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
 collision_layer = 4
-collision_mask = 8
+collision_mask = 0
 script = ExtResource("1_ncgq8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1823340034]
 position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_ncgq8")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=304728840]
+libraries/ = SubResource("AnimationLibrary_ni7dn")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=548698980]
+visible = false
+position = Vector2(0, -1)
+texture = ExtResource("9_iwjb2")
 
 [node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("7_r3iha")]
 initial_state = NodePath("Free")
@@ -35,8 +58,27 @@ state = 1
 script = ExtResource("4_b5n0i")
 state = 2
 
-[node name="VisualHandler" parent="." unique_id=974886213 instance=ExtResource("9_iwjb2")]
-body_texture = ExtResource("8_iwjb2")
-body_hframes = 4
-body_vframes = 2
-anim_library = ExtResource("9_ni7dn")
+[node name="HitBox" parent="." unique_id=1107242509 instance=ExtResource("9_m05fq")]
+
+[node name="CollisionShape2D" parent="HitBox" index="0" unique_id=886247332]
+position = Vector2(0, -7)
+shape = SubResource("CircleShape2D_ni7dn")
+
+[node name="HurtBox" parent="." unique_id=1678072093 instance=ExtResource("10_d7d46")]
+
+[node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=75084209]
+position = Vector2(0, -7)
+shape = SubResource("CircleShape2D_iwjb2")
+
+[node name="Visual" type="Node2D" parent="." unique_id=1616589881]
+
+[node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=1648899846]
+position = Vector2(0, -7)
+texture = ExtResource("8_iwjb2")
+hframes = 4
+vframes = 2
+
+[connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
+
+[editable path="HitBox"]
+[editable path="HurtBox"]

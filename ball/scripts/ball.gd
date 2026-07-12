@@ -3,7 +3,7 @@ extends CharacterBody2D
 
 @export var gravity: float = -800.0 # 重力加速度 (负值向上)
 @export var bounce_factor: float = 0.6 # 弹力系数 (0.6 表示每次落地能量损耗 40%)
-@onready var vh: VisualComponent = $VisualHandler
+var ball_force: float #（球威/球的冲力）
 var kick_direction: int
 var kick_power: float
 # --- 【2.5D 物理核心参数】 ---
@@ -17,6 +17,8 @@ signal possession_lost()
 @export var GRAVITY_Z: float = 980.0       # Z轴重力加速度
 @export var BOUNCE_COEFF: float = 0.6      # 弹力系数（每次落地保留 60% 的速度反弹）
 @export var FLOOR_FRICTION: float = 200.0  # 地面摩擦力（滚行时每秒减速多少）
+@onready var hit_box: HitBox = $HitBox
+
 var z_speed: float = 0.0 # 垂直速度
 var last_kicker: Player # 上一个踢球者
 var current_owner: Player = null # 足球携带者
@@ -24,8 +26,6 @@ var current_owner: Player = null # 足球携带者
 var is_free: bool = true
 var carrier: Player = null
 
-
-# 球员脚下的“控球锚点”相对偏移（比如在球员身前 8 像素，高度 0 的草皮上）
 const CARRY_OFFSET: Vector2 = Vector2(8, 0)
 
 func _physics_process(_delta: float) -> void:
@@ -60,9 +60,15 @@ func be_kicked(initial_velocity: int, upward_force: float) -> void:
 	# 3. 瞬间切入足球自己的 Launch 状态！
 	sm.change_state(BallState.State.SHOT)
 func _ready() -> void:
-	$StateMachine.init(self)
+	sm.init(self)
 	pass
 
 
 func _process(_delta: float) -> void:
 	pass
+
+
+func _on_hurt_box_hit_received(incoming_hit_box: HitBox) -> void:
+	hit_box.setup(5, incoming_hit_box.knockback_force , incoming_hit_box.knockback_direction)
+	sm.change_state(BallState.State.SHOT)
+	pass # Replace with function body.

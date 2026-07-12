@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_params: Dictionary = {}) -> void:
-	player.vh.play_anim("run")
+	player.animation_player.play("run")
 	#actor.
 	pass
 

@@ -22,6 +22,10 @@ config/icon="res://icon.svg"
 
 MatchManager="*uid://0e4gwen0gfhl"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+
 [display]
 
 window/size/viewport_width=256

@@ -4,8 +4,8 @@ extends PlayerState
 
 
 func enter(_params: Dictionary = {}):
-	player.vh.play_anim("brake")
-	await player.vh.anim_player.animation_finished
+	player.animation_player.play("brake")
+	await player.animation_player.animation_finished
 	change_state(State.IDLE)
 	pass
 
