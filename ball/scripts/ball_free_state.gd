@@ -1,6 +1,7 @@
 extends BallState
 
 func enter(params: Dictionary = {}) -> void:
+	ball.pickup_area.set_deferred("monitorable", true)
 	ball.velocity = Vector2.ZERO
 	#ball.action_component.play_action("idle")
 	pass

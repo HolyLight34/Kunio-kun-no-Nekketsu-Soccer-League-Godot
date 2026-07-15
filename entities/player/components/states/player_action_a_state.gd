@@ -24,7 +24,7 @@ func process(_delta: float) -> void:
 	pass
 
 
-func handle_intent(intent: int, _delta: float) -> void:
+func handle_intent(_intent: int, _delta: float) -> void:
 	pass
 
 

@@ -46,7 +46,8 @@ func release(initial_velocity: Vector2) -> void:
 	velocity = initial_velocity
 #region
 @onready var sm: StateMachine = $StateMachine
-@onready var camera_2d: Camera2D = $Camera2D
+@onready var pickup_area: Area2D = $PickupArea
+
 #endregion
 func be_kicked(initial_velocity: int, upward_force: float) -> void:
 	# 1. 彻底斩断和主人的联系（如果有的话）
@@ -68,7 +69,7 @@ func _process(_delta: float) -> void:
 	pass
 
 
-func _on_hurt_box_hit_received(incoming_hit_box: HitBox) -> void:
-	hit_box.setup(5, incoming_hit_box.knockback_force , incoming_hit_box.knockback_direction)
+func _on_hurt_box_hit_received(incoming: HitBox) -> void:
+	hit_box.setup(incoming.hit_info)
 	sm.change_state(BallState.State.SHOT)
 	pass # Replace with function body.

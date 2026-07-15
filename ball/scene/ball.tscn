@@ -27,6 +27,9 @@ radius = 9.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_iwjb2"]
 radius = 9.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_m05fq"]
+radius = 9.0
+
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
 collision_layer = 4
 collision_mask = 0
@@ -65,6 +68,7 @@ position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_ni7dn")
 
 [node name="HurtBox" parent="." unique_id=1678072093 instance=ExtResource("10_d7d46")]
+collision_mask = 64
 
 [node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=75084209]
 position = Vector2(0, -7)
@@ -77,6 +81,16 @@ position = Vector2(0, -7)
 texture = ExtResource("8_iwjb2")
 hframes = 4
 vframes = 2
+
+[node name="PickupArea" type="Area2D" parent="." unique_id=240234650]
+collision_layer = 8
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea" unique_id=790405381]
+position = Vector2(0, -7)
+shape = SubResource("CircleShape2D_m05fq")
 
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 

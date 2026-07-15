@@ -1,5 +1,6 @@
 class_name Player
 extends CharacterBody2D
+
 @export var team_id: MatchManager.Team
 @export var walk_speed: float = 30.0
 @export var run_speed: float = 90.0
@@ -10,11 +11,18 @@ extends CharacterBody2D
 @export var sm: StateMachine # 引用状态机（如果是自定义类可以写具体的类名）
 @export var movement: MovementComponent
 @export var player_id: int = 1
+
 var has_ball: bool = false
-var facing_direction: int:
+var facing_direction: Vector2:
 	get:
-		return sign(visual.scale.x) if visual.scale.x != 0 else 1
-var endurance: int #体力
+		return sign(visual.scale.x) * Vector2.RIGHT if visual.scale.x != 0 else 1
+@export var endurance: int:
+	set(value): # 💡 顺手帮你把拼写“vule”纠正为“value”
+		endurance = value
+		
+		# ⚡ 防呆验证：只有当节点已经在场景树里、Label 加载完了，才去刷新 UI
+		if is_inside_tree() and has_node("Label"):
+			$Label.text = str(value)
 # 这个变量由各个状态来修改
 var target_velocity: Vector2 = Vector2.ZERO
 
@@ -23,23 +31,12 @@ var target_velocity: Vector2 = Vector2.ZERO
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
 
-#endregion
 
-func set_facing(direction: float) -> void:
-	if direction == 0: return
-	
-	var sign_multiplier := 1.0 if direction > 0 else -1.0
-	
-	# 1. 顶层命令：视觉文件夹，给我转！
-	visual.scale.x = sign_multiplier
-	
-	# 2. 顶层命令：物理文件夹，你也给我转！
-	colliders.scale.x = sign_multiplier
-	
-	
 func _ready() -> void:
 	sm.init(self) # 状态机初始化
+	$Label.text = str(endurance)
 	pass
+
 
 func _process(_delta: float) -> void:
 	pass
@@ -51,16 +48,33 @@ func _physics_process(delta: float) -> void:
 	sm.handle_intent(intent, delta)
 	pass
 
+#endregion
 
-func _on_ball_picker_body_entered(body: Node2D) -> void:
-	if body is not Ball:
-		return
-	print("我摸到球了")
-	var ball: Ball = body
-	if ball.sm.current_state.name == "Shot":
-		return
-	if ball.carrier != null:
-		return
+
+func set_facing(direction: float) -> void:
+	if direction == 0: return
+
+	var sign_multiplier := 1.0 if direction > 0 else - 1.0
+
+	# 1. 顶层命令：视觉文件夹，给我转！
+	visual.scale.x = sign_multiplier
+
+	# 2. 顶层命令：物理文件夹，你也给我转！
+	colliders.scale.x = sign_multiplier
+
+
+func _on_pickup_sensor_area_entered(area: Area2D) -> void:
+	var ball: Ball = area.get_parent()
 	ball.set_carried_by(self)
 	has_ball = true
+	pass # Replace with function body.
+
+
+func _on_hurt_box_hit_received(incoming: HitBox) -> void:
+	var player: Player = incoming.attacker
+	if player == self:
+		return
+	if player.team_id == self.team_id:
+		return
+	endurance -= incoming.hit_info["damage"]
 	pass # Replace with function body.

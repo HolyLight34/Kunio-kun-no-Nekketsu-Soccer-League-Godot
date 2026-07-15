@@ -1,14 +1,17 @@
-# hit_box.gd (通用的伤害公告牌，人也用它，球也用它)
-extends Area2D
+# hit_box.gd
 class_name HitBox
+extends Area2D
+signal hit_landed
+# 📦 击中情报包（Info 比 Data 更有“传输”和“容纳万物”的感觉）
+@export var attacker: CharacterBody2D
+var hit_info: Dictionary[StringName, Variant] = {
+	"damage": 0.0,
+	"force": 0.0,
+	"direction": Vector2.ZERO
+}
 
-var damage: float = 0.0
-var knockback_force: float = 0.0
-var knockback_direction: Vector2 = Vector2.ZERO
-func _ready() -> void:
-	if has_node("CollisionShape2D"):
-		$CollisionShape2D.debug_color = Color(1.0, 0.0, 0.0, 0.4)
-func setup(dmg: float, force: float, dir: Vector2) -> void:
-	damage = dmg
-	knockback_force = force
-	knockback_direction = dir.normalized()
+# 名字依然叫 setup，传入我们全新的 info 字典
+func setup(info: Dictionary) -> void:
+	hit_info["damage"]    = float(info.get("damage", 0.0))
+	hit_info["force"]     = float(info.get("force", 0.0))
+	hit_info["direction"] = info.get("direction", Vector2.ZERO) as Vector2

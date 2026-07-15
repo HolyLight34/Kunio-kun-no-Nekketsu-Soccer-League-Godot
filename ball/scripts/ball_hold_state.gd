@@ -1,6 +1,8 @@
 extends BallState
 
 func enter(params: Dictionary = {}) -> void:
+	print("我执行了")
+	ball.pickup_area.set_deferred("monitorable", false)
 	ball.z_height = 0
 	ball.possession_changed.emit(ball.carrier)
 	pass

@@ -215,12 +215,13 @@ metadata/_edit_lock_ = true
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1017223546]
 script = ExtResource("6_73vmh")
 
-[node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_73vmh")]
-position = Vector2(124, 45)
+[node name="Ball" parent="." unique_id=630695448 instance=ExtResource("5_3sqpy")]
 
-[node name="Player2" parent="." unique_id=1549667292 instance=ExtResource("5_73vmh")]
-position = Vector2(41, 65)
+[node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_73vmh")]
+position = Vector2(30, 74)
+
+[node name="Player2" parent="." unique_id=2046000254 instance=ExtResource("5_73vmh")]
+position = Vector2(75, 77)
 team_id = 1
 player_id = 2
-
-[node name="Ball" parent="." unique_id=630695448 instance=ExtResource("5_3sqpy")]
+endurance = 60
