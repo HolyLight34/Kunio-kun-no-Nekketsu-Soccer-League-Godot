@@ -1,6 +1,6 @@
 extends PlayerState
 
-func enter(_params: Dictionary = {}) -> void:
+func enter() -> void:
 	player.animation_player.play("run")
 	#actor.
 	pass

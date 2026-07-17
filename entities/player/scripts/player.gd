@@ -18,8 +18,9 @@ var facing_direction: Vector2:
 		return sign(visual.scale.x) * Vector2.RIGHT if visual.scale.x != 0 else 1
 @export var endurance: int:
 	set(value): # 💡 顺手帮你把拼写“vule”纠正为“value”
+		if value < 0:
+			value = 0
 		endurance = value
-		
 		# ⚡ 防呆验证：只有当节点已经在场景树里、Label 加载完了，才去刷新 UI
 		if is_inside_tree() and has_node("Label"):
 			$Label.text = str(value)

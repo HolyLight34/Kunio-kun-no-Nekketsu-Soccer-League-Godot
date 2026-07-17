@@ -1,7 +1,7 @@
 extends PlayerState
 
 
-func enter(_params: Dictionary = {}) -> void:
+func enter() -> void:
 	player.target_velocity = Vector2.ZERO
 	print("我运行了")
 	player.animation_player.play("idle")

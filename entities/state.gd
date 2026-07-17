@@ -9,7 +9,7 @@ var actor: CharacterBody2D
 
 
 # 虚函数：子类根据需要重写
-func init():
+func init()-> void:
 	pass # 初始化（只运行一次）
 
 	
@@ -21,11 +21,11 @@ func change_state(target: Variant) -> void:
 	transition_requested.emit(self, target)
 
 
-func enter(_params: Dictionary = {}):
+func enter()-> void:
 	pass
 
 
-func exit():
+func exit()-> void:
 	pass # 离开状态时（清理工作）
 
 	# EntityState.gd (基类)

@@ -3,7 +3,7 @@ extends PlayerState
 #var _animation_finished: bool
 
 
-func enter(_params: Dictionary = {}):
+func enter():
 	player.animation_player.play("brake")
 	await player.animation_player.animation_finished
 	change_state(State.IDLE)

@@ -30,7 +30,7 @@ const FC_JUMP_ABSOLUTE_TABLE: Array[int] = [
 var total_ticks: int = 0
 
 
-func enter(_params: Dictionary = {}) -> void:
+func enter() -> void:
 	total_ticks = 0
 	player.animation_player.play("idle")
 	pass

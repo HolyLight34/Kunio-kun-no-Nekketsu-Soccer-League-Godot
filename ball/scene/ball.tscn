@@ -34,6 +34,7 @@ radius = 9.0
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_ncgq8")
+metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1823340034]
 position = Vector2(0, -7)
@@ -61,14 +62,16 @@ state = 1
 script = ExtResource("4_b5n0i")
 state = 2
 
-[node name="HitBox" parent="." unique_id=1107242509 instance=ExtResource("9_m05fq")]
+[node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("attacker") instance=ExtResource("9_m05fq")]
+attacker = NodePath("..")
 
 [node name="CollisionShape2D" parent="HitBox" index="0" unique_id=886247332]
 position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_ni7dn")
 
-[node name="HurtBox" parent="." unique_id=1678072093 instance=ExtResource("10_d7d46")]
+[node name="HurtBox" parent="." unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("10_d7d46")]
 collision_mask = 64
+victim = NodePath("..")
 
 [node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=75084209]
 position = Vector2(0, -7)

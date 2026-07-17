@@ -34,10 +34,6 @@ func _on_ball_possession_changed(new_carrier: Node) -> void:
 	# 2. 更新总管自己的账本
 	ball_carrier = new_carrier
 	
-	# 3. 统一给新持球人赋能
-	#if ball_carrier and is_instance_valid(ball_carrier):
-		#ball_carrier.is_holding_ball = true
-		
 	print("📢 [球权总管]: 球被 ", ball_carrier.name, " 抢走了！全场局势已动态刷新。")
 
 ## 🎯 统一收拢：处理丢球/踢球逻辑

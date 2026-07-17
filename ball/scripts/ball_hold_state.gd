@@ -1,16 +1,20 @@
 extends BallState
 
-func enter(params: Dictionary = {}) -> void:
+func enter() -> void:
 	print("我执行了")
 	ball.pickup_area.set_deferred("monitorable", false)
 	ball.z_height = 0
+	print(ball.carrier)
 	ball.possession_changed.emit(ball.carrier)
 	pass
 
 
 func exit() -> void:
 	ball.possession_lost.emit()
-	ball.carrier = null
+	if ball.sm.current_state != self:
+		actor.possession_lost.emit()
+		actor.carrier = null
+		print("【HOLD 退出】球权真正移交，数据清理完毕")
 	pass
 
 

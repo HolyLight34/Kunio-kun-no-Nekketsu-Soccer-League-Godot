@@ -120,7 +120,6 @@ position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_dg4u3")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("18_v0pxu")]
-collision_mask = 96
 victim = NodePath("../..")
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]

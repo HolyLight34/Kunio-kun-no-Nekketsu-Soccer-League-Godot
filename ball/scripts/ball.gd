@@ -20,9 +20,7 @@ signal possession_lost()
 @onready var hit_box: HitBox = $HitBox
 
 var z_speed: float = 0.0 # 垂直速度
-var last_kicker: Player # 上一个踢球者
-var current_owner: Player = null # 足球携带者
-
+#var last_kicker: Player # 上一个踢球者
 var is_free: bool = true
 var carrier: Player = null
 
@@ -70,6 +68,11 @@ func _process(_delta: float) -> void:
 
 
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	hit_box.setup(incoming.hit_info)
-	sm.change_state(BallState.State.SHOT)
+	if incoming.hit_info.damage != 0:
+		sm.change_state(BallState.State.SHOT)
+		hit_box.hit_info = incoming.hit_info
+	else :
+		print(incoming.attacker,"你好")
+		carrier = incoming.attacker
+		sm.change_state(BallState.State.HOLD)
 	pass # Replace with function body.
