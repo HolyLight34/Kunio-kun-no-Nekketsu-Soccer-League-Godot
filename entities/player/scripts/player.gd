@@ -11,7 +11,8 @@ extends CharacterBody2D
 @export var sm: StateMachine # 引用状态机（如果是自定义类可以写具体的类名）
 @export var movement: MovementComponent
 @export var player_id: int = 1
-
+#@onready var z_axis_component: ZAxisComponent = $ZAxisComponent
+@export var z_axis_component: ZAxisComponent
 var has_ball: bool = false
 var facing_direction: Vector2:
 	get:
@@ -47,6 +48,7 @@ func _physics_process(delta: float) -> void:
 	var intent: IntentComponent.Intent = parser.get_intent()
 	# 2. 告诉执行官：玩家想做这个，你处理一下。
 	sm.handle_intent(intent, delta)
+	visual.position.y = -z_axis_component.z_pos
 	pass
 
 #endregion
@@ -59,9 +61,9 @@ func set_facing(direction: float) -> void:
 
 	# 1. 顶层命令：视觉文件夹，给我转！
 	visual.scale.x = sign_multiplier
-
 	# 2. 顶层命令：物理文件夹，你也给我转！
 	colliders.scale.x = sign_multiplier
+	
 
 
 func _on_pickup_sensor_area_entered(area: Area2D) -> void:

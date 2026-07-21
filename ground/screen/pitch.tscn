@@ -214,6 +214,7 @@ metadata/_edit_lock_ = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1017223546]
 script = ExtResource("6_73vmh")
+ball_path = NodePath("../Ball")
 
 [node name="Ball" parent="." unique_id=630695448 instance=ExtResource("5_3sqpy")]
 

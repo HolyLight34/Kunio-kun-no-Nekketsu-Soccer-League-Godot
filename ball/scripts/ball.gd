@@ -25,9 +25,18 @@ var is_free: bool = true
 var carrier: Player = null
 
 const CARRY_OFFSET: Vector2 = Vector2(8, 0)
+@onready var z_axis_component: ZAxisComponent = $ZAxisComponent
+@onready var visual: Node2D = $Visual
+
+
+var is_counting_apex: bool = false
+var apex_frame_timer: int = 0
+var last_recorded_height: float = 0.0
+
 
 func _physics_process(_delta: float) -> void:
-		move_and_slide()
+	visual.position.y = -z_axis_component.z_pos
+	move_and_slide()
 
 # 被捡起时的切换接口
 func set_carried_by(new_carrier: Player) -> void:
@@ -72,7 +81,6 @@ func _on_hurt_box_hit_received(incoming: HitBox) -> void:
 		sm.change_state(BallState.State.SHOT)
 		hit_box.hit_info = incoming.hit_info
 	else :
-		print(incoming.attacker,"你好")
 		carrier = incoming.attacker
 		sm.change_state(BallState.State.HOLD)
 	pass # Replace with function body.

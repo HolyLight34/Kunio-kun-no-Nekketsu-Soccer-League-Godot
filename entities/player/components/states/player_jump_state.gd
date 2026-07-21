@@ -1,43 +1,45 @@
 extends PlayerState
 
-const FC_JUMP_ABSOLUTE_TABLE: Array[int] = [
-	0, # 序号0：前3帧离地 0 像素（还在地上蓄力）
-	0, # 序号1：第4-6帧离地 0 像素（继续蓄力）
-	4, # 序号2：第7-9帧离地 12 像素（猛地起飞！）
-	7, # 序号3：第10-12帧离地 22 像素
-	10, # 序号4：第13-15帧离地 29 像素（最高点）
-	13, # 序号5：第16-18帧离地 22 像素（开始下落）
-	15, # 序号6：第19-21帧离地 12 像素
-	16,
-	17,
-	18, # 序号7：第22-24帧离地 0 像素（安全着陆）
-	18,
-	17,
-	16,
-	15,
-	13,
-	10,
-	7,
-	4,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-]
+@onready var z_axis: ZAxisComponent = owner.get_node("ZAxisComponent")
+@onready var anim: AnimationPlayer = owner.get_node("AnimationPlayer")
 
-var total_ticks: int = 0
+func enter():
+	# 1. 建立信号连接
+	#z_axis.lift_started.connect(_on_lift_started)
+	#z_axis.peak_hold_started.connect(_on_peak_hold_started)
+	#z_axis.falling_started.connect(_on_falling_started)
+	#z_axis.grounded.connect(_on_grounded)
+	#
+	## 2. 启动组件（进入状态的起手式）
+	#z_axis.activate_motion(18)
+	
+	anim.play("jump_up")
+	anim.queue("jump_peak")
+	anim.queue("jump_down")
+	anim.queue("jump_land")
+	#await get_tree().physics_frame
+	#z_axis.start_jump(18)
+# 确保没有重复连接
+	if not anim.animation_finished.is_connected(_on_animation_finished):
+		anim.animation_finished.connect(_on_animation_finished)
 
-
-func enter() -> void:
-	total_ticks = 0
-	player.animation_player.play("idle")
-	pass
-
-
-func exit() -> void:
-
+func _on_animation_finished(anim_name: String):
+	# 这里才是判断“到底是哪个动画结束了”的最佳位置
+	if anim_name == "jump_land":
+		print("jump_land 播放完毕，切换状态")
+		change_state(State.IDLE)
+		# 可选：断开信号以防状态切换回这里时重复触发
+		anim.animation_finished.disconnect(_on_animation_finished)
+func exit():
+	# 3. 必须断开连接！防止内存泄漏和逻辑污染
+	#if z_axis.lift_started.is_connected(_on_lift_started):
+		#z_axis.lift_started.disconnect(_on_lift_started)
+	#if z_axis.peak_hold_started.is_connected(_on_peak_hold_started):
+		#z_axis.peak_hold_started.disconnect(_on_peak_hold_started)
+	#if z_axis.falling_started.is_connected(_on_falling_started):
+		#z_axis.falling_started.disconnect(_on_falling_started)
+	#if z_axis.grounded.is_connected(_on_grounded):
+		#z_axis.grounded.disconnect(_on_grounded)
 	pass
 
 
@@ -47,49 +49,28 @@ func process(_delta: float) -> void:
 
 
 func physics_process(_delta: float) -> void:
-	# 1. 核心算法：利用 3.0 浮点除法保留精度，再用 int() 截断，完美卡出 3帧一次的 FC 定格感！
-	var table_index = int(total_ticks / 3.0)
-
-	# 2. 如果账本还没读完，继续在空中飞
-	if table_index < FC_JUMP_ABSOLUTE_TABLE.size():
-		var z_height = FC_JUMP_ABSOLUTE_TABLE[table_index]
-
-		# 把当前帧拿到的高度，暴力塞给大管家去刷新画面
-		player.action_component.update_z_height(z_height)
-
-		# 3. 【动画切片控制】：用绝对是整数的表索引来控衣服，100% 精准！
-		if table_index == 2:
-			# 对应原 6 帧：蓄力结束，离地刹那，切成空中空翻
-			player.action_component.play_action("jump_up")
-		elif table_index == 7:
-			# 对应原 21 帧：到达或即将到达最高点
-			player.action_component.play_action("jump_peak")
-		elif table_index == 9:
-			# 对应原 27 帧：开始急速下坠
-			player.action_component.play_action("jump_down")
-		elif table_index == 18:
-			# 对应原 54 帧：落地死板僵直，完美还原热血足球
-			print(z_height)
-			player.action_component.play_action("jump_land")
-		# 4. 横向物理：虽然人在天上，但影子和碰撞盒在地上依然可以被玩家操控横移
-		#var input_dir = player.parser.get_movement_intent()
-		#player.movement_component.apply_movement(input_dir, player.stats.speed)
-
-		# 账本计数器雷打不动每帧 +1
-		total_ticks += 1
-	else:
-		# 5. 账本读完了，执行落地
-		land()
-	pass
-
-func land() -> void:
-	player.action_component.update_z_height(0.0) # 确保高度完全归零
-	#allow_facing_update = true     # 解锁转身限制
 	
-	# 抛出信号，让状态机把你切回 Idle 状态
-	change_state(State.IDLE)
-func handle_intent(_intent: int, _delta: float) -> void:
-	#match intent:
-		#IntentParser.Intent.IDLE:
-			#change_state(State.IDLE)
 	pass
+
+
+func handle_intent(_intent: int, _delta: float) -> void:
+	pass
+	
+func _on_lift_started(_apex):
+	anim.play("jump_up")
+	print("动画：开始起跳")
+
+func _on_peak_hold_started(_apex):
+	anim.play("jump_peak") # 滞空定格
+	print("动画：进入滞空定格")
+
+func _on_falling_started():
+	anim.play("jump_down")
+	print("动画：开始下落")
+
+func _on_grounded():
+	anim.play("jump_land")
+	print("动画：落地，切换至静止状态")
+	await anim.animation_finished
+	# 落地后跳转回空闲状态
+	change_state(State.IDLE)

@@ -1,15 +1,15 @@
 extends BallState
 var elapsed_time: float = 0.0
-var flat_fly_time: float = 0.5
+var flat_fly_time: float = 1.5
 func enter() -> void:
 	ball.pickup_area.set_deferred("monitorable", false)
-	print("5点伤害")
-	ball.z_height = 5
+	ball.z_axis_component.start_falling_from(68)
 	elapsed_time = 0
 	pass
 
 
 func exit() -> void:
+	ball.z_axis_component.force_step_falling()
 	pass
 
 

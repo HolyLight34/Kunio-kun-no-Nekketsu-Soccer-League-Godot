@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://entities/player/assets/blob_shadow.png" id="9_iwjb2"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://hit_box.tscn" id="9_m05fq"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://hurt_box.tscn" id="10_d7d46"]
+[ext_resource type="PackedScene" uid="uid://c80mq1blha0os" path="res://z_axis_component.tscn" id="10_ni7dn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
 radius = 9.0
@@ -94,6 +95,8 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea" unique_id=790405381]
 position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_m05fq")
+
+[node name="ZAxisComponent" parent="." unique_id=1288445664 instance=ExtResource("10_ni7dn")]
 
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 

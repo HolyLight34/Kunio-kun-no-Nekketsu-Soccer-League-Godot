@@ -10,10 +10,12 @@
 [ext_resource type="PackedScene" uid="uid://dl8wemvojp0xc" path="res://entities/player/components/input_component/input_component.tscn" id="11_k3ida"]
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://entities/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="PackedScene" uid="uid://d1rmbyts7ryn6" path="res://entities/player/components/movement_component/movement_component.tscn" id="13_q1tvd"]
+[ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://entities/player/components/states/player_hurt_state.gd" id="13_v0pxu"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://hit_box.tscn" id="17_dg4u3"]
 [ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://entities/player/assets/head.png" id="18_c0821"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://hurt_box.tscn" id="18_v0pxu"]
 [ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://entities/player/assets/body.png" id="19_864cw"]
+[ext_resource type="PackedScene" uid="uid://c80mq1blha0os" path="res://z_axis_component.tscn" id="20_864cw"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://entities/player/assets/blob_shadow.png" id="20_c0821"]
 [ext_resource type="AnimationLibrary" uid="uid://clq760ydupmc7" path="res://player_anims.res" id="20_focbt"]
 [ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://entities/player/components/states/player_action_a_state.gd" id="22_imh8g"]
@@ -22,21 +24,22 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_dg4u3"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c0821"]
 resource_local_to_scene = true
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v0pxu"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_864cw"]
 resource_local_to_scene = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgsyk"]
 
-[node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input", "parser", "sm", "movement")]
+[node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input", "parser", "sm", "movement", "z_axis_component")]
 collision_layer = 4
 script = ExtResource("2_w62lr")
 input = NodePath("Components/InputComponent")
 parser = NodePath("Components/IntentComponent")
 sm = NodePath("Components/StateMachine")
 movement = NodePath("Components/MovementComponent")
+z_axis_component = NodePath("Components/ZAxisComponent")
 endurance = 50
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=237613255]
@@ -44,6 +47,7 @@ shape = SubResource("RectangleShape2D_bbc2b")
 debug_color = Color(0.44320118, 0.458624, 0.98788863, 0.41960785)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1129758828]
+callback_mode_process = 0
 libraries/ = ExtResource("20_focbt")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=1964782839]
@@ -51,7 +55,19 @@ visible = false
 position = Vector2(0, -2)
 texture = ExtResource("20_c0821")
 
+[node name="Label" type="Label" parent="." unique_id=1046400889]
+offset_left = -5.0
+offset_top = -42.0
+offset_right = 5.0
+offset_bottom = -33.0
+theme_override_font_sizes/font_size = 6
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Components" type="Node" parent="." unique_id=1587151273]
+
+[node name="ZAxisComponent" parent="Components" unique_id=1288445664 instance=ExtResource("20_864cw")]
 
 [node name="MovementComponent" parent="Components" unique_id=746939023 node_paths=PackedStringArray("body") instance=ExtResource("13_q1tvd")]
 body = NodePath("../..")
@@ -88,6 +104,10 @@ state = 5
 script = ExtResource("23_sgsyk")
 state = 6
 
+[node name="Hurt" type="Node" parent="Components/StateMachine" unique_id=559331258]
+script = ExtResource("13_v0pxu")
+state = 7
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -117,14 +137,14 @@ attacker = NodePath("../..")
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
 position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_dg4u3")
+shape = SubResource("RectangleShape2D_c0821")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("18_v0pxu")]
 victim = NodePath("../..")
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
 position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_v0pxu")
+shape = SubResource("RectangleShape2D_864cw")
 
 [node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
 collision_layer = 0
@@ -136,15 +156,7 @@ position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_sgsyk")
 debug_color = Color(1, 1, 0, 0.29803923)
 
-[node name="Label" type="Label" parent="." unique_id=1046400889]
-offset_left = -5.0
-offset_top = -42.0
-offset_right = 5.0
-offset_bottom = -33.0
-theme_override_font_sizes/font_size = 6
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="ball_anchor" type="Marker2D" parent="." unique_id=2053744234]
 
 [connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
 [connection signal="area_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_area_entered"]

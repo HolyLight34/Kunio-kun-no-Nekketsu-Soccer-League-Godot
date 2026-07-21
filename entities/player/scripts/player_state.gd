@@ -9,6 +9,7 @@ enum State {
 	JUMP,
 	ACTION_A,
 	ACTION_B,
+	HURT,
 } 
 
 @export var state: State # 当前状态设置

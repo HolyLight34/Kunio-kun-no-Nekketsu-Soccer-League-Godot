@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c80mq1blha0os"]
+
+[ext_resource type="Script" uid="uid://lotvbomqprd1" path="res://z_axis_component.gd" id="1_1i7ke"]
+
+[node name="ZAxisComponent" type="Node" unique_id=870826269]
+script = ExtResource("1_1i7ke")

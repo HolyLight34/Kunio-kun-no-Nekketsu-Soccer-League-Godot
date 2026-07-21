@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://c80mq1blha0os"]
-
-[ext_resource type="Script" uid="uid://b6l66muin6grf" path="res://height_component.gd" id="1_efekd"]
-
-[node name="HeightComponent" type="Node2D" unique_id=1288445664]
-script = ExtResource("1_efekd")
