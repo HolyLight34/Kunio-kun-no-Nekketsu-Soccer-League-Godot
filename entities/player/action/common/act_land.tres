@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="TickActionData" format=3 uid="uid://dx5cjuo6fqoll"]
+
+[ext_resource type="Script" uid="uid://cp8wom13nxvva" path="res://tick_action_data.gd" id="1_n65u1"]
+[ext_resource type="Script" uid="uid://difulf3w7ctcn" path="res://tick_step.gd" id="2_fg455"]
+
+[sub_resource type="Resource" id="Resource_ptkv0"]
+script = ExtResource("2_fg455")
+metadata/_custom_type_script = "uid://difulf3w7ctcn"
+
+[sub_resource type="Resource" id="Resource_n65u1"]
+script = ExtResource("2_fg455")
+anim_frame = 0
+metadata/_custom_type_script = "uid://difulf3w7ctcn"
+
+[sub_resource type="Resource" id="Resource_fg455"]
+script = ExtResource("2_fg455")
+anim_frame = 3
+metadata/_custom_type_script = "uid://difulf3w7ctcn"
+
+[sub_resource type="Resource" id="Resource_wkl3h"]
+script = ExtResource("2_fg455")
+anim_frame = 6
+metadata/_custom_type_script = "uid://difulf3w7ctcn"
+
+[sub_resource type="Resource" id="Resource_imh8g"]
+script = ExtResource("2_fg455")
+anim_frame = 9
+metadata/_custom_type_script = "uid://difulf3w7ctcn"
+
+[resource]
+script = ExtResource("1_n65u1")
+anim_name = "land"
+ticks = Array[ExtResource("2_fg455")]([SubResource("Resource_ptkv0"), SubResource("Resource_n65u1"), SubResource("Resource_fg455"), SubResource("Resource_wkl3h"), SubResource("Resource_imh8g")])
+metadata/_custom_type_script = "uid://cp8wom13nxvva"

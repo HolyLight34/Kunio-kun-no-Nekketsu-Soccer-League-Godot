@@ -9,14 +9,20 @@ extends CharacterBody2D
 @export var input: InputComponent # 引用输入组件
 @export var parser: IntentComponent # 引用意图解析组件
 @export var sm: StateMachine # 引用状态机（如果是自定义类可以写具体的类名）
-@export var movement: MovementComponent
 @export var player_id: int = 1
-#@onready var z_axis_component: ZAxisComponent = $ZAxisComponent
-@export var z_axis_component: ZAxisComponent
+
 var has_ball: bool = false
+## 🌟 实时获取角色的当前视觉面向（Vector2.RIGHT 或 Vector2.LEFT）
 var facing_direction: Vector2:
 	get:
-		return sign(visual.scale.x) * Vector2.RIGHT if visual.scale.x != 0 else 1
+		var s = sign(visual.scale.x) if visual else 1.0
+		# 如果 scale.x == 0（极少情况），兜底为朝右 (Vector2.RIGHT)
+		var dir_x = s if s != 0 else 1.0 
+		return Vector2(dir_x, 0.0)
+func get_facing_direction_supplier() -> Callable:
+	# 🌟 返回一个 Lambda 闭包，每次被 .call() 时都会返回当前物理帧的最新的 move_dir
+	return func() -> Vector2:
+		return facing_direction
 @export var endurance: int:
 	set(value): # 💡 顺手帮你把拼写“vule”纠正为“value”
 		if value < 0:
@@ -32,7 +38,9 @@ var target_velocity: Vector2 = Vector2.ZERO
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
+@onready var action_driver_component: ActionDriverComponent = $Components/ActionDriverComponent
 
+@export var jump_action_data: TickActionData
 
 func _ready() -> void:
 	sm.init(self) # 状态机初始化
@@ -48,7 +56,7 @@ func _physics_process(delta: float) -> void:
 	var intent: IntentComponent.Intent = parser.get_intent()
 	# 2. 告诉执行官：玩家想做这个，你处理一下。
 	sm.handle_intent(intent, delta)
-	visual.position.y = -z_axis_component.z_pos
+	#visual.position.y = -z_axis_component.z_pos
 	pass
 
 #endregion

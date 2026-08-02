@@ -1,8 +1,13 @@
 extends PlayerState
 
 func enter() -> void:
-	player.animation_player.play("run")
-	#actor.
+	# 1. 从 InputComponent 获取动态输入闭包
+	var move_input_supplier: Callable = player.get_facing_direction_supplier()
+
+	# 2. 调用静态工厂，生成包含位移和动画闭包的字典
+	# (支持使用默认参数，也可以显式传自定义速度或帧数组)
+	var walk_stream: Dictionary = DynamicStreamFactory.create_run_stream(move_input_supplier)
+	player.action_driver_component.execute_dynamic_stream(walk_stream)
 	pass
 
 
@@ -17,19 +22,13 @@ func process(_delta: float) -> void:
 
 
 func physics_process(_delta: float) -> void:
-	#if input.input_dir != Vector2.ZERO:
-		## 用归一化的速度进行点积判断
-		#if input.input_dir.dot(player.velocity.normalized()) < -0.5:
-			#return brake
-	player.movement.apply_input_movement(Vector2(player.facing_direction.x, 0.5 * player.input.move_dir.y),player.run_speed)
 	pass
-
 
 func handle_intent(intent: int, _delta: float) -> void:
 	match intent:
 		IntentComponent.Intent.WALK:
 		## 用归一化的速度进行点积判断
-			if player.input.move_dir.dot(player.velocity.normalized()) < -0.5:
-				print(player.facing_direction)
+			if player.input.move_dir.dot(player.facing_direction) < -0.5:
+				player.action_driver_component.interrupt_and_clear()
 				change_state(State.BRAKE)
 	pass

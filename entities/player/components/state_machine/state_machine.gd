@@ -15,14 +15,6 @@ func _physics_process(delta: float) -> void:
 	if current_state:
 		current_state.physics_process(delta)
 		# 只有通过了防呆检查，才去执行转身
-		if safe_to_update_facing(current_state):
-			auto_update_facing()
-func safe_to_update_facing(state: EntityState) -> bool:
-	# 检查状态脚本里有没有声明这个变量
-	if "allow_facing_update" in state:
-		return state.allow_facing_update
-	# 如果压根没写（比如足球的状态），安全返回 false，不给报错的机会
-	return false
 ## 【升级】：初始化时，把自己也和 actor 绑定
 func init(actor_node: CharacterBody2D) -> void:
 	self.actor = actor_node # 🎯 【核心修复】：状态机自己得记住当前控制的是谁
@@ -34,21 +26,10 @@ func init(actor_node: CharacterBody2D) -> void:
 			if child.get("state") != null:
 				states[child.state] = child
 			child.transition_requested.connect(_on_transition_requested)
-	print(states)
 	if initial_state:
 		initial_state.enter()
 		current_state = initial_state
 
-## 【完美解耦】：人球通用、安全不崩溃的转身函数
-func auto_update_facing() -> void:
-	# 🎯 安全检查三部曲：
-	# 1. 确保 actor 没死
-	# 2. 确保 actor 身上有输入层 "input"（足球会自动判定为 false 跳过）
-	# 3. 确保 actor 身上有视觉总管 "vh"
-	if actor is Player:
-		var input_dir: Vector2 = actor.input.move_dir
-		if input_dir.x != 0:
-			actor.set_facing(input_dir.x)
 
 func handle_intent(intent: IntentComponent.Intent, delta: float) -> void:
 	if current_state:

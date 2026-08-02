@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://d1rmbyts7ryn6"]
-
-[ext_resource type="Script" uid="uid://bp1bbwhymt5ri" path="res://entities/player/components/movement_component/movement_component.gd" id="1_pqu12"]
-
-[node name="MovementComponent" type="Node" unique_id=746939023]
-script = ExtResource("1_pqu12")

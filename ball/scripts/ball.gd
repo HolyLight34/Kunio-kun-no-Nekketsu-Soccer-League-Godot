@@ -25,7 +25,6 @@ var is_free: bool = true
 var carrier: Player = null
 
 const CARRY_OFFSET: Vector2 = Vector2(8, 0)
-@onready var z_axis_component: ZAxisComponent = $ZAxisComponent
 @onready var visual: Node2D = $Visual
 
 
@@ -35,7 +34,6 @@ var last_recorded_height: float = 0.0
 
 
 func _physics_process(_delta: float) -> void:
-	visual.position.y = -z_axis_component.z_pos
 	move_and_slide()
 
 # 被捡起时的切换接口

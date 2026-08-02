@@ -1,11 +1,8 @@
 extends PlayerState
 
-
 func enter() -> void:
 	player.target_velocity = Vector2.ZERO
-	print("我运行了")
-	player.animation_player.play("idle")
-	
+	player.action_driver_component.execute_action(action_data)
 	pass
 
 

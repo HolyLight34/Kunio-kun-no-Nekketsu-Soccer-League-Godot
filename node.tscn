@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://cdret3pw2yle0"]
+
+[sub_resource type="GDScript" id="GDScript_nxiqb"]
+script/source = "extends Node
+
+func _ready() -> void:
+	print(\"================ 🧪 实验 1: 验证是否为快照 ================\")
+	
+	var my_number: int = 10
+	
+	# 在定义闭包的瞬间，GDScript 会对 my_number 进行“快照”
+	var test_closure = func():
+		print(\"【闭包内部读取】 my_number = \", my_number)
+	
+	print(\"1. 初始状态 -> 外部 my_number = \", my_number)
+	test_closure.call() # 应该输出 10
+	
+	# 🌟 关键步骤：在外部修改变量的值
+	my_number = 999
+	print(\"\\n2. 外部将 my_number 改为了 \", my_number)
+	
+	# 再次调用闭包，看看它读到的是 999 还是 10？
+	test_closure.call()
+	
+	print(\"==========================================================\")
+"
+
+[node name="Node" type="Node" unique_id=589974110]
+script = SubResource("GDScript_nxiqb")

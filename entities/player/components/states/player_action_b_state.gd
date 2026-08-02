@@ -5,14 +5,11 @@ func enter() -> void:
 	match MatchManager.get_possession_for(player):
 		MatchManager.BallPossession.MYSELF:
 			print("我运行了一次")
-			allow_facing_update = false
 			_do_kick()
 		MatchManager.BallPossession.ENEMY_TEAM:
-			allow_facing_update = false
 			print("肘击")
 			_do_elbow_strike()
 		MatchManager.BallPossession.NONE:
-			allow_facing_update = false
 			_do_kick()
 	pass
 

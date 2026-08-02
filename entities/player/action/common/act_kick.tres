@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="TickActionData" format=3 uid="uid://b3q5oq5cvyb47"]
+
+[ext_resource type="Script" uid="uid://cp8wom13nxvva" path="res://tick_action_data.gd" id="1_p45ro"]
+[ext_resource type="Script" uid="uid://difulf3w7ctcn" path="res://tick_step.gd" id="2_baccj"]
+
+[resource]
+script = ExtResource("1_p45ro")
+anim_name = "kick"
+metadata/_custom_type_script = "uid://cp8wom13nxvva"

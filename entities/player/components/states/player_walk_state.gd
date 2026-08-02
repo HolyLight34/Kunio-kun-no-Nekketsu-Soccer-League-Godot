@@ -6,10 +6,13 @@ var i: int = 0 # 循环周期中的索引
 
 
 func enter() -> void:
-	print(player.facing_direction)
-	#i = (i + 1) % n # 循环计数 每次切换帧
-	player.animation_player.play("walk")
-	#actor.animation_player.seek(i * frame_interval, true)
+	# 1. 从 InputComponent 获取动态输入闭包
+	var move_input_supplier: Callable = player.input.get_move_dir_supplier()
+
+	# 2. 调用静态工厂，生成包含位移和动画闭包的字典
+	# (支持使用默认参数，也可以显式传自定义速度或帧数组)
+	var walk_stream: Dictionary = DynamicStreamFactory.create_walk_stream(move_input_supplier)
+	player.action_driver_component.execute_dynamic_stream(walk_stream)
 	pass
 
 
@@ -26,7 +29,6 @@ func handle_intent(intent: int, _delta: float) -> void:
 			change_state(State.IDLE)
 	pass
 func physics_process(_delta: float) -> void:
-	player.movement.apply_input_movement(player.input.move_dir, player.walk_speed)
 	pass
 
 func _on_init() -> void:

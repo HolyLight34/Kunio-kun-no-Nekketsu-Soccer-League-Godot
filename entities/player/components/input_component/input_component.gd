@@ -62,3 +62,10 @@ func _physics_process(_delta: float) -> void:
 
 	btn_select = Input.is_action_pressed(action_select)
 	btn_select_just = Input.is_action_just_pressed(action_select)
+## 1. 获取【实时移动方向】的闭包
+func get_move_dir_supplier() -> Callable:
+	# 🌟 返回一个 Lambda 闭包，每次被 .call() 时都会返回当前物理帧的最新的 move_dir
+	return func() -> Vector2:
+		return move_dir
+		# 或者直接实时获取：
+		# return Input.get_vector(action_left, action_right, action_up, action_down)

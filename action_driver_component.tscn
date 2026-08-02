@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://dyio7pmhddda"]
+
+[ext_resource type="Script" uid="uid://dhulqt4bjlmpv" path="res://action_driver_component.gd" id="1_xx145"]
+[ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://ticker.gd" id="2_riryo"]
+[ext_resource type="Script" uid="uid://c5vd8w57erqp1" path="res://vector_stack.gd" id="3_xpdgu"]
+[ext_resource type="Script" uid="uid://cuv8ou3opgydg" path="res://anim_stack.gd" id="4_347r6"]
+
+[node name="ActionDriverComponent" type="Node" unique_id=680799119]
+script = ExtResource("1_xx145")
+
+[node name="Ticker" type="Node" parent="." unique_id=557206287]
+script = ExtResource("2_riryo")
+
+[node name="AnimStack" type="Node" parent="." unique_id=403556389]
+script = ExtResource("4_347r6")
+
+[node name="VectorStack" type="Node" parent="." unique_id=1061060694]
+script = ExtResource("3_xpdgu")
+
+[connection signal="tick_triggered" from="Ticker" to="AnimStack" method="_on_tick_triggered"]
+[connection signal="tick_triggered" from="Ticker" to="VectorStack" method="_on_tick_triggered"]
+[connection signal="stack_finished" from="AnimStack" to="." method="_on_anim_stack_finished"]
+[connection signal="fall_started" from="VectorStack" to="." method="_on_vector_fall_started"]
+[connection signal="landed" from="VectorStack" to="." method="_on_vector_landed"]
+[connection signal="stack_finished" from="VectorStack" to="." method="_on_vector_stack_finished"]
