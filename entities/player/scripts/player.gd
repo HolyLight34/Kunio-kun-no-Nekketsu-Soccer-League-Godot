@@ -84,6 +84,7 @@ func _ready() -> void:
 	# 绑定组件信号
 	tick_component.tick_triggered.connect(_on_3_tick)
 	z_axis_component.landed.connect(_on_landed)
+	sm.tick_reset_requested.connect(tick_component.reset_tick)
 
 func _physics_process(delta: float) -> void:
 	var intent: IntentComponent.Intent = parser.get_intent()
@@ -93,31 +94,30 @@ func _physics_process(delta: float) -> void:
 # 6. 核心 Tick 与移动逻辑 (Tick & Movement)
 # ==============================================================================
 func _on_3_tick() -> void:
+	print(speed_vector)
 	if sm.is_waiting_delay:
 		return
 				
 	step_animation_component.advance_tick()
 	z_axis_component.process_z_step()
-	
-	if sm.current_state.can_move:
-		if z_axis_component.is_in_air:
-			_process_air_movement()
-		else:
-			_process_ground_movement()
-
-## 处理空中 X/Y 平面物理
-func _process_air_movement() -> void:
-	if input_component.move_dir != Vector2.ZERO:
-		var accel_step := DIAGONAL_ACCEL_STEP if is_diagonal_dir(input_component.move_dir) else CARDINAL_ACCEL_STEP
-		speed_vector += accel_step * input_component.move_dir
-
-	move_and_collide(speed_vector)
-
-## 处理地面 X/Y 平面物理
-func _process_ground_movement() -> void:
-	speed_vector = calculate_walk_velocity(input_component.move_dir)
+	sm.physics_tick()
+	#if sm.current_state.can_move:
+		#if z_axis_component.is_in_air:
+			#_process_air_movement()
+		#else:
+			#_process_ground_movement()
 	_handle_facing(input_component.move_dir.x)
-	if input_component.move_dir != Vector2.ZERO:
+	_apply_physics_movement()
+func apply_x_deceleration(rate: float) -> void:
+	# 1. 先把 Y 轴清零
+	speed_vector.y = 0.0
+	# 2. 对 X 轴做 step 衰减
+	speed_vector.x = move_toward(speed_vector.x, 0.0, rate)
+
+## 🌟 2. 统一物理应用（物理执行层：每一帧/Tick 统一调用）
+func _apply_physics_movement() -> void:
+	# 只要当前 speed_vector 不为 0（无论是走路、惯性滑行、还是被击退），就触发物理移动
+	if not speed_vector.is_zero_approx():
 		move_and_collide(speed_vector)
 
 ## 开始跳跃
@@ -152,13 +152,6 @@ func _handle_facing(move_input_x: float) -> void:
 		facing_direction = new_facing
 		_apply_sprite_flip(facing_direction)
 
-## 强行设置朝向（支持外部直接调用）
-func set_facing(direction: float) -> void:
-	if direction == 0:
-		return
-	var dir := 1 if direction > 0 else -1
-	facing_direction = dir
-	_apply_sprite_flip(dir)
 
 ## 执行真正的节点镜像翻转
 func _apply_sprite_flip(dir: int) -> void:
@@ -191,7 +184,7 @@ func calculate_walk_velocity(input_dir: Vector2) -> Vector2:
 		Dir.UP_LEFT: return Vector2(-DIAGONAL_SPEED_B, -DIAGONAL_SPEED_B)
 		Dir.UP: return Vector2(0.0, -CARDINAL_SPEED_Y)
 		Dir.UP_RIGHT: return Vector2(DIAGONAL_SPEED_A, -DIAGONAL_SPEED_B)
-		_: return Vector2(move_toward(speed_vector.x, 0.0, DECEL_STEP_X), 0.0)
+		_: return speed_vector
 
 ## 计算起跳瞬间的 X/Y 轴平面初始速度
 func calculate_jump_velocity(input_dir: Vector2) -> Vector2:
@@ -205,7 +198,7 @@ func calculate_jump_velocity(input_dir: Vector2) -> Vector2:
 		Dir.UP_LEFT: return JUMP_VELOCITY_UP_LEFT
 		Dir.UP: return Vector2(0.0, -JUMP_SPEED_Y)
 		Dir.UP_RIGHT: return JUMP_VELOCITY_UP_RIGHT
-		_: return Vector2(move_toward(speed_vector.x, 0.0, DECEL_STEP_X), 0.0)
+		_: return speed_vector
 
 # ==============================================================================
 # 9. 信号回调处理 (Signal Callbacks)

@@ -12,17 +12,20 @@ enum State {
 	HURT,
 	LAND,
 	KICK,
+	ELBOW_STRIKE,
+	PASS,
+	TACKLE,
 } 
 @export_group("State Info")
 @export var state: State
-@export var anim_name: StringName = &""
+
 
 @export_group("Capabilities")
 @export var can_move: bool = true
 
 @export_group("Timing & Frame Data")
 #@export var has_windup: bool = true        # 是否具备前摇硬直
-@export var windup_ticks: int = 0          # 前摇延迟 Tick 数（如 3 代表 10 帧）
+		 # 前摇延迟 Tick 数（如 3 代表 10 帧）
 # 🌟 定义转向策略枚举
 enum FacingMode {
 	FOLLOW_INPUT, # 自动跟随玩家输入的方向转向（如 Walk, Idle）

@@ -4,14 +4,11 @@ var is_tackling: bool = false
 func enter() -> void:
 	match MatchManager.get_possession_for(player):
 		MatchManager.BallPossession.MYSELF:
-			print("我运行了一次") 
-			_do_pass()
+			change_state(State.PASS)
 		MatchManager.BallPossession.ENEMY_TEAM:
-			_start_tackle()
+			change_state(State.TACKLE)
 		MatchManager.BallPossession.NONE:
-			_do_pass()
-			print("对话")
-			#self.call_deferred("change_state", State.IDLE)
+			change_state(State.PASS)
 	pass
 
 
@@ -33,9 +30,9 @@ func physics_process(_delta: float) -> void:
 	pass
 
 
-func _do_pass() -> void:
-	change_state(State.IDLE)
-	pass
+#func _do_pass() -> void:
+	#change_state(State.IDLE)
+	#pass
 func _start_tackle() -> void:
 	is_tackling = true
 	var hit_data: Types.HitInfo = Types.HitInfo.new()

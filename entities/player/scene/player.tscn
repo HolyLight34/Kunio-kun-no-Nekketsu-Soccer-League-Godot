@@ -11,8 +11,11 @@
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://entities/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://entities/player/components/states/player_hurt_state.gd" id="13_v0pxu"]
 [ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://entities/player/components/states/player_dribble_brake_state.gd" id="14_ptkv0"]
+[ext_resource type="Script" uid="uid://sbey23vww8d" path="res://entities/player/components/states/player_elbow_strike_state.gd" id="15_wkl3h"]
+[ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://entities/player/components/states/player_pass_state.gd" id="16_imh8g"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://hit_box.tscn" id="17_dg4u3"]
 [ext_resource type="Script" uid="uid://dd5sf8frv84fy" path="res://entities/player/components/states/player_land_state.gd" id="17_ptkv0"]
+[ext_resource type="Script" uid="uid://d2v14o8ksrwd1" path="res://entities/player/components/states/player_tackle_state.gd" id="17_sgsyk"]
 [ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://entities/player/assets/head.png" id="18_c0821"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://hurt_box.tscn" id="18_v0pxu"]
 [ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://entities/player/assets/body.png" id="19_864cw"]
@@ -27,15 +30,16 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ptkv0"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pw4o6"]
 resource_local_to_scene = true
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wkl3h"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c8mko"]
 resource_local_to_scene = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgsyk"]
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "parser", "sm")]
+position = Vector2(71, 126)
 collision_layer = 2
 script = ExtResource("2_w62lr")
 input_component = NodePath("Components/InputComponent")
@@ -68,9 +72,8 @@ vertical_alignment = 1
 
 [node name="Components" type="Node" parent="." unique_id=1587151273]
 
-[node name="StateMachine" parent="Components" unique_id=543815556 node_paths=PackedStringArray("initial_state", "tick_component") instance=ExtResource("4_74h0t")]
+[node name="StateMachine" parent="Components" unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("4_74h0t")]
 initial_state = NodePath("Idle")
-tick_component = NodePath("../TickComponent")
 
 [node name="Idle" type="Node" parent="Components/StateMachine" unique_id=28491428]
 script = ExtResource("4_bbc2b")
@@ -79,34 +82,27 @@ anim_name = &"idle"
 [node name="Run" type="Node" parent="Components/StateMachine" unique_id=369123949]
 script = ExtResource("8_llfb5")
 state = 2
+facing_mode = 1
+anim_name = &"run"
 
 [node name="Brake" type="Node" parent="Components/StateMachine" unique_id=1404277443]
 script = ExtResource("9_fkbio")
 state = 3
+facing_mode = 1
+anim_name = &"brake"
+x_decel_rate = 1.0
 
 [node name="Jump" type="Node" parent="Components/StateMachine" unique_id=178965631]
 script = ExtResource("10_vwqy1")
 state = 4
-anim_name = &"jump"
-windup_ticks = 2
 facing_mode = 1
+anim_name = &"jump"
 
 [node name="Walk" type="Node" parent="Components/StateMachine" unique_id=691485942]
 script = ExtResource("5_iykej")
 state = 1
 anim_name = &"walk"
-
-[node name="ActionA" type="Node" parent="Components/StateMachine" unique_id=1962139031]
-script = ExtResource("22_imh8g")
-state = 5
-can_move = false
-facing_mode = 1
-
-[node name="ActionB" type="Node" parent="Components/StateMachine" unique_id=832557240]
-script = ExtResource("23_sgsyk")
-state = 6
-can_move = false
-facing_mode = 1
+x_decel_rate = 0.75
 
 [node name="Hurt" type="Node" parent="Components/StateMachine" unique_id=559331258]
 script = ExtResource("13_v0pxu")
@@ -115,16 +111,48 @@ state = 7
 [node name="Land" type="Node" parent="Components/StateMachine" unique_id=760253809]
 script = ExtResource("17_ptkv0")
 state = 8
-anim_name = &"land"
 can_move = false
+anim_name = &"land"
+
+[node name="ActionA" type="Node" parent="Components/StateMachine" unique_id=1962139031]
+script = ExtResource("22_imh8g")
+state = 5
+can_move = false
+facing_mode = 1
 
 [node name="Kick" type="Node" parent="Components/StateMachine" unique_id=1329134799]
 script = ExtResource("14_ptkv0")
 state = 9
-anim_name = &"kick"
 can_move = false
-windup_ticks = 4
 facing_mode = 1
+anim_name = &"kick"
+
+[node name="ElbowStrike" type="Node" parent="Components/StateMachine" unique_id=850088266]
+script = ExtResource("15_wkl3h")
+state = 10
+can_move = false
+facing_mode = 1
+anim_name = &"elbow_strike"
+
+[node name="ActionB" type="Node" parent="Components/StateMachine" unique_id=832557240]
+script = ExtResource("23_sgsyk")
+state = 6
+can_move = false
+facing_mode = 1
+
+[node name="Pass" type="Node" parent="Components/StateMachine" unique_id=2005233895]
+script = ExtResource("16_imh8g")
+state = 11
+can_move = false
+facing_mode = 1
+anim_name = &"pass"
+
+[node name="Tackle" type="Node" parent="Components/StateMachine" unique_id=309175364]
+script = ExtResource("17_sgsyk")
+state = 12
+facing_mode = 1
+anim_name = &"tackle"
+x_decel_rate = 0.625
 
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
@@ -168,7 +196,7 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
 position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_ptkv0")
+shape = SubResource("RectangleShape2D_pw4o6")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("18_v0pxu")]
 victim = NodePath("../..")
@@ -176,7 +204,7 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
 position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_wkl3h")
+shape = SubResource("RectangleShape2D_c8mko")
 
 [node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
 collision_layer = 0

@@ -1,7 +1,9 @@
 extends PlayerState
 
 func enter() -> void:
-	player.step_animation_component.play(anim_name)
+	player.speed_vector = Vector2.ZERO
+	anim.play(anim_name)
+	#player.step_animation_component.play(anim_name)
 	pass
 
 

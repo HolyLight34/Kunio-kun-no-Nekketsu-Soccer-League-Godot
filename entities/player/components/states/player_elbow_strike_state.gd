@@ -1,10 +1,9 @@
 extends PlayerState
 
-
-func enter():
+func enter() -> void:
 	var hit_data: Types.HitInfo = Types.HitInfo.new()
-	hit_data.damage = 5
-	hit_data.force = player.endurance
+	hit_data.damage = 2
+	hit_data.force = 0
 	hit_data.direction = player.facing_direction
 	player.hit_box.hit_info = hit_data
 	anim.play(anim_name)
@@ -14,6 +13,7 @@ func enter():
 
 
 func exit() -> void:
+	
 	pass
 
 
@@ -24,4 +24,11 @@ func process(_delta: float) -> void:
 
 func physics_process(_delta: float) -> void:
 	
+	pass
+
+
+func handle_intent(intent: int, _delta: float) -> void:
+	#match intent:
+		#IntentComponent.Intent.IDLE:
+			#change_state(State.IDLE)
 	pass

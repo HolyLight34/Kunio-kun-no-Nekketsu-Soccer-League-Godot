@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://8goknn2xmft" path="res://ball/scripts/ball_hold_state.gd" id="3_07s1p"]
 [ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://ball/scripts/ball_shot_state.gd" id="4_b5n0i"]
 [ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://ball/scripts/ball_free_state.gd" id="5_r3iha"]
-[ext_resource type="Resource" uid="uid://dpqc6ttbrl5ut" path="res://entities/player/action/common/act_shoot.tres" id="7_m05fq"]
 [ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://entities/player/components/state_machine/state_machine.tscn" id="7_r3iha"]
 [ext_resource type="Texture2D" uid="uid://bepsmh7kemgmh" path="res://ball/assets/ball.png" id="8_iwjb2"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://entities/player/assets/blob_shadow.png" id="9_iwjb2"]
@@ -79,8 +78,9 @@ visible = false
 position = Vector2(0, -1)
 texture = ExtResource("9_iwjb2")
 
-[node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("7_r3iha")]
+[node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state", "tick_component") instance=ExtResource("7_r3iha")]
 initial_state = NodePath("Free")
+tick_component = NodePath("../TickComponent")
 
 [node name="Free" type="Node" parent="StateMachine" unique_id=297881210]
 script = ExtResource("5_r3iha")
@@ -91,7 +91,6 @@ state = 1
 
 [node name="Shot" type="Node" parent="StateMachine" unique_id=408952036]
 script = ExtResource("4_b5n0i")
-shoot_data = ExtResource("7_m05fq")
 state = 2
 
 [node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("attacker") instance=ExtResource("9_m05fq")]
@@ -130,9 +129,10 @@ shape = SubResource("CircleShape2D_m05fq")
 [node name="TickComponent" type="Node" parent="." unique_id=1146282096]
 script = ExtResource("11_d7d46")
 
-[node name="ZAxisComponent" type="Node" parent="." unique_id=2046879588 node_paths=PackedStringArray("visual_pivot")]
+[node name="ZAxisComponent" type="Node" parent="." unique_id=2046879588 node_paths=PackedStringArray("visual_pivot", "shadow_sprite")]
 script = ExtResource("12_begx4")
 visual_pivot = NodePath("../Visual")
+shadow_sprite = NodePath("../Shadow")
 
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 

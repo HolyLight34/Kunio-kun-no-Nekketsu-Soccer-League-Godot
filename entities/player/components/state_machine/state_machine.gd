@@ -2,8 +2,9 @@ class_name StateMachine
 extends Node
 
 @export var initial_state: EntityState # 初始状态
-@export var tick_component: TickComponent
-
+#@export var tick_component: TickComponent
+## 🌟 声明一个重置 Tick 请求信号
+signal tick_reset_requested
 var current_state: EntityState
 var states: Dictionary = {}
 var actor: CharacterBody2D
@@ -37,23 +38,28 @@ func init(actor_node: CharacterBody2D) -> void:
 		current_state.enter()
 
 func _ready() -> void:
-	if tick_component:
-		tick_component.tick_triggered.connect(_on_3_tick)
+	#if tick_component:
+		#tick_component.tick_triggered.connect(_on_3_tick)
+		pass
 
 ## 核心 3-Tick 步进
-func _on_3_tick() -> void:
-	# 🌟 如果当前处于前摇/延迟等待中
+## 🌟 由 Player.gd 在每 3-Tick 触发时调用此方法
+func physics_tick() -> void:
+	# 1. 拦截：如果处于前摇倒计时，扣减 Tick 并阻断当前状态更新
 	if is_waiting_delay:
-		print("延迟倒计时中，剩余 Tick: ", _delay_ticks, " 当前物理帧: ", Engine.get_physics_frames())
+		Log.debug(Log.Cat.STATE, "延迟倒计时中，剩余 Tick: %d 当前物理帧: %d" % [_delay_ticks, Engine.get_physics_frames()])
 		_delay_ticks -= 1
 		
-		# 倒计时归零（对应 FC 第 11 帧 / 按键熄灭瞬间）
+		# 倒计时归零，正式触发状态切换
 		if _delay_ticks <= 0:
 			is_waiting_delay = false
 			_perform_actual_switch(_pending_new_state)
 			_pending_new_state = null
-			return
+		return # 🌟 关键：前摇期间，直接拦截，不让旧/新 State 跑逻辑！
 
+	# 2. 正常运行：驱动当前状态的 Tick 逻辑（如计算速度）
+	if current_state:
+		current_state.physics_tick()
 func handle_intent(intent: IntentComponent.Intent, delta: float) -> void:
 	# 如果处于前摇倒计时锁定中，可以拦截输入不传给 current_state
 	if is_waiting_delay:
@@ -77,9 +83,10 @@ func _on_transition_requested(from: EntityState, to: Variant) -> void:
 	#print("请求切入: ", to, " 延迟 Tick: ", target_state.windup_ticks, " 当前物理帧: ", Engine.get_physics_frames())
 
 	# 1. 如果无前摇，立刻执行切换
+	tick_reset_requested.emit()
 	if target_state.windup_ticks <= 0:
-		print(actor.name, " 开始请求延迟切换，目标: ", target_state.name, " 延迟 Tick: ", _delay_ticks," 物理帧： ",Engine.get_physics_frames())
-		tick_component.reset_tick()
+		Log.debug(Log.Cat.STATE, "%s 开始请求延迟切换，目标 %s 延迟 Tick: %s 物理帧: %d" % [actor.name, target_state.name,_delay_ticks, Engine.get_physics_frames()])
+		#print(actor.name, " 开始请求延迟切换，目标: ", target_state.name, " 延迟 Tick: ", _delay_ticks," 物理帧： ",Engine.get_physics_frames())
 		_perform_actual_switch(target_state)
 		# 无前摇状态切入后，立刻重置 Tick 供新状态的物理/逻辑使用
 		
@@ -91,15 +98,15 @@ func _on_transition_requested(from: EntityState, to: Variant) -> void:
 		
 		# 🌟【关键点】：因为是角色独立 TickComponent，收到请求立刻重置！
 		# 从“按下按键的这一帧”开始重新计算精准的 Tick 周期，彻底消除相位延迟
-		tick_component.reset_tick()
-		print(actor.name, " 开始请求延迟切换，目标: ", target_state.name, " 延迟 Tick: ", _delay_ticks," 物理帧： ",Engine.get_physics_frames())
+		Log.debug(Log.Cat.STATE, "%s 开始请求延迟切换，目标 %s 延迟 Tick: %s 物理帧: %d" % [actor.name, target_state.name,_delay_ticks, Engine.get_physics_frames()])
+		#print(actor.name, " 开始请求延迟切换，目标: ", target_state.name, " 延迟 Tick: ", _delay_ticks," 物理帧： ",Engine.get_physics_frames())
 
 ## 真正的原子化状态切换动作
 func _perform_actual_switch(target_state: EntityState) -> void:
 	if current_state:
 		current_state.exit()
-		print(actor.name, " 状态退出: ", current_state.name, " 物理帧: ", Engine.get_physics_frames())
+		Log.info(Log.Cat.STATE, "%s 状态退出: %s 物理帧: %d" % [actor.name, current_state.name, Engine.get_physics_frames()])
 		
 	current_state = target_state
 	current_state.enter()
-	print(actor.name, " 状态进入: ", current_state.name, " 物理帧: ", Engine.get_physics_frames())
+	Log.info(Log.Cat.STATE, "%s 状态进入: %s 物理帧: %d" % [actor.name, current_state.name, Engine.get_physics_frames()])
