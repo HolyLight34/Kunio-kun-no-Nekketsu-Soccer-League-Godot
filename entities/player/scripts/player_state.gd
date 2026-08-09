@@ -11,10 +11,28 @@ enum State {
 	ACTION_B,
 	HURT,
 	LAND,
+	KICK,
 } 
-## 🌟 所有子类状态通用的 Tick 动作配置数据
-@export var action_data: TickActionData
-@export var state: State # 当前状态设置
+@export_group("State Info")
+@export var state: State
+@export var anim_name: StringName = &""
+
+@export_group("Capabilities")
+@export var can_move: bool = true
+
+@export_group("Timing & Frame Data")
+#@export var has_windup: bool = true        # 是否具备前摇硬直
+@export var windup_ticks: int = 0          # 前摇延迟 Tick 数（如 3 代表 10 帧）
+# 🌟 定义转向策略枚举
+enum FacingMode {
+	FOLLOW_INPUT, # 自动跟随玩家输入的方向转向（如 Walk, Idle）
+	LOCK,         # 完全锁定方向，拒绝任何转向（如 Attack 前摇、Shoot、Dash）
+	MANUAL        # 由状态内部逻辑在特定的帧/代码中手动控制转向
+}
+
+@export_group("Facing Control")
+## 该状态下的转向策略
+@export var facing_mode: FacingMode = FacingMode.FOLLOW_INPUT
 # 【核心变量】将通用的 actor 转换为具体的“球员”类型，方便调用球员特有的功能（如血量、速度）
 # get: 语法意味着每次使用 player 变量时，都会实时执行后面的转换逻辑
 var player: Player:

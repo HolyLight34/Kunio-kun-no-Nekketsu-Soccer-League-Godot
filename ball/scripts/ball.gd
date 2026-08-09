@@ -13,10 +13,6 @@ var z_velocity: float = 0.0    # 足球在 Z 轴方向的速度（正数向上�
 signal possession_changed(new_carrier: Node)
 ## 📡 信号：球脱离了控制（被踢飞、漏球、无主滚动）
 signal possession_lost()
-# --- 【环境物理配置】 ---
-@export var GRAVITY_Z: float = 980.0       # Z轴重力加速度
-@export var BOUNCE_COEFF: float = 0.6      # 弹力系数（每次落地保留 60% 的速度反弹）
-@export var FLOOR_FRICTION: float = 200.0  # 地面摩擦力（滚行时每秒减速多少）
 @onready var hit_box: HitBox = $HitBox
 
 var z_speed: float = 0.0 # 垂直速度

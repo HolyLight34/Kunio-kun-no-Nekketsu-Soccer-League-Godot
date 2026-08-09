@@ -2,8 +2,9 @@ extends PlayerState
 
 
 func enter():
-	player.action_driver_component.execute_action(action_data)
-	await player.action_driver_component.landed
+	player.step_animation_component.play(anim_name)
+	player.start_jump()
+	await player.z_axis_component.landed
 	change_state(State.LAND)
 func exit():
 	

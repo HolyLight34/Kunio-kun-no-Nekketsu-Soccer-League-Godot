@@ -1,8 +1,8 @@
 extends PlayerState
 
 func enter(_params: Dictionary = {}) -> void:
-	player.action_driver_component.execute_action(action_data)
-	await player.action_driver_component.action_finished
+	player.step_animation_component.play(anim_name)
+	await player.step_animation_component.animation_finished
 	change_state(State.IDLE)
 	pass
 

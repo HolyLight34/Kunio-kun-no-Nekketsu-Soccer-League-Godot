@@ -13,7 +13,7 @@ extends RefCounted
 class HitInfo:
 	var damage: float = 0.0
 	var force: float = 0.0
-	var direction: Vector2 = Vector2.ZERO
+	var direction: int = 1
 	#var type: Types.AttackType = Types.AttackType.PUNCH_KICK
 	
 	# (未来如果有暴击、属性攻击等，直接在下面这里加变量就行，全项目瞬间同步！)

@@ -1,12 +1,8 @@
 extends PlayerState
 
-#var _animation_finished: bool
 
-
-func enter(_params: Dictionary = {}):
-	player.vh.play_anim("brake")
-	await player.vh.anim_player.animation_finished
-	change_state(State.DRIBBLE_IDLE)
+func enter():
+	player.step_animation_component.play(anim_name)
 	pass
 
 

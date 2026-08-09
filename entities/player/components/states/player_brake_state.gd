@@ -2,8 +2,6 @@ extends PlayerState
 
 
 func enter():
-	player.action_driver_component.execute_action(action_data,player.facing_direction)
-	await player.action_driver_component.action_finished
 	change_state(State.IDLE)
 	pass
 

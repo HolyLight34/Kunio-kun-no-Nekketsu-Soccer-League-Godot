@@ -1,8 +1,7 @@
 extends PlayerState
 
 func enter() -> void:
-	player.target_velocity = Vector2.ZERO
-	player.action_driver_component.execute_action(action_data)
+	player.step_animation_component.play(anim_name)
 	pass
 
 
@@ -14,7 +13,7 @@ func process(_delta: float) -> void:
 	pass
 
 
-func handle_intent(intent: int, _delta: float) -> void:
+func handle_intent(intent: int, _delta: float) -> void:                                                               
 	match intent:
 		IntentComponent.Intent.RUN:
 			change_state(State.RUN)
