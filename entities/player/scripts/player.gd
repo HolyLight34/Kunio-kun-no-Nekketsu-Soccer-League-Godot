@@ -77,14 +77,19 @@ var has_ball: bool = false
 var pending_delay_ticks: int = 0
 var is_transition_pending: bool = false
 
+func _initialize_components() -> void:
+	player_horizontal_movement.set_horizontal_position(
+		position
+	)
+	player_z_movement.set_z_height(visual.position.y)
+	entity_visual_controller.initialize()
+	sm.init(self)
 # ==============================================================================
 # 5. 生命周期 (Engine Lifecycle)
 # ==============================================================================
 func _ready() -> void:
-	sm.init(self)
+	_initialize_components()
 	$Label.text = str(endurance)
-	player_horizontal_movement.set_horizontal_position(position)
-	entity_visual_controller.sync_visual()
 	# 绑定组件信号
 	tick_component.tick_triggered.connect(_on_3_tick)
 	#z_axis_component.landed.connect(_on_landed)
@@ -106,8 +111,8 @@ func _on_3_tick() -> void:
 	player_z_movement.process_z_step()
 	_handle_facing(input_component.move_dir.x)
 	player_horizontal_movement.step_logic_tick()
-	entity_visual_controller.sync_visual()
-	#print(player_horizontal_movement.planar_velocity)
+	entity_visual_controller.sync_physics_state()
+	#entity_visual_controller.sync_visual()
 func apply_x_deceleration(rate: float) -> void:
 	# 1. 先把 Y 轴清零
 	player_horizontal_movement.planar_velocity.y = 0.0

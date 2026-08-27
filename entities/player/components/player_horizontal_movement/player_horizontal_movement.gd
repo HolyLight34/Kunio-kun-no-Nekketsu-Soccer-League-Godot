@@ -71,10 +71,6 @@ func set_horizontal_position(value:Vector2)->void:
 	)
 	#_sync_target()
 func get_horizontal_position()->Vector2:
-	print(Vector2(
-		_from_raw(position_raw.x),
-		_from_raw(position_raw.y)
-	))
 	return Vector2(
 		_from_raw(position_raw.x),
 		_from_raw(position_raw.y)

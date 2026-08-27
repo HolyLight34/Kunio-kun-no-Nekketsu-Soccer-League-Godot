@@ -1,31 +1,61 @@
 # ==============================================================================
 # EntityVisualController.gd
 #
-# 通用实体视觉同步组件
+# 通用实体表现同步组件
 #
 # 作用：
-#   读取水平移动组件和 Z 移动组件的最终物理状态，
+#   读取 HorizontalMovement 与 ZMovement 的最终物理状态，
 #   并同步到实际显示节点。
 #
 # 适用于：
 #   Player
 #   Ball
 #
-# 物理层：
-#   HorizontalMovement -> X / Y
-#   ZMovement          -> Z
+# 数据流：
 #
-# 表现层：
+#   HorizontalMovement
+#           │
+#           │ XY
+#           ↓
 #   EntityVisualController
-#        ↓
-#   visual_root / visual_pivot / shadow
+#           ↑
+#           │ Z
+#           │
+#      ZMovement
 #
-# 注意：
-#   本组件只读取物理状态，不反向修改物理数据。
+#
+# 重要：
+#   本组件只读取物理状态。
+#   不修改 HorizontalMovement / ZMovement 内部数据。
+#
+#
+# 插值：
+#
+#   FC Logic Tick 更新一次真实物理数据。
+#
+#   previous_state
+#         ↓
+#      插值显示
+#         ↓
+#   target_state
+#
+#   插值只影响表现，不影响物理、碰撞、状态机和 FC 数据。
 # ==============================================================================
 
 extends Node
 class_name EntityVisualController
+# ==============================================================================
+# 配置
+# ==============================================================================
+## 一个 FC Logic Tick 对应多少个 Godot Physics Frame。
+##
+## 例如：
+##
+## Godot Physics = 60 Hz
+## FC Logic      ≈ 每 3 个 Physics Frame 更新一次
+##
+## 那么视觉层会在这 3 帧之间进行插值。
+const PHYSICS_FRAMES_PER_LOGIC_TICK: int = 3
 # ==============================================================================
 # 物理组件
 # ==============================================================================
@@ -34,10 +64,7 @@ class_name EntityVisualController
 ##
 ## 需要提供：
 ##
-## get_position() -> Vector2
-##
-## 如果你暂时还没统一 Player / Ball 水平组件接口，
-## 也可以先不绑定，由外部传位置。
+## get_horizontal_position() -> Vector2
 @export var horizontal_movement: Node
 ## Z轴移动组件。
 ##
@@ -45,83 +72,205 @@ class_name EntityVisualController
 ##
 ## get_z_height() -> float
 ## is_in_air: bool
-##
 @export var z_movement: ZMovementBase
 # ==============================================================================
 # 视觉节点
 # ==============================================================================
 @export_group("Visual Nodes")
-## 实体地面位置对应的根节点。
+## 实体地面 XY 位置的节点。
 ##
-## 如果你的 Player / Ball 根节点本身已经由其他地方同步 XY，
-## 这里可以不绑定。
-@export var position_target: Node2D
-## 真正需要随 Z 高度向上偏移的视觉节点。
-##
-## 例如：
+## 通常可以直接绑定：
 ##
 ## Player
-## ├── VisualPivot   <- 绑定这里
+##
+## 或
+##
+## Ball
+##
+## Z高度不会修改这个节点。
+@export var position_target: Node2D
+## 只负责视觉 Z 高度偏移的节点。
+##
+## 推荐场景：
+##
+## Player
+## ├── VisualPivot
 ## │   └── Sprite
 ## └── Shadow
 ##
+## VisualPivot.position.y = -Z
 @export var visual_pivot: Node2D
 ## 阴影节点。
 ##
-## 阴影保持在地面 XY 位置，不随 Z 上升。
-@export var shadow_sprite: Node2D
+## 阴影保持在地面，不随 Z 高度上升。
+@export var shadow_sprite: Sprite2D
 # ==============================================================================
 # 显示配置
 # ==============================================================================
 @export_group("Rendering")
+## 是否开启逻辑 Tick 之间的视觉插值。
+##
 ## true：
-##   保留 1/256 子像素显示，移动更平滑。
+##
+## 物理：
+##
+## 100 ---------- 106
+##
+## 显示：
+##
+## 100 -> 102 -> 104 -> 106
+##
 ##
 ## false：
-##   视觉位置取整数，更接近 FC 像素显示。
+##
+## 直接显示当前物理位置。
+##
+## 方便和 FC / Mesen 对照。
+@export var interpolation_enabled: bool = true
+## 是否保留物理子像素进行显示。
+##
+## true：
+##
+## 100.375
+##
+## 会直接显示 100.375。
+##
+##
+## false：
+##
+## 最终视觉坐标会取整数。
 ##
 ## 注意：
-##   这里只影响显示，不修改物理数据。
+## 只影响显示，不修改物理 raw 数据。
 @export var smooth_subpixel_rendering: bool = true
-## 是否只在空中显示阴影。
+## true：
+## 只在空中显示阴影。
 ##
-## 如果 false，阴影始终显示。
+## false：
+## 阴影始终显示。
 @export var shadow_only_in_air: bool = false
 # ==============================================================================
-# 外部接口
+# 插值状态
 # ==============================================================================
-## 同步当前物理状态到视觉。
+## 当前插值进行到第几个 Physics Frame。
+var interpolation_frame: int = 0
+## 上一个 FC Logic Tick 的 XY 视觉状态。
+var previous_position: Vector2 = Vector2.ZERO
+## 当前 FC Logic Tick 的目标 XY 状态。
+var target_position: Vector2 = Vector2.ZERO
+## 上一个 FC Logic Tick 的视觉 Z 高度。
+var previous_z: float = 0.0
+## 当前 FC Logic Tick 的目标视觉 Z 高度。
+var target_z: float = 0.0
+## 防止第一次同步时从 Vector2.ZERO 插值过去。
+# ==============================================================================
+# 生命周期
+# ==============================================================================
+func _physics_process(_delta: float) -> void:
+	if not interpolation_enabled:
+		_apply_visual_state(
+			target_position,
+			target_z
+		)
+		return
+	interpolation_frame += 1
+	var alpha := minf(
+		float(interpolation_frame)
+		/ float(PHYSICS_FRAMES_PER_LOGIC_TICK),
+		1.0
+	)
+	var display_position := previous_position.lerp(
+		target_position,
+		alpha
+	)
+	var display_z := lerpf(
+		previous_z,
+		target_z,
+		alpha
+	)
+	_apply_visual_state(
+		display_position,
+		display_z
+	)
+# ==============================================================================
+# Logic Tick 同步
+# ==============================================================================
+## 每次 FC Logic Tick 的物理计算全部完成后调用一次。
 ##
-## 推荐在：
+## 推荐调用顺序：
 ##
-## HorizontalMovement.process_xxx_step()
-## ZMovement.process_z_step()
+## horizontal_movement.process_xxx_step()
+## z_movement.process_z_step()
 ##
-## 都执行完成以后调用一次。
-
-func sync_visual() -> void:
-	var horizontal_position := _get_horizontal_position()
-	print(horizontal_position)
-	var visual_height := _get_visual_height()
+## visual_controller.sync_physics_state()
+##
+##
+## 本函数只负责获取新的物理目标值，
+## 不直接修改物理组件。
+func sync_physics_state() -> void:
+	var new_position := _get_horizontal_position()
+	var new_z := _get_visual_z_height()
+	# 第一次采样时不需要插值。
+	#
+	# 否则实体可能会：
+	#
+	# (0,0)
+	#   ↓
+	# 上一个目标值成为新的插值起点。
+	previous_position = target_position
+	previous_z = target_z
+	# 获取最新物理结果。
+	target_position = new_position
+	target_z = new_z
+	# 从头开始这一段插值。
+	interpolation_frame = 0
+# ==============================================================================
+# 初始化
+# ==============================================================================
+func initialize() -> void:
+	var initial_position := _get_horizontal_position()
+	var initial_z := _get_visual_z_height()
+	previous_position = initial_position
+	target_position = initial_position
+	previous_z = initial_z
+	target_z = initial_z
+	interpolation_frame = PHYSICS_FRAMES_PER_LOGIC_TICK
+	_apply_visual_state(
+		initial_position,
+		initial_z
+	)
+# ==============================================================================
+# 应用最终视觉状态
+# ==============================================================================
+func _apply_visual_state(
+	horizontal_position: Vector2,
+	z_height: float
+) -> void:
+	var display_position := horizontal_position
+	var display_z := z_height
 	# --------------------------------------------------------------------------
-	# 是否显示子像素
+	# 像素显示
+	#
+	# 这里处理的是最终显示数据。
+	#
+	# 绝对不要把 floor 后的数据写回物理组件。
 	# --------------------------------------------------------------------------
 	if not smooth_subpixel_rendering:
-		horizontal_position = horizontal_position.floor()
-		visual_height = floorf(visual_height)
+		display_position = display_position.floor()
+		display_z = floorf(display_z)
 	# --------------------------------------------------------------------------
-	# 同步地面 XY
+	# XY
 	# --------------------------------------------------------------------------
 	if position_target:
-		position_target.position = horizontal_position
+		position_target.position = display_position
 	# --------------------------------------------------------------------------
-	# 同步视觉 Z 高度
+	# Z
 	#
-	# Z 在 2.5D 中表现为视觉节点向上移动。
+	# Godot Y正方向向下，
+	# 所以 Z 高度需要写成负的视觉 Y 偏移。
 	# --------------------------------------------------------------------------
 	if visual_pivot:
-		visual_pivot.position.y = -visual_height
-
+		visual_pivot.position.y = -display_z
 	# --------------------------------------------------------------------------
 	# 阴影
 	# --------------------------------------------------------------------------
@@ -130,59 +279,53 @@ func sync_visual() -> void:
 			shadow_sprite.visible = _is_in_air()
 		else:
 			shadow_sprite.visible = true
-
 # ==============================================================================
-# 获取水平位置
+# 获取水平物理位置
 # ==============================================================================
 func _get_horizontal_position() -> Vector2:
 	if horizontal_movement == null:
-		return Vector2.ZERO
-	if horizontal_movement.has_method("get_horizontal_position"):
+		return (
+			position_target.position
+			if position_target
+			else Vector2.ZERO
+		)
+	if horizontal_movement.has_method(
+		"get_horizontal_position"
+	):
 		return horizontal_movement.get_horizontal_position()
 	push_warning(
-		"EntityVisualController: horizontal_movement 缺少 get_position()"
+		"EntityVisualController: " +
+		"horizontal_movement 缺少 get_horizontal_position()"
 	)
 	return Vector2.ZERO
 # ==============================================================================
-# 获取视觉 Z 高度
+# 获取最终视觉 Z 高度
 # ==============================================================================
-func _get_visual_height() -> float:
+func _get_visual_z_height() -> float:
 	if z_movement == null:
 		return 0.0
 	# --------------------------------------------------------------------------
-	# 已经不在空中：
+	# 已经落地
 	#
-	# 视觉必须贴地。
-	#
-	# 例如足球物理可能仍保留：
+	# 足球物理可能仍然保存：
 	#
 	# z_height_raw = 127
-	# = 0.49609375
 	#
-	# 这是 FC 的物理子像素余量，
-	# 不代表足球视觉上还悬空。
+	# 即：
+	#
+	# 0.49609375
+	#
+	# 这是 FC 为下一次反弹保留的物理子像素，
+	# 不代表视觉上足球应该悬空。
 	# --------------------------------------------------------------------------
 	if not _is_in_air():
 		return 0.0
-	if not z_movement.has_method("get_z_height"):
-		push_warning(
-			"EntityVisualController: z_movement 缺少 get_z_height()"
-		)
-		return 0.0
-	var height: float = z_movement.get_z_height()
+	var height := z_movement.get_z_height()
 	# --------------------------------------------------------------------------
-	# 防止物理计算过程中的负 Z 被直接显示。
+	# 足球落地检测过程中可能暂时出现 Z < 0。
 	#
-	# 足球落地时可能先出现：
-	#
-	# Z < 0
-	#
-	# 然后在同一物理逻辑步完成：
-	#
-	# 子像素修正
-	# 反弹计算
-	#
-	# 即使调用时机出现问题，视觉也不会陷入地下。
+	# 这种负高度属于物理计算中间状态，
+	# 视觉永远不允许显示到地下。
 	# --------------------------------------------------------------------------
 	return maxf(
 		height,
