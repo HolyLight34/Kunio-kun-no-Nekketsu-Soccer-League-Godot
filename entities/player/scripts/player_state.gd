@@ -21,7 +21,7 @@ enum State {
 
 
 @export_group("Capabilities")
-@export var can_move: bool = true
+#@export var can_move: bool = true
 
 @export_group("Timing & Frame Data")
 #@export var has_windup: bool = true        # 是否具备前摇硬直

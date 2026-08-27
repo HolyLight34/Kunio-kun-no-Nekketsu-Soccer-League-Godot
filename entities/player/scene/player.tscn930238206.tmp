@@ -21,36 +21,33 @@
 [ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://entities/player/assets/body.png" id="19_864cw"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://entities/player/assets/blob_shadow.png" id="20_c0821"]
 [ext_resource type="AnimationLibrary" uid="uid://clq760ydupmc7" path="res://player_anims.res" id="20_focbt"]
-[ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://entities/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
 [ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://entities/player/components/states/player_action_a_state.gd" id="22_imh8g"]
-[ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://entities/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
+[ext_resource type="Script" uid="uid://dsrgpnl0vd46f" path="res://xy_axis_component.gd" id="23_c8mko"]
+[ext_resource type="Script" uid="uid://cxhvk4fg1bttw" path="res://entities/player/components/z_axis_component/z_axis_component.gd" id="23_pw4o6"]
 [ext_resource type="Script" uid="uid://brlddk1s0yv6g" path="res://entities/player/components/states/player_action_b_state.gd" id="23_sgsyk"]
 [ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://entities/player/components/tick_component/tick_component.gd" id="24_c8mko"]
-[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://entity_visual_controller.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://entities/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pw4o6"]
+resource_local_to_scene = true
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c8mko"]
 resource_local_to_scene = true
-size = Vector2(16, 8)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_h2l6i"]
-resource_local_to_scene = true
-size = Vector2(16, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgsyk"]
-size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "parser", "sm")]
-position = Vector2(107, 118)
+position = Vector2(71, 126)
 collision_layer = 2
 script = ExtResource("2_w62lr")
 input_component = NodePath("Components/InputComponent")
 parser = NodePath("Components/IntentComponent")
 sm = NodePath("Components/StateMachine")
 endurance = 50
+metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=237613255]
 shape = SubResource("RectangleShape2D_bbc2b")
@@ -82,7 +79,6 @@ initial_state = NodePath("Idle")
 [node name="Idle" type="Node" parent="Components/StateMachine" unique_id=28491428]
 script = ExtResource("4_bbc2b")
 anim_name = &"idle"
-x_decel_rate = 0.75
 
 [node name="Run" type="Node" parent="Components/StateMachine" unique_id=369123949]
 script = ExtResource("8_llfb5")
@@ -162,8 +158,10 @@ player = NodePath("../..")
 input = NodePath("../InputComponent")
 player = NodePath("../..")
 
-[node name="PlayerZMovement" type="Node" parent="Components" unique_id=1092353589]
-script = ExtResource("20_pw4o6")
+[node name="ZAxisComponent" type="Node" parent="Components" unique_id=1092353589 node_paths=PackedStringArray("visual_pivot", "shadow_sprite")]
+script = ExtResource("23_pw4o6")
+visual_pivot = NodePath("../../Visual")
+shadow_sprite = NodePath("../../Shadow")
 
 [node name="TickComponent" type="Node" parent="Components" unique_id=934578256]
 script = ExtResource("24_c8mko")
@@ -172,17 +170,9 @@ script = ExtResource("24_c8mko")
 script = ExtResource("25_h2l6i")
 anim_player = NodePath("../../AnimationPlayer")
 
-[node name="PlayerHorizontalMovement" type="Node" parent="Components" unique_id=769462864]
+[node name="XYAxisComponent" type="Node" parent="Components" unique_id=769462864 node_paths=PackedStringArray("host_entity")]
 script = ExtResource("23_c8mko")
-
-[node name="EntityVisualController" type="Node" parent="Components" unique_id=500229569 node_paths=PackedStringArray("horizontal_movement", "z_movement", "position_target", "visual_pivot", "shadow_sprite")]
-script = ExtResource("24_h2l6i")
-horizontal_movement = NodePath("../PlayerHorizontalMovement")
-z_movement = NodePath("../PlayerZMovement")
-position_target = NodePath("../..")
-visual_pivot = NodePath("../../Visual")
-shadow_sprite = NodePath("../../Shadow")
-shadow_only_in_air = true
+host_entity = NodePath("../..")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1064463610]
 
@@ -207,15 +197,15 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
 position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_c8mko")
+shape = SubResource("RectangleShape2D_pw4o6")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("18_v0pxu")]
 victim = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_h2l6i")
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_c8mko")
 
 [node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
 collision_layer = 0
@@ -223,7 +213,7 @@ collision_mask = 8
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Colliders/PickupSensor" unique_id=1365573373]
-position = Vector2(0, -4)
+position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_sgsyk")
 debug_color = Color(1, 1, 0, 0.29803923)
 

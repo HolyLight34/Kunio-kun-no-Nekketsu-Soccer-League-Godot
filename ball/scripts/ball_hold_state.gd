@@ -23,6 +23,7 @@ func process(_delta: float) -> void:
 
 
 func physics_process(delta: float) -> void:
+	#print(ball.position)
 	var facing_sign = sign(ball.carrier.visual.scale.x)
 	ball.global_position = ball.carrier.global_position + Vector2(ball.CARRY_OFFSET.x * facing_sign, ball.CARRY_OFFSET.y)
 	pass

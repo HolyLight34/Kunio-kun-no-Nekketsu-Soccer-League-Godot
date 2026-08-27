@@ -44,10 +44,7 @@ func _ready() -> void:
 	pass
 func _physics_process(_delta: float) -> void:
 	# --- 方向处理 ---
-	var x := Input.get_axis(action_left, action_right) # 按 A 返回 -1.0，按 D 返回 1.0，不按返回 0.0
-	var y := Input.get_axis(action_up, action_down)    # 按 W 返回 -1.0，按 S 返回 1.0，不按返回 0.0
-
-	move_dir = Vector2(x, y) # 得到的直接就是干净的 Vector2(1, 1)、Vector2(-1, 0) 或 Vector2(0, 0)！
+	move_dir = Input.get_vector(action_left,action_right,action_up,action_down)
 	dir_up_just = Input.is_action_just_pressed(action_up)
 	dir_down_just = Input.is_action_just_pressed(action_down)
 	dir_left_just = Input.is_action_just_pressed(action_left)

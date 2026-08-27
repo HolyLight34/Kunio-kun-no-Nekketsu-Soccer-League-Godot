@@ -9,7 +9,7 @@ func enter() -> void:
 	pass
 
 func physics_tick() -> void:
-	apply_state_x_deceleration()
+	player.xy_axis_component.apply_x_deceleration(x_decel_rate)
 	pass
 func exit() -> void:
 

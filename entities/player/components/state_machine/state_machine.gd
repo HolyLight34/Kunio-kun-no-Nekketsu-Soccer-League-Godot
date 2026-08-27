@@ -37,10 +37,6 @@ func init(actor_node: CharacterBody2D) -> void:
 		current_state = initial_state
 		current_state.enter()
 
-func _ready() -> void:
-	#if tick_component:
-		#tick_component.tick_triggered.connect(_on_3_tick)
-		pass
 
 ## 核心 3-Tick 步进
 ## 🌟 由 Player.gd 在每 3-Tick 触发时调用此方法
@@ -80,13 +76,10 @@ func _on_transition_requested(from: EntityState, to: Variant) -> void:
 	if not target_state:
 		return
 
-	#print("请求切入: ", to, " 延迟 Tick: ", target_state.windup_ticks, " 当前物理帧: ", Engine.get_physics_frames())
-
 	# 1. 如果无前摇，立刻执行切换
 	tick_reset_requested.emit()
 	if target_state.windup_ticks <= 0:
 		Log.debug(Log.Cat.STATE, "%s 开始请求延迟切换，目标 %s 延迟 Tick: %s 物理帧: %d" % [actor.name, target_state.name,_delay_ticks, Engine.get_physics_frames()])
-		#print(actor.name, " 开始请求延迟切换，目标: ", target_state.name, " 延迟 Tick: ", _delay_ticks," 物理帧： ",Engine.get_physics_frames())
 		_perform_actual_switch(target_state)
 		# 无前摇状态切入后，立刻重置 Tick 供新状态的物理/逻辑使用
 		

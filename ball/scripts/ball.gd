@@ -22,15 +22,36 @@ var carrier: Player = null
 
 const CARRY_OFFSET: Vector2 = Vector2(8, 0)
 @onready var visual: Node2D = $Visual
+@onready var step_animation_component: StepAnimationComponent = $StepAnimationComponent
+var speed_vector: Vector2
+@onready var ball_z_movement: BallZMovement = $BallZMovement
+@onready var entity_visual_controller: EntityVisualController = $EntityVisualController
 
 
 var is_counting_apex: bool = false
 var apex_frame_timer: int = 0
 var last_recorded_height: float = 0.0
 
-
+func _on_3_tick() -> void:
+	if sm.is_waiting_delay:
+		return
+				
+	step_animation_component.advance_tick()
+	ball_z_movement.process_z_step()
+	
+	sm.physics_tick()
+	_apply_physics_movement()
+	entity_visual_controller.sync_visual()
+	Log.debug(Log.Cat.PHYSICS,"物理帧：%d " % [Engine.get_physics_frames()])
+	print(position)
+	
+func _apply_physics_movement() -> void:
+	# 只要当前 speed_vector 不为 0（无论是走路、惯性滑行、还是被击退），就触发物理移动
+	if not speed_vector.is_zero_approx():
+		move_and_collide(speed_vector)
 func _physics_process(_delta: float) -> void:
-	move_and_slide()
+	#move_and_slide()
+	pass
 
 # 被捡起时的切换接口
 func set_carried_by(new_carrier: Player) -> void:
@@ -48,6 +69,7 @@ func release(initial_velocity: Vector2) -> void:
 #region
 @onready var sm: StateMachine = $StateMachine
 @onready var pickup_area: Area2D = $PickupArea
+@onready var tick_component: TickComponent = $TickComponent
 
 #endregion
 func be_kicked(initial_velocity: int, upward_force: float) -> void:
@@ -63,6 +85,14 @@ func be_kicked(initial_velocity: int, upward_force: float) -> void:
 	sm.change_state(BallState.State.SHOT)
 func _ready() -> void:
 	sm.init(self)
+	tick_component.tick_triggered.connect(_on_3_tick)
+	# 打印出来的依然会是精确的 0.4375
+	#print("实际运行的弹力系数为: ", z_axis_component.bounce_factor)
+	#z_axis_component.apply_impulse(8)
+	
+	ball_z_movement.launch(8)
+	#speed_vector = 8*Vector2.RIGHT
+	#print(position)
 	pass
 
 

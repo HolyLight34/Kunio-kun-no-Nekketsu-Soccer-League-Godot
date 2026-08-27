@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cbo5wiy0tu73u"]
+
+[ext_resource type="Script" uid="uid://mbg4xwi1ji0w" path="res://BallHorizontalComponent.gd" id="1_wtcfe"]
+
+[node name="BallHorizontalComponent" type="Node" unique_id=259927848]
+script = ExtResource("1_wtcfe")

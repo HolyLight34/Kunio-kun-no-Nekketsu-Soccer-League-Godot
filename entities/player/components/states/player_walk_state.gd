@@ -16,16 +16,13 @@ func exit() -> void:
 func process(_delta: float) -> void:
 	pass
 func physics_tick() -> void:
-	if player.input_component.move_dir != Vector2.ZERO:
-		player.speed_vector = player.calculate_walk_velocity(player.input_component.move_dir)
-	else :
-		apply_state_x_deceleration()
+	#print(player.player_horizontal_movement.get_velocity())
+	player.player_horizontal_movement.set_move_velocity(2.375,player.input_component.move_dir)
 	pass
 func handle_intent(intent: int, _delta: float) -> void:
 	match intent:
 		IntentComponent.Intent.IDLE:
-			if player.speed_vector == Vector2.ZERO:
-				change_state(State.IDLE)
+			change_state(State.IDLE)
 		IntentComponent.Intent.JUMP:
 			change_state(State.JUMP)
 		IntentComponent.Intent.RUN:

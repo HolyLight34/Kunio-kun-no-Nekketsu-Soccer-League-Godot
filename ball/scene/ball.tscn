@@ -9,11 +9,14 @@
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://entities/player/assets/blob_shadow.png" id="9_iwjb2"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://hit_box.tscn" id="9_m05fq"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://hurt_box.tscn" id="10_d7d46"]
+[ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://entities/player/components/z_axis_component/ball_z_movement.gd" id="11_begx4"]
 [ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://entities/player/components/tick_component/tick_component.gd" id="11_d7d46"]
-[ext_resource type="Script" uid="uid://cxhvk4fg1bttw" path="res://entities/player/components/z_axis_component/z_axis_component.gd" id="12_begx4"]
+[ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://entities/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
+[ext_resource type="PackedScene" uid="uid://cbo5wiy0tu73u" path="res://BallHorizontalComponent.tscn" id="13_begx4"]
+[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://entity_visual_controller.gd" id="14_h8xgc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
-radius = 9.0
+radius = 0.0
 
 [sub_resource type="Animation" id="Animation_m05fq"]
 length = 0.001
@@ -51,20 +54,19 @@ _data = {
 &"roll": SubResource("Animation_iwjb2")
 }
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ni7dn"]
-radius = 9.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jabx6"]
+size = Vector2(16, 12)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_iwjb2"]
-radius = 9.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ef6ou"]
+size = Vector2(16, 12)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_m05fq"]
-radius = 9.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_quynm"]
+size = Vector2(16, 12)
 
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_ncgq8")
-metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1823340034]
 position = Vector2(0, -7)
@@ -78,9 +80,8 @@ visible = false
 position = Vector2(0, -1)
 texture = ExtResource("9_iwjb2")
 
-[node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state", "tick_component") instance=ExtResource("7_r3iha")]
+[node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("7_r3iha")]
 initial_state = NodePath("Free")
-tick_component = NodePath("../TickComponent")
 
 [node name="Free" type="Node" parent="StateMachine" unique_id=297881210]
 script = ExtResource("5_r3iha")
@@ -98,7 +99,7 @@ attacker = NodePath("..")
 
 [node name="CollisionShape2D" parent="HitBox" index="0" unique_id=886247332]
 position = Vector2(0, -7)
-shape = SubResource("CircleShape2D_ni7dn")
+shape = SubResource("RectangleShape2D_jabx6")
 
 [node name="HurtBox" parent="." unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("10_d7d46")]
 collision_mask = 64
@@ -106,7 +107,7 @@ victim = NodePath("..")
 
 [node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=75084209]
 position = Vector2(0, -7)
-shape = SubResource("CircleShape2D_iwjb2")
+shape = SubResource("RectangleShape2D_ef6ou")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1616589881]
 
@@ -124,15 +125,29 @@ monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea" unique_id=790405381]
 position = Vector2(0, -7)
-shape = SubResource("CircleShape2D_m05fq")
+shape = SubResource("RectangleShape2D_quynm")
 
 [node name="TickComponent" type="Node" parent="." unique_id=1146282096]
 script = ExtResource("11_d7d46")
 
-[node name="ZAxisComponent" type="Node" parent="." unique_id=2046879588 node_paths=PackedStringArray("visual_pivot", "shadow_sprite")]
-script = ExtResource("12_begx4")
+[node name="BallZMovement" type="Node" parent="." unique_id=2046879588]
+script = ExtResource("11_begx4")
+
+[node name="StepAnimationComponent" type="Node" parent="." unique_id=942192342]
+script = ExtResource("12_d7d46")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1417374518]
+
+[node name="BallHorizontalComponent" parent="." unique_id=259927848 instance=ExtResource("13_begx4")]
+
+[node name="EntityVisualController" type="Node" parent="." unique_id=1813904894 node_paths=PackedStringArray("horizontal_movement", "z_movement", "position_target", "visual_pivot", "shadow_sprite")]
+script = ExtResource("14_h8xgc")
+horizontal_movement = NodePath("..")
+z_movement = NodePath("../BallZMovement")
+position_target = NodePath("..")
 visual_pivot = NodePath("../Visual")
 shadow_sprite = NodePath("../Shadow")
+shadow_only_in_air = true
 
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 
