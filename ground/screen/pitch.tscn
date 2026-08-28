@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://ca3h7vuvg2280" path="res://ground/assets/boundary_line.png" id="2_u1350"]
 [ext_resource type="Texture2D" uid="uid://wng7jmh2ojjb" path="res://ground/assets/goal.png" id="3_3sqpy"]
 [ext_resource type="PackedScene" uid="uid://cd56s8raml18p" path="res://entities/player/scene/player.tscn" id="5_73vmh"]
-[ext_resource type="PackedScene" uid="uid://bjiv5srw37o2d" path="res://ball/scene/ball.tscn" id="6_73vmh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t5q6m"]
 texture = ExtResource("1_qwjm8")
@@ -219,5 +218,3 @@ position = Vector2(75, 77)
 team_id = 1
 player_id = 2
 endurance = 60
-
-[node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_73vmh")]

@@ -131,7 +131,7 @@ func apply_air_steering(
 	)
 const MAX_AIR_VX: float = 6.0
 const MAX_AIR_VY: float = 4.0
-func clamp_air_velocity() -> void:
+func clamp_velocity() -> void:
 	var max_x := _to_raw(MAX_AIR_VX)
 	var max_y := _to_raw(MAX_AIR_VY)
 	velocity_raw.x = clampi(
@@ -163,10 +163,56 @@ func stop_immediately()->void:
 # 3. 冲刺结束
 #
 # ==============================================================================
+const PHYSICS_FRAMES_PER_LOGIC_TICK := 3
+var tick_motion_frame := 0
+var tick_displacement_raw: Vector2i
+func _physics_process(delta: float) -> void:
+	if tick_motion_frame >= PHYSICS_FRAMES_PER_LOGIC_TICK:
+		return
+	tick_motion_frame = mini(
+		tick_motion_frame + 1,
+		PHYSICS_FRAMES_PER_LOGIC_TICK
+	)
+
+	position_raw += Vector2i(
+		_get_motion_frame_displacement(
+			tick_displacement_raw.x,
+			tick_motion_frame
+		),
+		_get_motion_frame_displacement(
+			tick_displacement_raw.y,
+			tick_motion_frame
+		)
+	)
+	#print(_from_raw(position_raw.x))
 func step_logic_tick()->void:
-	clamp_air_velocity()
-	position_raw += velocity_raw
-	#_sync_target()
+	tick_motion_frame = 0
+	clamp_velocity()
+	tick_displacement_raw = velocity_raw
+	#position_raw += velocity_raw
+func _get_motion_frame_displacement(
+	total_displacement_raw: int,
+	frame: int
+) -> int:
+	var current_progress: float = (
+		float(frame)
+		/ float(PHYSICS_FRAMES_PER_LOGIC_TICK)
+	)
+
+	var previous_progress: float = (
+		float(frame - 1)
+		/ float(PHYSICS_FRAMES_PER_LOGIC_TICK)
+	)
+
+	var total_moved_now_raw: int = roundi(
+		total_displacement_raw * current_progress
+	)
+
+	var total_moved_before_raw: int = roundi(
+		total_displacement_raw * previous_progress
+	)
+
+	return total_moved_now_raw - total_moved_before_raw	
 const BASE_SPEED: float = 8.0
 func _get_base_velocity_raw(
 	direction_normalized: Vector2

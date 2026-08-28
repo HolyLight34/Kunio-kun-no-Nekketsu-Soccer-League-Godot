@@ -111,8 +111,6 @@ func _on_3_tick() -> void:
 	player_z_movement.process_z_step()
 	_handle_facing(input_component.move_dir.x)
 	player_horizontal_movement.step_logic_tick()
-	entity_visual_controller.sync_physics_state()
-	#entity_visual_controller.sync_visual()
 func apply_x_deceleration(rate: float) -> void:
 	# 1. 先把 Y 轴清零
 	player_horizontal_movement.planar_velocity.y = 0.0

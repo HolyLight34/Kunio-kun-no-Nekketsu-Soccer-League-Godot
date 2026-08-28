@@ -41,7 +41,7 @@ func _on_3_tick() -> void:
 	
 	sm.physics_tick()
 	_apply_physics_movement()
-	entity_visual_controller.sync_visual()
+	#entity_visual_controller.sync_visual()
 	Log.debug(Log.Cat.PHYSICS,"物理帧：%d " % [Engine.get_physics_frames()])
 	print(position)
 	
