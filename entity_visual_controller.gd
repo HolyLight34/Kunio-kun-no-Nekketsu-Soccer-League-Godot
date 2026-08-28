@@ -17,7 +17,6 @@ class_name EntityVisualController
 @export_group("Rendering")
 
 @export var smooth_subpixel_rendering: bool = true
-@export var shadow_only_in_air: bool = false
 
 
 func _physics_process(_delta: float) -> void:
@@ -52,10 +51,7 @@ func _apply_visual_state(
 		visual_pivot.position.y = -display_z
 
 	if shadow_sprite:
-		if shadow_only_in_air:
-			shadow_sprite.visible = _is_in_air()
-		else:
-			shadow_sprite.visible = true
+		shadow_sprite.visible = _should_show_shadow()
 
 func _get_horizontal_position() -> Vector2:
 	if horizontal_movement == null:
@@ -90,7 +86,11 @@ func _get_visual_z_height() -> float:
 		0.0
 	)
 
+func _should_show_shadow() -> bool:
+	if z_movement == null:
+		return false
 
+	return z_movement.should_show_shadow()
 func _is_in_air() -> bool:
 	if z_movement == null:
 		return false

@@ -104,8 +104,9 @@ signal finished
 
 @export var wet_ball:bool = false
 
-
-
+var shadow_visible: bool = false
+func should_show_shadow() -> bool:
+	return shadow_visible
 # ==============================================================================
 # 物理状态
 # ==============================================================================
@@ -136,6 +137,7 @@ signal finished
 func launch(
 	initial_velocity:float
 )->void:
+	shadow_visible = true
 	apply_vertical_velocity(initial_velocity)
 
 
@@ -148,10 +150,15 @@ func launch(
 # ==============================================================================
 func _check_landing() -> bool:
 	return z_height_raw < 0 and z_velocity_raw < 0
+func process_z_step() -> void:
+	if is_in_air and z_velocity_raw > 0 and not shadow_visible:
+		shadow_visible = true
 
+	super.process_z_step()
 func _process_landing()->void:
 	# FC:
 	# 保留低8位子像素
+	shadow_visible = false
 	_apply_landing_height_correction()
 	_calculate_rebound_velocity_raw()
 	landed.emit()

@@ -74,7 +74,8 @@ func _physics_process(_delta: float) -> void:
 
 func _check_landing() -> bool:
 	return false
-
+func should_show_shadow() -> bool:
+	return is_in_air
 
 func _process_landing() -> void:
 	pass

@@ -40,18 +40,10 @@ func _on_3_tick() -> void:
 	ball_z_movement.process_z_step()
 	
 	sm.physics_tick()
-	_apply_physics_movement()
-	#entity_visual_controller.sync_visual()
 	Log.debug(Log.Cat.PHYSICS,"物理帧：%d " % [Engine.get_physics_frames()])
 	print(position)
 	
-func _apply_physics_movement() -> void:
-	# 只要当前 speed_vector 不为 0（无论是走路、惯性滑行、还是被击退），就触发物理移动
-	if not speed_vector.is_zero_approx():
-		move_and_collide(speed_vector)
-func _physics_process(_delta: float) -> void:
-	#move_and_slide()
-	pass
+
 
 # 被捡起时的切换接口
 func set_carried_by(new_carrier: Player) -> void:
