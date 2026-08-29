@@ -12,7 +12,9 @@
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://entities/player/components/z_axis_component/ball_z_movement.gd" id="11_begx4"]
 [ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://entities/player/components/tick_component/tick_component.gd" id="11_d7d46"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://entities/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
+[ext_resource type="Script" uid="uid://djtmyon3il0b5" path="res://ball_horizontal_component.gd" id="14_1xsu1"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://entity_visual_controller.gd" id="14_h8xgc"]
+[ext_resource type="PackedScene" uid="uid://q80hg76qjjiu" path="res://tick_timer_component.tscn" id="15_1xsu1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
 radius = 0.0
@@ -80,7 +82,7 @@ position = Vector2(0, -2)
 texture = ExtResource("9_iwjb2")
 
 [node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("7_r3iha")]
-initial_state = NodePath("Free")
+initial_state = NodePath("Shot")
 
 [node name="Free" type="Node" parent="StateMachine" unique_id=297881210]
 script = ExtResource("5_r3iha")
@@ -135,11 +137,17 @@ script = ExtResource("12_d7d46")
 
 [node name="EntityVisualController" type="Node" parent="." unique_id=1813904894 node_paths=PackedStringArray("horizontal_movement", "z_movement", "position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("14_h8xgc")
-horizontal_movement = NodePath("..")
+horizontal_movement = NodePath("../BallHorizontalComponent")
 z_movement = NodePath("../BallZMovement")
 position_target = NodePath("..")
 visual_pivot = NodePath("../Visual")
 shadow_sprite = NodePath("../Shadow")
+
+[node name="BallHorizontalComponent" type="Node" parent="." unique_id=1995039209]
+script = ExtResource("14_1xsu1")
+
+[node name="TickTimerComponent" parent="." unique_id=883416690 node_paths=PackedStringArray("tick_component") instance=ExtResource("15_1xsu1")]
+tick_component = NodePath("../TickComponent")
 
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 

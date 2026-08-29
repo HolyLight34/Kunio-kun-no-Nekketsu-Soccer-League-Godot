@@ -16,6 +16,7 @@ var tick_displacement_raw: int = 0
 # 外部接口
 # ==============================================================================
 func set_z_height(value: float) -> void:
+	is_in_air = true
 	z_height_raw = _to_raw(value)
 func get_z_height() -> float:
 	return _from_raw(z_height_raw)

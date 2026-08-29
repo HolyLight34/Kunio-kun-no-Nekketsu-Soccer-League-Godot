@@ -14,7 +14,7 @@ enum Cat {
 
 # 🌟 2. 用 Enum 作为 Dictionary 的 Key
 var enabled_categories: Dictionary = {
-	Cat.PHYSICS: false,   # 物理/位移/Tick 计算
+	Cat.PHYSICS: true,   # 物理/位移/Tick 计算
 	Cat.STATE: true,      # 状态机切换
 	Cat.INPUT: false,     # 意图/按键解析
 	Cat.BALL: true,       # 球权/抢球/碰撞

@@ -26,22 +26,31 @@ const CARRY_OFFSET: Vector2 = Vector2(8, 0)
 var speed_vector: Vector2
 @onready var ball_z_movement: BallZMovement = $BallZMovement
 @onready var entity_visual_controller: EntityVisualController = $EntityVisualController
+@onready var tick_timer_component: TickTimerComponent = $TickTimerComponent
 
 
 var is_counting_apex: bool = false
 var apex_frame_timer: int = 0
 var last_recorded_height: float = 0.0
+func _ready() -> void:
+	sm.init(self)
+	tick_component.tick_triggered.connect(_on_3_tick)
+	ball_z_movement.landed.connect(ball_horizontal_component.apply_landing_decay)
+	ball_z_movement.finished.connect(ball_horizontal_component.roll)
+	pass
 
 func _on_3_tick() -> void:
 	if sm.is_waiting_delay:
 		return
 				
-	step_animation_component.advance_tick()
-	ball_z_movement.process_z_step()
-	
 	sm.physics_tick()
+	ball_z_movement.process_z_step()
+	ball_horizontal_component.step_logic_tick()
+	
+	step_animation_component.advance_tick()
 	Log.debug(Log.Cat.PHYSICS,"物理帧：%d " % [Engine.get_physics_frames()])
-	print(position)
+	print(ball_horizontal_component.get_horizontal_velocity())
+	
 	
 
 
@@ -62,6 +71,7 @@ func release(initial_velocity: Vector2) -> void:
 @onready var sm: StateMachine = $StateMachine
 @onready var pickup_area: Area2D = $PickupArea
 @onready var tick_component: TickComponent = $TickComponent
+@onready var ball_horizontal_component: BallHorizontalComponent = $BallHorizontalComponent
 
 #endregion
 func be_kicked(initial_velocity: int, upward_force: float) -> void:
@@ -75,17 +85,6 @@ func be_kicked(initial_velocity: int, upward_force: float) -> void:
 	# 2. 把力道作为初始化参数，交给自己内部的 Launch 状态！
 	# 3. 瞬间切入足球自己的 Launch 状态！
 	sm.change_state(BallState.State.SHOT)
-func _ready() -> void:
-	sm.init(self)
-	tick_component.tick_triggered.connect(_on_3_tick)
-	# 打印出来的依然会是精确的 0.4375
-	#print("实际运行的弹力系数为: ", z_axis_component.bounce_factor)
-	#z_axis_component.apply_impulse(8)
-	
-	ball_z_movement.launch(8)
-	#speed_vector = 8*Vector2.RIGHT
-	#print(position)
-	pass
 
 
 func _process(_delta: float) -> void:

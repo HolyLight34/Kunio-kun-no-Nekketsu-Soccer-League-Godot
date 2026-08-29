@@ -184,12 +184,10 @@ func _physics_process(delta: float) -> void:
 			tick_motion_frame
 		)
 	)
-	#print(_from_raw(position_raw.x))
 func step_logic_tick()->void:
 	tick_motion_frame = 0
 	clamp_velocity()
 	tick_displacement_raw = velocity_raw
-	#position_raw += velocity_raw
 func _get_motion_frame_displacement(
 	total_displacement_raw: int,
 	frame: int
@@ -355,27 +353,3 @@ func _from_raw(value:int)->float:
 		/
 		RAW_ONE
 	)
-# ==============================================================================
-# 显示同步
-#
-# 物理：
-#
-# position_raw
-#
-# ↓
-#
-# float
-#
-# ↓
-#
-# Node2D
-#
-# ==============================================================================
-#func _sync_target()->void:
-	#if target_node == null:
-		#return
-	#var value:Vector2 = get_position()
-	#if smooth_subpixel_rendering:
-		#target_node.position = value
-	#else:
-		#target_node.position = value.round()

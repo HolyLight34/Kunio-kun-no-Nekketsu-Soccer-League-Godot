@@ -103,8 +103,9 @@ signal finished
 ## $050D bit7
 
 @export var wet_ball:bool = false
-
+@export var grarty_entry: bool = true
 var shadow_visible: bool = false
+var _finished_delay_ticks: int = -1
 func should_show_shadow() -> bool:
 	return shadow_visible
 # ==============================================================================
@@ -151,10 +152,29 @@ func launch(
 func _check_landing() -> bool:
 	return z_height_raw < 0 and z_velocity_raw < 0
 func process_z_step() -> void:
+	if _finished_delay_ticks >= 0:
+		if _finished_delay_ticks > 0:
+			_finished_delay_ticks -= 1
+			return
+
+		_finished_delay_ticks = -1
+		finished.emit()
+		return
+	if not is_in_air:
+		return
+	# 当前 VZ 就是这一整个 Tick 的 Z 位移。
+	tick_displacement_raw = z_velocity_raw
+	# 新的一段三帧运动开始。
+	tick_motion_frame = 0
+	# FC：
+	# Z += VZ
+	# VZ -= 0.5
+	#
+	# Z += VZ 现在由下面 3 个 Physics Frame 完成。
 	if is_in_air and z_velocity_raw > 0 and not shadow_visible:
 		shadow_visible = true
-
-	super.process_z_step()
+	if grarty_entry:
+		z_velocity_raw -= _to_raw(GRAVITY)
 func _process_landing()->void:
 	# FC:
 	# 保留低8位子像素
@@ -168,7 +188,7 @@ func _process_landing()->void:
 	# 无法继续反弹
 	z_velocity_raw = 0
 	is_in_air = false
-	finished.emit()
+	_finished_delay_ticks = 1
 # ==============================================================================
 # FC落地高度修正
 # ==============================================================================
