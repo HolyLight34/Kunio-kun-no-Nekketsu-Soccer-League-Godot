@@ -34,7 +34,7 @@ size = Vector2(0, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c8mko"]
 resource_local_to_scene = true
-size = Vector2(16, 8)
+size = Vector2(22, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h2l6i"]
 resource_local_to_scene = true
@@ -44,7 +44,6 @@ size = Vector2(16, 8)
 size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "parser", "sm")]
-position = Vector2(107, 118)
 collision_layer = 2
 script = ExtResource("2_w62lr")
 input_component = NodePath("Components/InputComponent")
