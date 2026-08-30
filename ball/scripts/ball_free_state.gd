@@ -2,7 +2,7 @@ extends BallState
 
 func enter() -> void:
 	ball.pickup_area.set_deferred("monitorable", true)
-	ball.ball_z_movement.grarty_entry = true
+	ball.ball_z_movement.gravity_enabled = true
 	pass
 
 

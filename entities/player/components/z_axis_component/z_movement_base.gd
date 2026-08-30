@@ -1,54 +1,112 @@
 extends Node
 class_name ZMovementBase
+
 const RAW_ONE: int = 256
 const GRAVITY: float = 0.5
 const PHYSICS_FRAMES_PER_LOGIC_TICK: int = 3
+
 signal launched()
 signal landed()
+
 var z_height_raw: int = 0
 var z_velocity_raw: int = 0
 var is_in_air: bool = false
-## 当前 Logic Tick 已经走到第几个 Physics Frame。
+## 当前 Logic Tick 已经执行到第几个 Physics Frame。
 var tick_motion_frame: int = 0
+
 ## 当前 Logic Tick 总共需要完成的 Z 位移。
 var tick_displacement_raw: int = 0
+
+
 # ==============================================================================
 # 外部接口
 # ==============================================================================
+
 func set_z_height(value: float) -> void:
 	is_in_air = true
 	z_height_raw = _to_raw(value)
+
+
 func get_z_height() -> float:
 	return _from_raw(z_height_raw)
+
+
 func set_z_velocity(value: float) -> void:
 	z_velocity_raw = _to_raw(value)
+
+
 func get_z_velocity() -> float:
 	return _from_raw(z_velocity_raw)
+
+
 func apply_vertical_velocity(initial_velocity: float) -> void:
 	z_velocity_raw = _to_raw(initial_velocity)
 	is_in_air = true
 	launched.emit()
+
+
 # ==============================================================================
 # Logic Tick
 # ==============================================================================
+
 func process_z_step() -> void:
 	if not is_in_air:
 		return
-	# 当前 VZ 就是这一整个 Tick 的 Z 位移。
+
+	# 当前 VZ 锁定为本 Tick 总位移。
 	tick_displacement_raw = z_velocity_raw
+
+	# FC：
+	# VZ -= 0.5
+	if _should_apply_gravity():
+		z_velocity_raw -= _to_raw(GRAVITY)
+
+	if GameSettings.is_classic_motion():
+		_process_classic_motion()
+	else:
+		_prepare_smooth_motion()
+
+
+func _should_apply_gravity() -> bool:
+	return true
+
+
+# ==============================================================================
+# Classic
+# ==============================================================================
+
+func _process_classic_motion() -> void:
+	# FC 原版调试模式：
+	# 一个 Logic Tick 直接完成全部位移。
+	z_height_raw += tick_displacement_raw
+
+	# 标记本 Tick 位移已经完成。
+	tick_motion_frame = PHYSICS_FRAMES_PER_LOGIC_TICK
+
+	# 位移完成后再判断落地。
+	if _check_landing():
+		_process_landing()
+
+
+# ==============================================================================
+# Smooth
+# ==============================================================================
+
+func _prepare_smooth_motion() -> void:
 	# 新的一段三帧运动开始。
 	tick_motion_frame = 0
-	# FC：
-	# Z += VZ
-	# VZ -= 0.5
-	#
-	# Z += VZ 现在由下面 3 个 Physics Frame 完成。
-	z_velocity_raw -= _to_raw(GRAVITY)
+
+
 # ==============================================================================
 # Physics Frame
 # ==============================================================================
 
 func _physics_process(_delta: float) -> void:
+	# Classic 的位置已经在 Logic Tick 一次性完成，
+	# Physics Frame 不再处理 Z 位移。
+	if GameSettings.is_classic_motion():
+		return
+
 	if not is_in_air:
 		return
 
@@ -62,8 +120,8 @@ func _physics_process(_delta: float) -> void:
 		tick_motion_frame
 	)
 
-	# 只有这个 Logic Tick 的全部位移完成后，
-	# 才进行一次 FC 落地判断。
+	# Smooth 模式下必须真正把三帧位移执行完，
+	# 才进行落地判断。
 	if tick_motion_frame == PHYSICS_FRAMES_PER_LOGIC_TICK:
 		if _check_landing():
 			_process_landing()
@@ -75,11 +133,14 @@ func _physics_process(_delta: float) -> void:
 
 func _check_landing() -> bool:
 	return false
-func should_show_shadow() -> bool:
-	return is_in_air
+
 
 func _process_landing() -> void:
 	pass
+
+
+func should_show_shadow() -> bool:
+	return is_in_air
 
 
 # ==============================================================================

@@ -4,43 +4,6 @@ extends CharacterBody2D
 # ==============================================================================
 # 1. 信号与枚举 (Signals & Enums)
 # ==============================================================================
-enum Dir {
-	NONE = -1,
-	RIGHT = 0,
-	DOWN_RIGHT = 1,
-	DOWN = 2,
-	DOWN_LEFT = 3,
-	LEFT = 4,
-	UP_LEFT = 5,
-	UP = 6,
-	UP_RIGHT = 7,
-}
-
-# ==============================================================================
-# 2. 常量配置 (Constants)
-# ==============================================================================
-# --- 正向速度与加速度 (Cardinal) ---
-const CARDINAL_SPEED_X: float = 2.375
-const CARDINAL_SPEED_Y: float = 2.375
-const CARDINAL_ACCEL_STEP: float = 0.046875
-
-# --- 斜向速度与加速度 (Diagonal) ---
-const DIAGONAL_SPEED_A: float = 1.67578125
-const DIAGONAL_SPEED_B: float = 1.68359375
-const DIAGONAL_ACCEL_STEP: float = 0.03125
-
-# --- 跳跃预设速度向量 (Jump Impulse Presets) ---
-const JUMP_SPEED_Y: float = 1.234375
-const JUMP_VELOCITY_UP_LEFT: Vector2 = Vector2(-1.71484375, -0.875)
-const JUMP_VELOCITY_UP_RIGHT: Vector2 = Vector2(1.70703125, -0.875)
-const JUMP_VELOCITY_DOWN_LEFT: Vector2 = Vector2(-1.71484375, 0.8671875)
-const JUMP_VELOCITY_DOWN_RIGHT: Vector2 = Vector2(1.70703125, 0.8671875)
-
-# --- 衰减步长 (Deceleration) ---
-const DECEL_STEP_X: float = 0.75
-
-# ==============================================================================
-# 3. 导出变量 (Export Variables)
 # ==============================================================================
 @export var team_id: MatchManager.Team
 @export var player_id: int = 1
@@ -69,7 +32,8 @@ const DECEL_STEP_X: float = 0.75
 @onready var hit_box: HitBox = $Colliders/HitBox
 @onready var player_z_movement: PlayerZMovement = $Components/PlayerZMovement
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
-@onready var ball_anchor: Marker2D = $ball_anchor
+@onready var ball_anchor: Marker2D = $Colliders/ball_anchor
+
 
 # 动态状态
 var facing_direction: Vector2  # 当前朝向：1 为朝右，-1 为朝左
@@ -119,7 +83,12 @@ func apply_x_deceleration(rate: float) -> void:
 	player_horizontal_movement.planar_velocity.x = move_toward(player_horizontal_movement.planar_velocity.x, 0.0, rate)
 
 
+func get_ball_anchor_offset() -> Vector2:
+	var offset := ball_anchor.position
 
+	offset.x *= facing_direction.x
+
+	return offset
 # ==============================================================================
 # 7. 朝向控制 (Facing Control)
 # ==============================================================================
@@ -127,10 +96,6 @@ func apply_x_deceleration(rate: float) -> void:
 func _handle_facing(move_input_x: float) -> void:
 	if move_input_x == 0:
 		return
-		
-	if sm.is_waiting_delay:
-		return
-		
 	var current_state_node := sm.current_state as EntityState
 	if not current_state_node:
 		return
@@ -149,35 +114,11 @@ func _apply_sprite_flip(dir: Vector2) -> void:
 	visual.scale.x = abs(visual.scale.x) * dir.x
 	colliders.scale.x = abs(colliders.scale.x) * dir.x
 
-# ==============================================================================
-# 8. 工具与 8 方向算法 (Utilities & Movement Math)
-# ==============================================================================
-func get_dir_index(input_dir: Vector2) -> Dir:
-	if input_dir.is_zero_approx():
-		return Dir.NONE
-	var angle := fposmod(input_dir.angle(), TAU)
-	return wrapi(int(round(angle / (PI / 4.0))), 0, 8) as Dir
-
-
-## 计算起跳瞬间的 X/Y 轴平面初始速度
-func calculate_jump_velocity(input_dir: Vector2) -> Vector2:
-	var dir := get_dir_index(input_dir)
-	match dir:
-		Dir.RIGHT: return Vector2(CARDINAL_SPEED_X, 0.0)
-		Dir.DOWN_RIGHT: return JUMP_VELOCITY_DOWN_RIGHT
-		Dir.DOWN: return Vector2(0.0, JUMP_SPEED_Y)
-		Dir.DOWN_LEFT: return JUMP_VELOCITY_DOWN_LEFT
-		Dir.LEFT: return Vector2(-CARDINAL_SPEED_X, 0.0)
-		Dir.UP_LEFT: return JUMP_VELOCITY_UP_LEFT
-		Dir.UP: return Vector2(0.0, -JUMP_SPEED_Y)
-		Dir.UP_RIGHT: return JUMP_VELOCITY_UP_RIGHT
-		_: return speed_vector
 
 # ==============================================================================
 # 9. 信号回调处理 (Signal Callbacks)
 # ==============================================================================
 func _on_pickup_sensor_area_entered(area: Area2D) -> void:
-	print("捡到球",area.get_parent())
 	var ball: Ball = area.get_parent()
 	ball.set_carried_by(self)
 	has_ball = true

@@ -205,7 +205,6 @@ attacker = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_c8mko")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("18_v0pxu")]
@@ -224,7 +223,7 @@ monitorable = false
 shape = SubResource("RectangleShape2D_sgsyk")
 debug_color = Color(1, 1, 0, 0.29803923)
 
-[node name="ball_anchor" type="Marker2D" parent="." unique_id=2053744234]
+[node name="ball_anchor" type="Marker2D" parent="Colliders" unique_id=2053744234]
 position = Vector2(12, 1)
 
 [connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]

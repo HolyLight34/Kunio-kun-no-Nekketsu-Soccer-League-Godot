@@ -22,6 +22,7 @@ config/icon="res://icon.svg"
 
 MatchManager="*uid://0e4gwen0gfhl"
 Log="*uid://buyob272h2rq7"
+GameSettings="*uid://f4rm2cneryu3"
 
 [display]
 
