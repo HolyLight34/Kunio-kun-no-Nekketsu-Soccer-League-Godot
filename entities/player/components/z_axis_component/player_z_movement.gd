@@ -23,9 +23,6 @@ var _debug_step_count: int = 0
 ##
 ## FC 普通跳跃：
 ## jump(4.0)
-func jump(initial_velocity: float) -> void:
-	apply_vertical_velocity(initial_velocity)
-
 
 # ==============================================================================
 # 角色落地规则

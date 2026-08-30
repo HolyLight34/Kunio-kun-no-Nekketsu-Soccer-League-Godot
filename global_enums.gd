@@ -12,8 +12,9 @@ extends RefCounted
 # 2. 📦 定义你的“神圣打击情报包”（不再使用字典！）
 class HitInfo:
 	var damage: float = 0.0
-	var force: float = 0.0
-	var direction: Vector2 = Vector2.RIGHT
+	var horizontal_velocity: Vector2 = Vector2.ZERO
+	var z_velocity: float = 0.0
+	var power: float = 0.0
 	#var type: Types.AttackType = Types.AttackType.PUNCH_KICK
 	
 	# (未来如果有暴击、属性攻击等，直接在下面这里加变量就行，全项目瞬间同步！)

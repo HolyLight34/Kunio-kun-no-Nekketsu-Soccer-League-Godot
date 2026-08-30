@@ -1,6 +1,6 @@
 extends BallState
 
-func enter() -> void:
+func enter(_data) -> void:
 	ball.pickup_area.set_deferred("monitorable", true)
 	ball.ball_z_movement.gravity_enabled = true
 	pass

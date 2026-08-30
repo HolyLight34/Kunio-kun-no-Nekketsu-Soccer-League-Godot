@@ -1,6 +1,7 @@
 extends PlayerState
 
-func enter() -> void:
+func enter(_data) -> void:
+	player.pickup_sensor.monitoring = true
 	anim.play(anim_name)
 func exit() -> void:
 	pass

@@ -1,6 +1,6 @@
 extends BallState
 
-func enter() -> void:
+func enter(_data) -> void:
 	print("我是shot")
 	ball.pickup_area.set_deferred(
 		"monitorable",
@@ -10,13 +10,13 @@ func enter() -> void:
 		Vector2(8.0, 0.0)
 	)
 	# 固定在 Z = 8。
-	ball.ball_z_movement.set_z_height(8.0)
+	ball.ball_z_movement.set_z_height(8)
 	# 不产生垂直位移。
-	ball.ball_z_movement.set_z_velocity(0.0)
+	ball.ball_z_movement.launch(0.0)
 	# 禁用重力，因此不会往下掉。
 	ball.ball_z_movement.gravity_enabled = false
 	ball.tick_timer_component.start_timer(
-		"shoot",
+		"shot",
 		18
 	)
 	await ball.tick_timer_component.timer_finished

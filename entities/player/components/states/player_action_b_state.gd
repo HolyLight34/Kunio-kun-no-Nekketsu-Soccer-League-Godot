@@ -1,6 +1,6 @@
 extends PlayerState
 
-func enter() -> void:
+func enter(_data) -> void:
 	match MatchManager.get_possession_for(player):
 		MatchManager.BallPossession.MYSELF:
 			change_state(State.KICK)

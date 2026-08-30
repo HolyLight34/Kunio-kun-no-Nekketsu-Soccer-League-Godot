@@ -23,7 +23,6 @@ var tick_displacement_raw: int = 0
 # ==============================================================================
 
 func set_z_height(value: float) -> void:
-	is_in_air = true
 	z_height_raw = _to_raw(value)
 
 
@@ -40,7 +39,7 @@ func get_z_velocity() -> float:
 
 
 func apply_vertical_velocity(initial_velocity: float) -> void:
-	z_velocity_raw = _to_raw(initial_velocity)
+	set_z_velocity(initial_velocity)
 	is_in_air = true
 	launched.emit()
 

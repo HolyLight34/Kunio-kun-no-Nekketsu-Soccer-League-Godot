@@ -33,15 +33,21 @@ extends CharacterBody2D
 @onready var player_z_movement: PlayerZMovement = $Components/PlayerZMovement
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 @onready var ball_anchor: Marker2D = $Colliders/ball_anchor
+@onready var pickup_sensor: Area2D = $Colliders/PickupSensor
 
 
 # 动态状态
 var facing_direction: Vector2  # 当前朝向：1 为朝右，-1 为朝左
 var speed_vector: Vector2 = Vector2.ZERO
-var has_ball: bool = false
 var pending_delay_ticks: int = 0
 var is_transition_pending: bool = false
-
+var carried_ball: Ball
+func release_ball() -> void:
+	print(carried_ball)
+	if carried_ball == null:
+		return
+	carried_ball.release_from_carrier()
+	carried_ball = null
 func _initialize_components() -> void:
 	player_horizontal_movement.set_horizontal_position(
 		position
@@ -70,8 +76,6 @@ func _physics_process(delta: float) -> void:
 
 func _on_3_tick() -> void:
 	sm.physics_tick()
-	if sm.is_waiting_delay:
-		return		
 	step_animation_component.advance_tick()
 	player_z_movement.process_z_step()
 	_handle_facing(input_component.move_dir.x)
@@ -82,12 +86,9 @@ func apply_x_deceleration(rate: float) -> void:
 	# 2. 对 X 轴做 step 衰减
 	player_horizontal_movement.planar_velocity.x = move_toward(player_horizontal_movement.planar_velocity.x, 0.0, rate)
 
-
 func get_ball_anchor_offset() -> Vector2:
 	var offset := ball_anchor.position
-
 	offset.x *= facing_direction.x
-
 	return offset
 # ==============================================================================
 # 7. 朝向控制 (Facing Control)
@@ -121,10 +122,13 @@ func _apply_sprite_flip(dir: Vector2) -> void:
 func _on_pickup_sensor_area_entered(area: Area2D) -> void:
 	var ball: Ball = area.get_parent()
 	ball.set_carried_by(self)
-	has_ball = true
+	carried_ball = ball
 
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
 	var player: Player = incoming.attacker
 	if player == self or player.team_id == self.team_id:
 		return
-	endurance -= incoming.hit_info["damage"]
+	release_ball()
+	endurance -= incoming.hit_info.damage
+	sm.change_state(PlayerState.State.HURT,incoming.hit_info)
+	

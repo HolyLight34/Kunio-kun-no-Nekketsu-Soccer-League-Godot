@@ -1,7 +1,7 @@
 extends PlayerState
 
 var is_tackling: bool = false
-func enter() -> void:
+func enter(_data) -> void:
 	match MatchManager.get_possession_for(player):
 		MatchManager.BallPossession.MYSELF:
 			change_state(State.PASS)
@@ -29,10 +29,6 @@ func physics_process(_delta: float) -> void:
 
 	pass
 
-
-#func _do_pass() -> void:
-	#change_state(State.IDLE)
-	#pass
 func _start_tackle() -> void:
 	is_tackling = true
 	var hit_data: Types.HitInfo = Types.HitInfo.new()

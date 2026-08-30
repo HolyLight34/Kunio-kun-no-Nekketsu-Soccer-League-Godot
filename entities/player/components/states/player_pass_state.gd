@@ -1,6 +1,6 @@
 extends PlayerState
 
-func enter() -> void:
+func enter(_data) -> void:
 	anim.play(anim_name)
 	await anim.animation_finished
 	change_state(State.IDLE)

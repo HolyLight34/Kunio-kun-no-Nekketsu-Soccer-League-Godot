@@ -1,7 +1,7 @@
 extends PlayerState
 
 
-func enter():
+func enter(_data):
 	anim.play(anim_name)
 	await anim.animation_finished
 	change_state(State.IDLE)

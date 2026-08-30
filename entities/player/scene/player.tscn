@@ -116,6 +116,8 @@ state = 7
 [node name="Land" type="Node" parent="Components/StateMachine" unique_id=760253809]
 script = ExtResource("17_ptkv0")
 state = 8
+facing_mode = null
+windup_ticks = null
 anim_name = &"land"
 x_decel_rate = 1.0
 

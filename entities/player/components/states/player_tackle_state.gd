@@ -1,7 +1,7 @@
 extends PlayerState
 
 
-func enter() -> void:
+func enter(_data) -> void:
 	anim.play(anim_name)
 	player.player_horizontal_movement.set_horizontal_velocity(Vector2(4.375,0)*player.facing_direction)
 	await anim.animation_finished

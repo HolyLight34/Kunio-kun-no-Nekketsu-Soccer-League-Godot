@@ -1,6 +1,6 @@
 extends PlayerState
 
-func enter(_params: Dictionary = {}) -> void:
+func enter(_data) -> void:
 	player.step_animation_component.play(anim_name)
 	await anim.animation_finished
 	print("当前位置",player.position)

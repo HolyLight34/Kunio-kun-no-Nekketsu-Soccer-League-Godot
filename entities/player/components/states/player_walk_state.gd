@@ -4,7 +4,7 @@ var frame_interval: float = 0.2 # 每帧的时间间隔
 var n: int = 2 # 模数
 var i: int = 0 # 循环周期中的索引
 
-func enter() -> void:
+func enter(_data) -> void:
 	anim.play(anim_name)
 	pass
 
