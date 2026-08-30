@@ -77,12 +77,11 @@ shape = SubResource("CircleShape2D_ncgq8")
 libraries/ = SubResource("AnimationLibrary_ni7dn")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=548698980]
-visible = false
 position = Vector2(0, -2)
 texture = ExtResource("9_iwjb2")
 
 [node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("7_r3iha")]
-initial_state = NodePath("Shot")
+initial_state = NodePath("Free")
 
 [node name="Free" type="Node" parent="StateMachine" unique_id=297881210]
 script = ExtResource("5_r3iha")

@@ -1,37 +1,25 @@
 class_name Ball
 extends CharacterBody2D
 
-@export var gravity: float = -800.0 # 重力加速度 (负值向上)
-@export var bounce_factor: float = 0.6 # 弹力系数 (0.6 表示每次落地能量损耗 40%)
 var ball_force: float #（球威/球的冲力）
 var kick_direction: int
 var kick_power: float
-# --- 【2.5D 物理核心参数】 ---
-var z_height: float = 0.0      # 足球当前的绝对 Z 轴高度（单位：像素）
-var z_velocity: float = 0.0    # 足球在 Z 轴方向的速度（正数向上飞，负数向下落）
+
 ## 📡 信号：球权被某人夺取了
 signal possession_changed(new_carrier: Node)
 ## 📡 信号：球脱离了控制（被踢飞、漏球、无主滚动）
 signal possession_lost()
 @onready var hit_box: HitBox = $HitBox
-
-var z_speed: float = 0.0 # 垂直速度
-#var last_kicker: Player # 上一个踢球者
 var is_free: bool = true
 var carrier: Player = null
 
 const CARRY_OFFSET: Vector2 = Vector2(8, 0)
 @onready var visual: Node2D = $Visual
 @onready var step_animation_component: StepAnimationComponent = $StepAnimationComponent
-var speed_vector: Vector2
 @onready var ball_z_movement: BallZMovement = $BallZMovement
 @onready var entity_visual_controller: EntityVisualController = $EntityVisualController
 @onready var tick_timer_component: TickTimerComponent = $TickTimerComponent
 
-
-var is_counting_apex: bool = false
-var apex_frame_timer: int = 0
-var last_recorded_height: float = 0.0
 func _ready() -> void:
 	sm.init(self)
 	tick_component.tick_triggered.connect(_on_3_tick)
@@ -41,25 +29,18 @@ func _ready() -> void:
 
 func _on_3_tick() -> void:
 	if sm.is_waiting_delay:
-		return
-				
+		return	
 	sm.physics_tick()
 	ball_z_movement.process_z_step()
 	ball_horizontal_component.step_logic_tick()
-	
 	step_animation_component.advance_tick()
 	Log.debug(Log.Cat.PHYSICS,"物理帧：%d " % [Engine.get_physics_frames()])
-	print(ball_horizontal_component.get_horizontal_velocity())
-	
-	
-
 
 # 被捡起时的切换接口
 func set_carried_by(new_carrier: Player) -> void:
+	print("设置足球携带状态")
 	is_free = false
 	carrier = new_carrier
-	velocity = Vector2.ZERO
-	z_height = 0.0 # 落地
 	sm.change_state(BallState.State.HOLD)
 
 # 被踢出去或传出去时的释放接口
@@ -85,12 +66,6 @@ func be_kicked(initial_velocity: int, upward_force: float) -> void:
 	# 2. 把力道作为初始化参数，交给自己内部的 Launch 状态！
 	# 3. 瞬间切入足球自己的 Launch 状态！
 	sm.change_state(BallState.State.SHOT)
-
-
-func _process(_delta: float) -> void:
-	pass
-
-
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
 	if incoming.hit_info.damage != 0:
 		sm.change_state(BallState.State.SHOT)

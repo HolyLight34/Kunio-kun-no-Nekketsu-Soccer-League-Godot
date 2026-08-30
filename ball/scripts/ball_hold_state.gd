@@ -1,9 +1,7 @@
 extends BallState
 
 func enter() -> void:
-	print("我执行了")
 	ball.pickup_area.set_deferred("monitorable", false)
-	ball.z_height = 0
 	print(ball.carrier)
 	ball.possession_changed.emit(ball.carrier)
 	pass
@@ -22,8 +20,14 @@ func process(_delta: float) -> void:
 	pass
 
 
-func physics_process(delta: float) -> void:
-	#print(ball.position)
-	var facing_sign = sign(ball.carrier.visual.scale.x)
-	ball.global_position = ball.carrier.global_position + Vector2(ball.CARRY_OFFSET.x * facing_sign, ball.CARRY_OFFSET.y)
-	pass
+func physics_process(_delta: float) -> void:
+	var carrier_position = (
+		
+		ball.carrier.player_horizontal_movement.get_horizontal_position()
+	)
+
+	var anchor_offset := ball.carrier.ball_anchor.position
+
+	ball.ball_horizontal_component.set_horizontal_position(
+		carrier_position + anchor_offset
+	)

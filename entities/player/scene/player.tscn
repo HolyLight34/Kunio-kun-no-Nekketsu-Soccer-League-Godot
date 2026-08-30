@@ -182,7 +182,6 @@ z_movement = NodePath("../PlayerZMovement")
 position_target = NodePath("../..")
 visual_pivot = NodePath("../../Visual")
 shadow_sprite = NodePath("../../Shadow")
-shadow_only_in_air = true
 
 [node name="Visual" type="Node2D" parent="." unique_id=1064463610]
 
@@ -226,6 +225,7 @@ shape = SubResource("RectangleShape2D_sgsyk")
 debug_color = Color(1, 1, 0, 0.29803923)
 
 [node name="ball_anchor" type="Marker2D" parent="." unique_id=2053744234]
+position = Vector2(12, 1)
 
 [connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
 [connection signal="area_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_area_entered"]

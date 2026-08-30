@@ -105,6 +105,9 @@ signal finished
 @export var wet_ball:bool = false
 @export var grarty_entry: bool = true
 var shadow_visible: bool = false
+# -1：没有等待 finished
+#  1：还需要完整经过 1 个 Logic Tick
+#  0：下一次 process_z_step() 发送 finished
 var _finished_delay_ticks: int = -1
 func should_show_shadow() -> bool:
 	return shadow_visible

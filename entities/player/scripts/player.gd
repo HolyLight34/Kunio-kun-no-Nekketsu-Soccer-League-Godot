@@ -69,6 +69,7 @@ const DECEL_STEP_X: float = 0.75
 @onready var hit_box: HitBox = $Colliders/HitBox
 @onready var player_z_movement: PlayerZMovement = $Components/PlayerZMovement
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
+@onready var ball_anchor: Marker2D = $ball_anchor
 
 # 动态状态
 var facing_direction: Vector2  # 当前朝向：1 为朝右，-1 为朝左
@@ -176,6 +177,7 @@ func calculate_jump_velocity(input_dir: Vector2) -> Vector2:
 # 9. 信号回调处理 (Signal Callbacks)
 # ==============================================================================
 func _on_pickup_sensor_area_entered(area: Area2D) -> void:
+	print("捡到球",area.get_parent())
 	var ball: Ball = area.get_parent()
 	ball.set_carried_by(self)
 	has_ball = true
