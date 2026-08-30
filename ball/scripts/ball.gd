@@ -13,7 +13,6 @@ signal possession_lost()
 var is_free: bool = true
 var carrier: Player = null
 
-const CARRY_OFFSET: Vector2 = Vector2(8, 0)
 @onready var visual: Node2D = $Visual
 @onready var step_animation_component: StepAnimationComponent = $StepAnimationComponent
 @onready var ball_z_movement: BallZMovement = $BallZMovement
