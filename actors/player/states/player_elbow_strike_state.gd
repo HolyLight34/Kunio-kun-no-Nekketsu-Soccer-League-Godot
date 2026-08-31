@@ -3,8 +3,9 @@ extends PlayerState
 func enter(_data) -> void:
 	var hit_data: Types.HitInfo = Types.HitInfo.new()
 	hit_data.damage = 2
-	hit_data.horizontal_velocity = Vector2(0,2)
-	hit_data.z_velocity = 3.5
+	hit_data.attack_direction = player.facing_direction
+	hit_data.knockback_speed = 2
+	hit_data.z_velocity = 4
 	player.hit_box.hit_info = hit_data
 	anim.play(anim_name)
 	await anim.animation_finished

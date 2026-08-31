@@ -18,7 +18,7 @@ var dir_up_just: bool = false
 var dir_down_just: bool = false
 var dir_left_just: bool = false
 var dir_right_just: bool = false
-
+var  last_move_direction: Vector2 = Vector2.RIGHT
 # --- 2. A/B 键意图 ---
 var btn_a: bool = false
 var btn_a_just: bool = false
@@ -45,6 +45,9 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	# --- 方向处理 ---
 	move_dir = Input.get_vector(action_left,action_right,action_up,action_down)
+	if move_dir != Vector2.ZERO:
+		last_move_direction = move_dir
+		print(last_move_direction)
 	dir_up_just = Input.is_action_just_pressed(action_up)
 	dir_down_just = Input.is_action_just_pressed(action_down)
 	dir_left_just = Input.is_action_just_pressed(action_left)

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://wkj53q4jixl7"]
 
-[ext_resource type="Script" uid="uid://td0dwgemwups" path="res://entities/player/components/state_machine/state_machine.gd" id="1_lio2p"]
+[ext_resource type="Script" uid="uid://td0dwgemwups" path="res://actors/player/components/state_machine/state_machine.gd" id="1_lio2p"]
 
 [node name="StateMachine" type="Node" unique_id=543815556]
 script = ExtResource("1_lio2p")

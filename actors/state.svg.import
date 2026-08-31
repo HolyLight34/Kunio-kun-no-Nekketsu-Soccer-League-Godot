@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fmxg74c8ydsn"
-path="res://.godot/imported/p1.png-742425ad7c70566ccaf2872f763fc693.ctex"
+uid="uid://dr5esjchs756b"
+path="res://.godot/imported/state.svg-12d24d3bb548ef1881dd1e225218f7b2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/player/assets/p1.png"
-dest_files=["res://.godot/imported/p1.png-742425ad7c70566ccaf2872f763fc693.ctex"]
+source_file="res://actors/state.svg"
+dest_files=["res://.godot/imported/state.svg-12d24d3bb548ef1881dd1e225218f7b2.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false
