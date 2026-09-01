@@ -31,13 +31,20 @@ func _calculate_knockback_direction(
 	last_move_direction: Vector2
 ) -> Vector2:
 	if last_move_direction.x != 0 and last_move_direction.y != 0:
-		return -last_move_direction
+		var same_horizontal_direction := (
+			last_move_direction.x * attack_direction.x > 0
+		)
+		return (
+			last_move_direction
+			if same_horizontal_direction
+			else -last_move_direction
+		)
 	if last_move_direction.x != 0:
 		return attack_direction
 	if last_move_direction.y != 0:
 		return (
 			Vector2.UP
-			if attack_direction == Vector2.RIGHT
+			if attack_direction.x > 0
 			else Vector2.DOWN
 		)
 	return attack_direction

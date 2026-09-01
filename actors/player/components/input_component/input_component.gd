@@ -47,7 +47,7 @@ func _physics_process(_delta: float) -> void:
 	move_dir = Input.get_vector(action_left,action_right,action_up,action_down)
 	if move_dir != Vector2.ZERO:
 		last_move_direction = move_dir
-		print(last_move_direction)
+		print("最后输入",last_move_direction)
 	dir_up_just = Input.is_action_just_pressed(action_up)
 	dir_down_just = Input.is_action_just_pressed(action_down)
 	dir_left_just = Input.is_action_just_pressed(action_left)
