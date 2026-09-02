@@ -3,9 +3,27 @@ extends PlayerState
 
 func enter(data) -> void:
 	player.pickup_sensor.monitoring = false
-	var hit_info := data as Types.HitInfo
+	var hit_info := data["hit_info"] as Types.HitInfo
+	var hurt_type = data["hurt_type"]
+	match hurt_type:
+		player.HurtType.NORMAL:
+			normal_hurt(hit_info)
+			pass
+		player.HurtType.HEAVY:
+			heavy_hurt(hit_info)
+			pass
+	
+func normal_hurt(hit_info):
 	if player.facing_direction != hit_info.attack_direction:
-		anim.play("hurt_front")
+		anim.play("normal_hurt_front")
+	else :
+		anim.play("hurt_back")
+	await player.step_animation_component.animation_finished
+	change_state(State.IDLE)
+	pass
+func heavy_hurt(hit_info):
+	if player.facing_direction != hit_info.attack_direction:
+		anim.play("heavy_hurt_front")
 	else :
 		anim.play("hurt_back")
 	var knockback_direction := _calculate_knockback_direction(
@@ -24,8 +42,9 @@ func enter(data) -> void:
 		anim.play("down_front")
 	else :
 		anim.play("down_back")
-	await player.step_animation_component.animation_finished
+	
 	change_state(State.LAND)
+	pass
 func _calculate_knockback_direction(
 	attack_direction: Vector2,
 	last_move_direction: Vector2

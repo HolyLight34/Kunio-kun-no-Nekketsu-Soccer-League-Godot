@@ -23,7 +23,10 @@ extends CharacterBody2D
 # ==============================================================================
 # 4. 节点引用与运行状态 (Onready & Variables)
 # ==============================================================================
-
+enum HurtType {
+	NORMAL,
+	HEAVY,
+}
 @onready var step_animation_component: StepAnimationComponent = $Components/StepAnimationComponent
 @onready var tick_component: TickComponent = $Components/TickComponent
 @onready var visual: Node2D = $Visual
@@ -125,10 +128,16 @@ func _on_pickup_sensor_area_entered(area: Area2D) -> void:
 	carried_ball = ball
 
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	var player: Player = incoming.attacker
-	if player == self or player.team_id == self.team_id:
+	var attacker: Player = incoming.attacker
+	var hurt_type := HurtType.NORMAL
+	if attacker == self or attacker.team_id == self.team_id:
 		return
 	release_ball()
+	if attacker.endurance + 8 >= endurance:
+		hurt_type = HurtType.HEAVY
 	endurance -= incoming.hit_info.damage
-	sm.change_state(PlayerState.State.HURT,incoming.hit_info)
+	sm.change_state(PlayerState.State.HURT,{
+		"hit_info": incoming.hit_info,
+		"hurt_type": hurt_type,
+	})
 	
