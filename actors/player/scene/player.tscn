@@ -203,6 +203,7 @@ vframes = 8
 
 [node name="HitBox" parent="Colliders" unique_id=1107242509 node_paths=PackedStringArray("attacker") instance=ExtResource("17_dg4u3")]
 collision_layer = 64
+collision_mask = 16
 attacker = NodePath("../..")
 metadata/_edit_lock_ = true
 
@@ -210,6 +211,7 @@ metadata/_edit_lock_ = true
 shape = SubResource("RectangleShape2D_iy78e")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("18_v0pxu")]
+monitorable = true
 victim = NodePath("../..")
 metadata/_edit_lock_ = true
 
@@ -228,6 +230,8 @@ debug_color = Color(1, 1, 0, 0.29803923)
 [node name="ball_anchor" type="Marker2D" parent="Colliders" unique_id=2053744234]
 position = Vector2(12, 1)
 
+[connection signal="area_entered" from="Colliders/HitBox" to="Colliders/HitBox" method="_on_area_entered"]
+[connection signal="hit" from="Colliders/HitBox" to="." method="_on_hit_box_hit"]
 [connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
 [connection signal="area_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_area_entered"]
 

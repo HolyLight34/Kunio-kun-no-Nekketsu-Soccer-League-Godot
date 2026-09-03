@@ -31,7 +31,7 @@ func physics_process(_delta: float) -> void:
 
 func _start_tackle() -> void:
 	is_tackling = true
-	var hit_data: Types.HitInfo = Types.HitInfo.new()
+	var hit_data: HitInfo = HitInfo.new()
 	hit_data.damage = 0
 	hit_data.force = 0
 	hit_data.direction = player.facing_direction

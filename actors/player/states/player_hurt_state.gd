@@ -3,71 +3,47 @@ extends PlayerState
 
 func enter(data) -> void:
 	player.pickup_sensor.monitoring = false
-	var hit_info := data["hit_info"] as Types.HitInfo
-	var hurt_type = data["hurt_type"]
-	match hurt_type:
-		player.HurtType.NORMAL:
-			normal_hurt(hit_info)
+	var hurt_data = data as HurtData
+	match hurt_data.hurt_type:
+		Types.HurtType.NORMAL:
+			normal_hurt(hurt_data)
 			pass
-		player.HurtType.HEAVY:
-			heavy_hurt(hit_info)
+		Types.HurtType.HEAVY:
+			heavy_hurt(hurt_data)
 			pass
 	
-func normal_hurt(hit_info):
-	if player.facing_direction != hit_info.attack_direction:
+func normal_hurt(hurt_data: HurtData):
+	if player.facing_direction != hurt_data.knockback_direction:
 		anim.play("normal_hurt_front")
 	else :
 		anim.play("hurt_back")
+	player.player_horizontal_movement.set_horizontal_velocity(
+		hurt_data.knockback_direction * hurt_data.knockback_speed
+	)
 	await player.step_animation_component.animation_finished
 	change_state(State.IDLE)
 	pass
-func heavy_hurt(hit_info):
-	if player.facing_direction != hit_info.attack_direction:
+func heavy_hurt(hurt_data: HurtData):
+	if player.facing_direction != hurt_data.knockback_direction:
 		anim.play("heavy_hurt_front")
 	else :
 		anim.play("hurt_back")
-	var knockback_direction := _calculate_knockback_direction(
-		hit_info.attack_direction,
-		player.input_component.last_move_direction
-	)
 	player.player_horizontal_movement.set_horizontal_velocity(
-		knockback_direction * hit_info.knockback_speed
+		hurt_data.knockback_direction * hurt_data.knockback_speed
 	)
 	player.player_z_movement.apply_vertical_velocity(
-		hit_info.z_velocity
+		hurt_data.z_velocity
 	)
 	await player.player_z_movement.landed
 	player.player_horizontal_movement.set_horizontal_velocity(Vector2.ZERO)
-	if player.facing_direction != hit_info.attack_direction:
+	if player.facing_direction != hurt_data.knockback_direction:
 		anim.play("down_front")
 	else :
 		anim.play("down_back")
-	
+	await player.step_animation_component.animation_finished
 	change_state(State.LAND)
 	pass
-func _calculate_knockback_direction(
-	attack_direction: Vector2,
-	last_move_direction: Vector2
-) -> Vector2:
-	if last_move_direction.x != 0 and last_move_direction.y != 0:
-		var same_horizontal_direction := (
-			last_move_direction.x * attack_direction.x > 0
-		)
-		return (
-			last_move_direction
-			if same_horizontal_direction
-			else -last_move_direction
-		)
-	if last_move_direction.x != 0:
-		return attack_direction
-	if last_move_direction.y != 0:
-		return (
-			Vector2.UP
-			if attack_direction.x > 0
-			else Vector2.DOWN
-		)
-	return attack_direction
-		
+
 func exit() -> void:
 	player.pickup_sensor.monitoring = false
 	pass

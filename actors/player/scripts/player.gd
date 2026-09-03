@@ -129,15 +129,67 @@ func _on_pickup_sensor_area_entered(area: Area2D) -> void:
 
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
 	var attacker: Player = incoming.attacker
-	var hurt_type := HurtType.NORMAL
 	if attacker == self or attacker.team_id == self.team_id:
 		return
 	release_ball()
+	var hurt_type: Types.HurtType = Types.HurtType.NORMAL
+	var hurt_data: HurtData 
 	if attacker.endurance + 8 >= endurance:
-		hurt_type = HurtType.HEAVY
+		hurt_type = Types.HurtType.HEAVY
+		hurt_data = _create_hurt_data(incoming.hit_info,hurt_type)
+	hurt_data = _create_normal_hurt_data(incoming.hit_info.attack_direction)
 	endurance -= incoming.hit_info.damage
-	sm.change_state(PlayerState.State.HURT,{
-		"hit_info": incoming.hit_info,
-		"hurt_type": hurt_type,
-	})
+	sm.change_state(PlayerState.State.HURT,hurt_data)
 	
+func _on_hit_box_hit(hurt_box: HurtBox) -> void:
+	var victim: Player = hurt_box.victim
+	if victim == self or victim.team_id == self.team_id:
+		return
+	var hurt_data: HurtData 
+	hurt_data = _create_normal_hurt_data(-facing_direction)
+	if endurance + 8 < victim.endurance:
+		print(hurt_data.knockback_direction,hurt_data.knockback_speed)
+		sm.change_state(PlayerState.State.HURT,hurt_data)
+	pass # Replace with function body.
+func _create_hurt_data(
+	hit_info: HitInfo,
+	hurt_type: Types.HurtType
+) -> HurtData:
+	var hurt_data := HurtData.new()
+	hurt_data.hurt_type = hurt_type
+	hurt_data.knockback_direction = _calculate_knockback_direction(
+		hit_info.attack_direction,
+		input_component.last_move_direction
+	)
+	hurt_data.knockback_speed = hit_info.knockback_speed
+	hurt_data.z_velocity = hit_info.z_velocity
+	return hurt_data
+func _calculate_knockback_direction(
+	attack_direction: Vector2,
+	last_move_direction: Vector2
+) -> Vector2:
+	if last_move_direction.x != 0 and last_move_direction.y != 0:
+		var same_horizontal_direction := (
+			last_move_direction.x * attack_direction.x > 0
+		)
+		return (
+			last_move_direction
+			if same_horizontal_direction
+			else -last_move_direction
+		)
+	if last_move_direction.x != 0:
+		return attack_direction
+	if last_move_direction.y != 0:
+		return (
+			Vector2.UP
+			if attack_direction.x > 0
+			else Vector2.DOWN
+		)
+	return attack_direction
+func _create_normal_hurt_data(knockback_direction: Vector2) -> HurtData:
+	var hurt_data := HurtData.new()
+	hurt_data.hurt_type = Types.HurtType.NORMAL
+	# 这里根据“我撞到 victim 后自己怎么弹”来算
+	hurt_data.knockback_direction = knockback_direction
+	hurt_data.knockback_speed = 6.0
+	return hurt_data

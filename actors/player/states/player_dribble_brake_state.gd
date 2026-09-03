@@ -3,7 +3,7 @@ extends PlayerState
 
 func enter(_data):
 	player.player_horizontal_movement.stop_immediately()
-	var hit_data: Types.HitInfo = Types.HitInfo.new()
+	var hit_data = HitInfo.new()
 	hit_data.damage = 5
 	player.hit_box.hit_info = hit_data
 	anim.play(anim_name)

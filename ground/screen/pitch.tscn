@@ -219,7 +219,7 @@ position = Vector2(30, 74)
 position = Vector2(75, 77)
 team_id = 1
 player_id = 2
-endurance = 60
+endurance = 70
 
 [node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_73vmh")]
 position = Vector2(228, 102)
