@@ -83,11 +83,6 @@ func _on_3_tick() -> void:
 	player_z_movement.process_z_step()
 	_handle_facing(input_component.move_dir.x)
 	player_horizontal_movement.step_logic_tick()
-func apply_x_deceleration(rate: float) -> void:
-	# 1. 先把 Y 轴清零
-	player_horizontal_movement.planar_velocity.y = 0.0
-	# 2. 对 X 轴做 step 衰减
-	player_horizontal_movement.planar_velocity.x = move_toward(player_horizontal_movement.planar_velocity.x, 0.0, rate)
 
 func get_ball_anchor_offset() -> Vector2:
 	var offset := ball_anchor.position
@@ -128,13 +123,13 @@ func _on_pickup_sensor_area_entered(area: Area2D) -> void:
 	carried_ball = ball
 
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	var attacker: Player = incoming.attacker
-	if attacker == self or attacker.team_id == self.team_id:
+	var source: Player = incoming.source
+	if source == self or source.team_id == self.team_id:
 		return
 	release_ball()
 	var hurt_type: Types.HurtType = Types.HurtType.NORMAL
 	var hurt_data: HurtData 
-	if attacker.endurance + 8 >= endurance:
+	if source.endurance + 8 >= endurance:
 		hurt_type = Types.HurtType.HEAVY
 		hurt_data = _create_hurt_data(incoming.hit_info,hurt_type)
 	hurt_data = _create_normal_hurt_data(incoming.hit_info.attack_direction)
@@ -142,12 +137,12 @@ func _on_hurt_box_hit_received(incoming: HitBox) -> void:
 	sm.change_state(PlayerState.State.HURT,hurt_data)
 	
 func _on_hit_box_hit(hurt_box: HurtBox) -> void:
-	var victim: Player = hurt_box.victim
-	if victim == self or victim.team_id == self.team_id:
+	var target: Player = hurt_box.target
+	if target == self or target.team_id == self.team_id:
 		return
 	var hurt_data: HurtData 
 	hurt_data = _create_normal_hurt_data(-facing_direction)
-	if endurance + 8 < victim.endurance:
+	if endurance + 8 < target.endurance:
 		print(hurt_data.knockback_direction,hurt_data.knockback_speed)
 		sm.change_state(PlayerState.State.HURT,hurt_data)
 	pass # Replace with function body.

@@ -8,7 +8,7 @@ func enter(_data) -> void:
 	pass
 
 func physics_tick() -> void:
-	player.player_horizontal_movement.apply_ground_friction(x_decel_rate)
+	player.player_horizontal_movement.decelerate_xy(x_decel_rate)
 	pass
 func exit() -> void:
 	

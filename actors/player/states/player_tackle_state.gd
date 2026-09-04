@@ -3,13 +3,16 @@ extends PlayerState
 
 func enter(_data) -> void:
 	anim.play(anim_name)
-	player.player_horizontal_movement.set_horizontal_velocity(Vector2(4.375,0)*player.facing_direction)
+	if player.input_component.move_dir == Vector2.ZERO:
+		player.player_horizontal_movement.set_horizontal_velocity(5*player.facing_direction)
+	else :
+		player.player_horizontal_movement.set_horizontal_velocity(5*player.input_component.move_dir)
 	await anim.animation_finished
 	change_state(State.LAND)
 	pass
 
 func physics_tick() -> void:
-	player.player_horizontal_movement.apply_ground_friction(x_decel_rate)
+	player.player_horizontal_movement.decelerate_xy(x_decel_rate)
 	pass
 func exit() -> void:
 

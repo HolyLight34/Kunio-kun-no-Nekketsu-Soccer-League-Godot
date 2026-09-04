@@ -28,6 +28,8 @@ func handle_intent(intent: int, _delta: float) -> void:
 			change_state(State.JUMP)
 		IntentComponent.Intent.RUN:
 			change_state(State.RUN)
+		IntentComponent.Intent.SEND_PASS:
+			change_state(State.ACTION_A)
 	pass
 func physics_process(_delta: float) -> void:
 	pass

@@ -94,15 +94,15 @@ state = 1
 script = ExtResource("4_b5n0i")
 state = 2
 
-[node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("attacker") instance=ExtResource("9_m05fq")]
-attacker = NodePath("..")
+[node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("9_m05fq")]
+source = NodePath("..")
 
 [node name="CollisionShape2D" parent="HitBox" index="0" unique_id=886247332]
 shape = SubResource("RectangleShape2D_jabx6")
 
-[node name="HurtBox" parent="." unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("10_d7d46")]
+[node name="HurtBox" parent="." unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("10_d7d46")]
 collision_mask = 64
-victim = NodePath("..")
+target = NodePath("..")
 
 [node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=75084209]
 shape = SubResource("RectangleShape2D_ef6ou")

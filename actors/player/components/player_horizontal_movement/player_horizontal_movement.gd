@@ -63,9 +63,9 @@ signal stopped
 # 权威物理数据
 # ==============================================================================
 ## XY 权威位置，1 / 256 子像素。
-var position_raw: Vector2i = Vector2i.ZERO
+var horizontal_position_raw: Vector2i = Vector2i.ZERO
 ## XY 权威速度，1 / 256 子像素。
-var velocity_raw: Vector2i = Vector2i.ZERO
+var horizontal_velocity_raw: Vector2i = Vector2i.ZERO
 # ==============================================================================
 # 当前 Logic Tick 运动数据
 # ==============================================================================
@@ -80,24 +80,24 @@ var tick_displacement_raw: Vector2i = Vector2i.ZERO
 # 外部访问接口
 # ==============================================================================
 func set_horizontal_position(value: Vector2) -> void:
-	position_raw = Vector2i(
+	horizontal_position_raw = Vector2i(
 		_to_raw(value.x),
 		_to_raw(value.y)
 	)
 func get_horizontal_position() -> Vector2:
 	return Vector2(
-		_from_raw(position_raw.x),
-		_from_raw(position_raw.y)
+		_from_raw(horizontal_position_raw.x),
+		_from_raw(horizontal_position_raw.y)
 	)
 func set_horizontal_velocity(value: Vector2) -> void:
-	velocity_raw = Vector2i(
+	horizontal_velocity_raw = Vector2i(
 		_to_raw(value.x),
 		_to_raw(value.y)
 	)
 func get_horizontal_velocity() -> Vector2:
 	return Vector2(
-		_from_raw(velocity_raw.x),
-		_from_raw(velocity_raw.y)
+		_from_raw(horizontal_velocity_raw.x),
+		_from_raw(horizontal_velocity_raw.y)
 	)
 # ==============================================================================
 # 移动控制
@@ -114,20 +114,20 @@ func set_move_velocity(
 	direction: Vector2
 ) -> void:
 	if direction.is_zero_approx():
-		velocity_raw = Vector2i.ZERO
+		horizontal_velocity_raw = Vector2i.ZERO
 		return
 	var base_velocity_raw := _get_base_velocity_raw(
 		direction.normalized()
 	)
 	var factor := _to_fc_factor(speed)
-	velocity_raw = _velocity_from_factor(
+	horizontal_velocity_raw = _velocity_from_factor(
 		factor,
 		base_velocity_raw
 	)
 ## FC 特定规则：
 ## Y 速度算术右移一位。
 func halve_y_velocity() -> void:
-	velocity_raw.y >>= 1
+	horizontal_velocity_raw.y >>= 1
 ## 空中方向微调。
 func apply_air_steering(direction: Vector2) -> void:
 	if direction.is_zero_approx():
@@ -136,7 +136,7 @@ func apply_air_steering(direction: Vector2) -> void:
 		direction.normalized()
 		* AIR_STEERING_STEP
 	)
-	velocity_raw += Vector2i(
+	horizontal_velocity_raw += Vector2i(
 		_to_raw(steering_delta.x),
 		_to_raw(steering_delta.y)
 	)
@@ -144,19 +144,19 @@ func apply_air_steering(direction: Vector2) -> void:
 func clamp_velocity() -> void:
 	var max_x := _to_raw(MAX_AIR_VX)
 	var max_y := _to_raw(MAX_AIR_VY)
-	velocity_raw.x = clampi(
-		velocity_raw.x,
+	horizontal_velocity_raw.x = clampi(
+		horizontal_velocity_raw.x,
 		-max_x,
 		max_x
 	)
-	velocity_raw.y = clampi(
-		velocity_raw.y,
+	horizontal_velocity_raw.y = clampi(
+		horizontal_velocity_raw.y,
 		-max_y,
 		max_y
 	)
 ## 强制立即停止。
 func stop_immediately() -> void:
-	velocity_raw = Vector2i.ZERO
+	horizontal_velocity_raw = Vector2i.ZERO
 # ==============================================================================
 # Logic Tick
 # ==============================================================================
@@ -173,7 +173,7 @@ func stop_immediately() -> void:
 func step_logic_tick() -> void:
 	clamp_velocity()
 	# 当前速度就是整个 Logic Tick 需要完成的位移。
-	tick_displacement_raw = velocity_raw
+	tick_displacement_raw = horizontal_velocity_raw
 	if GameSettings.is_classic_motion():
 		_process_classic_motion()
 	else:
@@ -183,7 +183,7 @@ func step_logic_tick() -> void:
 # ==============================================================================
 func _process_classic_motion() -> void:
 	# 一个 Logic Tick 一次完成全部位移。
-	position_raw += tick_displacement_raw
+	horizontal_position_raw += tick_displacement_raw
 	# 标记当前 Tick 已经全部执行完成。
 	tick_motion_frame = PHYSICS_FRAMES_PER_LOGIC_TICK
 	# FC 规则层的边界处理放在完整 Tick 位移之后。
@@ -204,7 +204,7 @@ func _physics_process(_delta: float) -> void:
 	if tick_motion_frame >= PHYSICS_FRAMES_PER_LOGIC_TICK:
 		return
 	tick_motion_frame += 1
-	position_raw += Vector2i(
+	horizontal_position_raw += Vector2i(
 		_get_motion_frame_displacement(
 			tick_displacement_raw.x,
 			tick_motion_frame
@@ -305,25 +305,25 @@ func _velocity_from_factor(
 ## Y 直接归零。
 func decelerate_xy(amount: float) -> void:
 	var amount_raw := _to_raw(amount)
-	velocity_raw.x = move_toward(
-		velocity_raw.x,
+	horizontal_velocity_raw.x = move_toward(
+		horizontal_velocity_raw.x,
 		0,
 		amount_raw
 	)
 
-	velocity_raw.y = move_toward(
-		velocity_raw.y,
+	horizontal_velocity_raw.y = move_toward(
+		horizontal_velocity_raw.y,
 		0,
 		amount_raw
 	)
 func decelerate_x_and_stop_y(amount: float) -> void:
 	var amount_raw := _to_raw(amount)
-	velocity_raw.x = move_toward(
-		velocity_raw.x,
+	horizontal_velocity_raw.x = move_toward(
+		horizontal_velocity_raw.x,
 		0,
 		amount_raw
 	)
-	velocity_raw.y = 0
+	horizontal_velocity_raw.y = 0
 # ==============================================================================
 # 右边界
 # ==============================================================================
@@ -338,13 +338,13 @@ func decelerate_x_and_stop_y(amount: float) -> void:
 func _apply_confirmed_right_boundary() -> void:
 	if not enable_right_boundary:
 		return
-	var integer_x: int = position_raw.x >> 8
+	var integer_x: int = horizontal_position_raw.x >> 8
 	if integer_x < right_boundary_integer:
 		return
 	if integer_x > right_boundary_integer:
-		position_raw.x = (
+		horizontal_position_raw.x = (
 			right_boundary_integer * RAW_ONE
-			+ (position_raw.x & 255)
+			+ (horizontal_position_raw.x & 255)
 		)
 	right_boundary_touched.emit(
 		get_horizontal_position(),

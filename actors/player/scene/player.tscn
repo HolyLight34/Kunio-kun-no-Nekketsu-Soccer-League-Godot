@@ -117,14 +117,12 @@ facing_mode = 1
 [node name="Land" type="Node" parent="Components/StateMachine" unique_id=760253809]
 script = ExtResource("17_ptkv0")
 state = 8
-facing_mode = null
-windup_ticks = null
 anim_name = &"land"
 x_decel_rate = 1.0
 
-[node name="ActionA" type="Node" parent="Components/StateMachine" unique_id=1962139031]
-script = ExtResource("22_imh8g")
-state = 5
+[node name="ActionB" type="Node" parent="Components/StateMachine" unique_id=832557240]
+script = ExtResource("23_sgsyk")
+state = 6
 facing_mode = 1
 
 [node name="Kick" type="Node" parent="Components/StateMachine" unique_id=1329134799]
@@ -139,9 +137,9 @@ state = 10
 facing_mode = 1
 anim_name = &"elbow_strike"
 
-[node name="ActionB" type="Node" parent="Components/StateMachine" unique_id=832557240]
-script = ExtResource("23_sgsyk")
-state = 6
+[node name="ActionA" type="Node" parent="Components/StateMachine" unique_id=1962139031]
+script = ExtResource("22_imh8g")
+state = 5
 facing_mode = 1
 
 [node name="Pass" type="Node" parent="Components/StateMachine" unique_id=2005233895]
@@ -201,18 +199,18 @@ vframes = 8
 
 [node name="Colliders" type="Node2D" parent="." unique_id=1050309182]
 
-[node name="HitBox" parent="Colliders" unique_id=1107242509 node_paths=PackedStringArray("attacker") instance=ExtResource("17_dg4u3")]
+[node name="HitBox" parent="Colliders" unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("17_dg4u3")]
 collision_layer = 64
 collision_mask = 16
-attacker = NodePath("../..")
+source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
 shape = SubResource("RectangleShape2D_iy78e")
 
-[node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("victim") instance=ExtResource("18_v0pxu")]
+[node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
 monitorable = true
-victim = NodePath("../..")
+target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
