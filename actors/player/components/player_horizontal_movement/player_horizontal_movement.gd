@@ -303,7 +303,20 @@ func _velocity_from_factor(
 ## 当前规则：
 ## X 向 0 衰减，
 ## Y 直接归零。
-func apply_ground_friction(amount: float) -> void:
+func decelerate_xy(amount: float) -> void:
+	var amount_raw := _to_raw(amount)
+	velocity_raw.x = move_toward(
+		velocity_raw.x,
+		0,
+		amount_raw
+	)
+
+	velocity_raw.y = move_toward(
+		velocity_raw.y,
+		0,
+		amount_raw
+	)
+func decelerate_x_and_stop_y(amount: float) -> void:
 	var amount_raw := _to_raw(amount)
 	velocity_raw.x = move_toward(
 		velocity_raw.x,

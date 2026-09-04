@@ -50,7 +50,8 @@ func exit() -> void:
 
 func process(_delta: float) -> void:
 	pass
-
+func physics_tick() -> void:
+	player.player_horizontal_movement.decelerate_xy(0.5)
 func handle_intent(_intent: int, _delta: float) -> void:
 	pass
 func physics_process(_delta: float) -> void:

@@ -7,7 +7,7 @@ func enter(_data):
 	change_state(State.IDLE)
 	pass
 func physics_tick() -> void:
-	player.player_horizontal_movement.apply_ground_friction(x_decel_rate)
+	player.player_horizontal_movement.decelerate_x_and_stop_y(x_decel_rate)
 func exit() -> void:
 	pass
 
