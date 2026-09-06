@@ -9,4 +9,6 @@ func _on_area_entered(area: Area2D) -> void:
 	var hit_box := area as HitBox
 	if hit_box.hit_info == null:
 		return
+	if hit_box.source == target:
+		return
 	hit_received.emit(hit_box)

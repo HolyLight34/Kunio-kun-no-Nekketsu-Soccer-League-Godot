@@ -10,5 +10,5 @@ enum AttackType {
 	KICK,
 	SLIDE,
 	ELBOW,
-	BALL,
+	BALL_HIT,
 }

@@ -8,19 +8,14 @@ signal possession_lost
 # ==============================================================================
 # 2. 节点引用
 # ==============================================================================
+@onready var hit_box: HitBox = $HitBox
 @onready var state_machine: StateMachine = $StateMachine
-@onready var tick_component: TickComponent = $TickComponent
-@onready var tick_timer_component: TickTimerComponent = $TickTimerComponent
-@onready var ball_horizontal_component: BallHorizontalComponent = (
-	$BallHorizontalComponent
-)
-@onready var ball_z_movement: BallZMovement = $BallZMovement
-@onready var step_animation_component: StepAnimationComponent = (
-	$StepAnimationComponent
-)
-@onready var entity_visual_controller: EntityVisualController = (
-	$EntityVisualController
-)
+@onready var tick_component: TickComponent = $Components/TickComponent
+@onready var tick_timer_component: TickTimerComponent = $Components/TickTimerComponent
+@onready var ball_horizontal_component: BallHorizontalComponent = $Components/BallHorizontalComponent
+@onready var ball_z_movement: BallZMovement = $Components/BallZMovement
+@onready var step_animation_component: StepAnimationComponent = $Components/StepAnimationComponent
+@onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
@@ -53,6 +48,8 @@ func _on_logic_tick() -> void:
 # 6. 球权
 # ==============================================================================
 func can_be_picked_up() -> bool:
+	if state_machine.current_state.name == "Shot":
+		return false
 	return carrier == null
 func set_carried_by(new_carrier: Player) -> void:
 	if carrier == new_carrier:
@@ -80,6 +77,8 @@ func release_from_carrier() -> void:
 # ==============================================================================
 # 7. 外部交互接口
 # ==============================================================================
+func nihao():
+	print("你好")
 func receive_kick(hit_info: HitInfo) -> void:
 	release_from_carrier()
 	state_machine.change_state(

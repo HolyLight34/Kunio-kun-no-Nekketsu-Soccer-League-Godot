@@ -1,8 +1,12 @@
 extends BallState
 
-func enter(_data) -> void:
+func enter(data: HitInfo) -> void:
+	anim.play(anim_name)
+	data.attack_type = Types.AttackType.BALL_HIT
+	ball.hit_box.hit_info = data
+	var hit_info: HitInfo = ball.hit_box.hit_info
 	ball.ball_horizontal_component.set_horizontal_velocity(
-		Vector2(8.0, 0.0)
+		hit_info.attack_direction*8
 	)
 	# 固定在 Z = 8。
 	ball.ball_z_movement.set_z_height(8)

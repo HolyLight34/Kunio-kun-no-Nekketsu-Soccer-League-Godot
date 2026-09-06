@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://q80hg76qjjiu"]
-
-[ext_resource type="Script" uid="uid://ddgryvlc3eucy" path="res://tick_timer_component.gd" id="1_e8mj6"]
-
-[node name="TickTimerComponent" type="Node" unique_id=883416690]
-script = ExtResource("1_e8mj6")

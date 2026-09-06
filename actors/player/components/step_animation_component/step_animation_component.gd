@@ -23,7 +23,7 @@ func _ready() -> void:
 func play(anim_name: String, force_restart: bool = false) -> void:
 	if current_anim == anim_name and is_playing and not force_restart:
 		return
-		
+	print(anim_name)
 	if not anim_player or not anim_player.has_animation(anim_name):
 		push_warning("StepAnimationComponent: 未找到动画 ", anim_name)
 		return

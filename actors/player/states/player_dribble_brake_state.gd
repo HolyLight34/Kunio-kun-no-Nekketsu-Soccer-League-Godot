@@ -3,7 +3,7 @@ extends PlayerState
 
 func enter(_data):
 	player.player_horizontal_movement.stop_immediately()
-	_prepare_hit_box(Types.AttackType.KICK,5,0,0)
+	_prepare_hit_box(Types.AttackType.KICK,5,2,4)
 	anim.play(anim_name)
 	await anim.animation_finished
 	change_state(State.IDLE)

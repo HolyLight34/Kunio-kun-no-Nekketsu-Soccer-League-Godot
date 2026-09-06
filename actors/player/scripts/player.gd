@@ -140,21 +140,26 @@ func _on_pickup_sensor_body_entered(body: Node2D) -> void:
 # 9. 受击入口
 # ==============================================================================
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
+	
 	_receive_hit(incoming)
 func _receive_hit(incoming: HitBox) -> void:
+	print("被足球")
 	if not _can_receive_hit(incoming):
 		return
-	var source := incoming.source as Player
+	print("被足球",incoming.hit_info.attack_type)
+	var source := incoming.source
 	var hit_info := incoming.hit_info
 	var hurt_data := _resolve_hurt_data(
 		source,
 		hit_info
 	)
-	if _should_source_rebound(source, hit_info):
-		var source_rebound_data := _create_normal_hurt_data(
+	if source is Player:
+		if _should_source_rebound(source, hit_info):
+			var source_rebound_data := _create_normal_hurt_data(
 			-hit_info.attack_direction
 		)
-		source.receive_hurt(source_rebound_data)
+			source.receive_hurt(source_rebound_data)
+	print("足球",source)
 	endurance -= hit_info.damage
 	receive_hurt(hurt_data)
 func _should_source_rebound(
@@ -175,15 +180,13 @@ func receive_hurt(hurt_data: HurtData) -> void:
 # 10. 命中有效性
 # ==============================================================================
 func _can_receive_hit(incoming: HitBox) -> bool:
-	if incoming.hit_info == null:
-		return false
-	if incoming.source is not Player:
-		return false
-	var source := incoming.source as Player
-	if source == self:
-		return false
-	if source.team_id == team_id:
-		return false
+	if incoming.source is Player:
+		if incoming.source == self:
+			print("被足球",incoming.hit_info.attack_type)
+			return false
+		if incoming.source.team_id == team_id:
+			return false
+	
 	match incoming.hit_info.attack_type:
 		Types.AttackType.KICK:
 			return false
@@ -196,7 +199,7 @@ func is_running() -> bool:
 # 11. 受击结果结算
 # ==============================================================================
 func _resolve_hurt_data(
-	source: Player,
+	source: CharacterBody2D,
 	hit_info: HitInfo
 ) -> HurtData:
 	match hit_info.attack_type:
@@ -204,6 +207,11 @@ func _resolve_hurt_data(
 			return _create_normal_hurt_data(
 				hit_info.attack_direction
 			)
+		Types.AttackType.BALL_HIT:
+			return _create_hurt_data(
+			hit_info,
+			Types.HurtType.HEAVY
+		)
 	if source.endurance + 8 >= endurance:
 		return _create_hurt_data(
 			hit_info,
