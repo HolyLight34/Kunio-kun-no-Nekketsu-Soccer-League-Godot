@@ -43,13 +43,13 @@ size = Vector2(16, 8)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgsyk"]
 size = Vector2(16, 8)
 
-[node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "parser", "sm")]
+[node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "intent_component", "state_machine")]
 collision_layer = 0
 collision_mask = 0
 script = ExtResource("2_w62lr")
 input_component = NodePath("Components/InputComponent")
-parser = NodePath("Components/IntentComponent")
-sm = NodePath("Components/StateMachine")
+intent_component = NodePath("Components/IntentComponent")
+state_machine = NodePath("Components/StateMachine")
 endurance = 50
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=237613255]
@@ -228,7 +228,7 @@ monitorable = false
 shape = SubResource("RectangleShape2D_sgsyk")
 debug_color = Color(1, 1, 0, 0.29803923)
 
-[node name="ball_anchor" type="Marker2D" parent="Colliders" unique_id=2053744234]
+[node name="BallAnchor" type="Marker2D" parent="Colliders" unique_id=2053744234]
 position = Vector2(12, 1)
 
 [connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
