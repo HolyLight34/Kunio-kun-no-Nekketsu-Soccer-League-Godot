@@ -27,20 +27,11 @@ func register_ball(ball_node: Ball) -> void:
 	current_ball.possession_lost.connect(_on_ball_possession_lost)
 ## 🎯 统一收拢：处理抢球逻辑
 func _on_ball_possession_changed(new_carrier: Node) -> void:
-	# 1. 稳健防护：先把上一个持球人的状态解脱掉
-	#if ball_carrier and is_instance_valid(ball_carrier):
-		#ball_carrier.is_holding_ball = false
-	
-	# 2. 更新总管自己的账本
 	ball_carrier = new_carrier
-	
 	print("📢 [球权总管]: 球被 ", ball_carrier.name, " 抢走了！全场局势已动态刷新。")
 
 ## 🎯 统一收拢：处理丢球/踢球逻辑
 func _on_ball_possession_lost() -> void:
-	#if ball_carrier and is_instance_valid(ball_carrier):
-		#ball_carrier.is_holding_ball = false
-		
 	ball_carrier = null
 	print("📢 [球权总管]: 球飞出了或处于无主状态！")
 ## 🌟 核心：供所有球员和 AI 查询的快捷函数

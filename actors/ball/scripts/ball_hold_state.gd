@@ -7,10 +7,6 @@ func enter(_data) -> void:
 
 func exit() -> void:
 	ball.possession_lost.emit()
-	if ball.sm.current_state != self:
-		actor.possession_lost.emit()
-		actor.carrier = null
-		print("【HOLD 退出】球权真正移交，数据清理完毕")
 	pass
 
 

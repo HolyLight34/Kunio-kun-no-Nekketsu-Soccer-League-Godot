@@ -79,7 +79,8 @@ func _on_transition_requested(
 	var target_state := states.get(to) as EntityState
 	if not target_state:
 		return
-
+	if target_state == current_state:
+		return
 	_perform_actual_switch(
 		target_state,
 		data

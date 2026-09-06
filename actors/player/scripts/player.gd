@@ -124,8 +124,10 @@ func set_carried_ball(ball: Ball) -> void:
 func release_ball() -> void:
 	if carried_ball == null:
 		return
-	carried_ball.release_from_carrier()
+	var ball := carried_ball
 	carried_ball = null
+	if ball.carrier == self:
+		ball.release_from_carrier()
 func _on_pickup_sensor_body_entered(body: Node2D) -> void:
 	if body is not Ball:
 		return
