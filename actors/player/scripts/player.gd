@@ -112,40 +112,62 @@ func _handle_facing(move_input_x: float) -> void:
 func _apply_sprite_flip(dir: Vector2) -> void:
 	visual.scale.x = abs(visual.scale.x) * dir.x
 	colliders.scale.x = abs(colliders.scale.x) * dir.x
-
-
+func _resolve_hurt_data(
+	source: Player,
+	hit_info: HitInfo
+) -> HurtData:
+	match hit_info.attack_type:
+		Types.AttackType.SLIDE:
+			return _create_normal_hurt_data(
+				hit_info.attack_direction
+			)
+		_:
+			if source.endurance + 8 >= endurance:
+				return _create_hurt_data(
+					hit_info,
+					Types.HurtType.HEAVY
+				)
+			return _create_normal_hurt_data(
+				hit_info.attack_direction
+			)
+func _receive_hit(incoming: HitBox) -> void:
+	if not _can_receive_hit(incoming):
+		return
+	var source: Player = incoming.source
+	var hit_info: HitInfo = incoming.hit_info
+	var hurt_data := _resolve_hurt_data(source, hit_info)
+	release_ball()
+	endurance -= hit_info.damage
+	sm.change_state(PlayerState.State.HURT, hurt_data)
 # ==============================================================================
 # 9. 信号回调处理 (Signal Callbacks)
 # ==============================================================================
-func _on_pickup_sensor_area_entered(area: Area2D) -> void:
-	var ball: Ball = area.get_parent()
-	ball.set_carried_by(self)
-	carried_ball = ball
-
-func _on_hurt_box_hit_received(incoming: HitBox) -> void:
+func is_running() -> bool:
+	sm.current_state.name
+	return sm.current_state.name == "Run"
+func _can_receive_hit(incoming: HitBox) -> bool:
+	if incoming.hit_info == null:
+		return false
+	if incoming.source is not Player:
+		return false
 	var source: Player = incoming.source
-	if source == self or source.team_id == self.team_id:
+	if source == self:
+		return false
+	if source.team_id == team_id:
+		return false
+	match incoming.hit_info.attack_type:
+		Types.AttackType.KICK:
+			return false
+		Types.AttackType.SLIDE:
+			print("pao",is_running())
+			if not is_running():
+				return false
+	print("攻击方式", incoming.hit_info.attack_type)
+	return true
+func _on_hurt_box_hit_received(incoming: HitBox) -> void:
+	if incoming.source is not Player:
 		return
-	release_ball()
-	var hurt_type: Types.HurtType = Types.HurtType.NORMAL
-	var hurt_data: HurtData 
-	if source.endurance + 8 >= endurance:
-		hurt_type = Types.HurtType.HEAVY
-		hurt_data = _create_hurt_data(incoming.hit_info,hurt_type)
-	hurt_data = _create_normal_hurt_data(incoming.hit_info.attack_direction)
-	endurance -= incoming.hit_info.damage
-	sm.change_state(PlayerState.State.HURT,hurt_data)
-	
-func _on_hit_box_hit(hurt_box: HurtBox) -> void:
-	var target: Player = hurt_box.target
-	if target == self or target.team_id == self.team_id:
-		return
-	var hurt_data: HurtData 
-	hurt_data = _create_normal_hurt_data(-facing_direction)
-	if endurance + 8 < target.endurance:
-		print(hurt_data.knockback_direction,hurt_data.knockback_speed)
-		sm.change_state(PlayerState.State.HURT,hurt_data)
-	pass # Replace with function body.
+	_receive_hit(incoming)
 func _create_hurt_data(
 	hit_info: HitInfo,
 	hurt_type: Types.HurtType
@@ -188,3 +210,14 @@ func _create_normal_hurt_data(knockback_direction: Vector2) -> HurtData:
 	hurt_data.knockback_direction = knockback_direction
 	hurt_data.knockback_speed = 6.0
 	return hurt_data
+
+
+func _on_pickup_sensor_body_entered(body: Node2D) -> void:
+	if body is not Ball:
+		return
+	var ball: Ball = body
+	if not ball.can_be_picked_up():
+		return
+	ball.set_carried_by(self)
+	carried_ball = ball
+	pass # Replace with function body.

@@ -16,8 +16,8 @@
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://entity_visual_controller.gd" id="14_h8xgc"]
 [ext_resource type="PackedScene" uid="uid://q80hg76qjjiu" path="res://tick_timer_component.tscn" id="15_1xsu1"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ncgq8"]
-radius = 0.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
+size = Vector2(16, 12)
 
 [sub_resource type="Animation" id="Animation_m05fq"]
 length = 0.001
@@ -61,17 +61,13 @@ size = Vector2(16, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ef6ou"]
 size = Vector2(16, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_quynm"]
-size = Vector2(16, 12)
-
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
-collision_layer = 4
+collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_ncgq8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1823340034]
-position = Vector2(0, -7)
-shape = SubResource("CircleShape2D_ncgq8")
+shape = SubResource("RectangleShape2D_iy78e")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=304728840]
 libraries/ = SubResource("AnimationLibrary_ni7dn")
@@ -81,6 +77,7 @@ position = Vector2(0, -2)
 texture = ExtResource("9_iwjb2")
 
 [node name="StateMachine" parent="." unique_id=543815556 node_paths=PackedStringArray("initial_state") instance=ExtResource("7_r3iha")]
+process_physics_priority = 10
 initial_state = NodePath("Free")
 
 [node name="Free" type="Node" parent="StateMachine" unique_id=297881210]
@@ -95,13 +92,16 @@ script = ExtResource("4_b5n0i")
 state = 2
 
 [node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("9_m05fq")]
+collision_layer = 1
 source = NodePath("..")
 
 [node name="CollisionShape2D" parent="HitBox" index="0" unique_id=886247332]
 shape = SubResource("RectangleShape2D_jabx6")
 
 [node name="HurtBox" parent="." unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("10_d7d46")]
-collision_mask = 64
+collision_layer = 0
+collision_mask = 0
+monitorable = true
 target = NodePath("..")
 
 [node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=75084209]
@@ -114,15 +114,6 @@ position = Vector2(0, -8)
 texture = ExtResource("8_iwjb2")
 hframes = 4
 
-[node name="PickupArea" type="Area2D" parent="." unique_id=240234650]
-collision_layer = 8
-collision_mask = 0
-monitoring = false
-monitorable = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupArea" unique_id=790405381]
-shape = SubResource("RectangleShape2D_quynm")
-
 [node name="TickComponent" type="Node" parent="." unique_id=1146282096]
 script = ExtResource("11_d7d46")
 
@@ -131,8 +122,6 @@ script = ExtResource("11_begx4")
 
 [node name="StepAnimationComponent" type="Node" parent="." unique_id=942192342]
 script = ExtResource("12_d7d46")
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1417374518]
 
 [node name="EntityVisualController" type="Node" parent="." unique_id=1813904894 node_paths=PackedStringArray("horizontal_movement", "z_movement", "position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("14_h8xgc")
@@ -147,6 +136,8 @@ script = ExtResource("14_1xsu1")
 
 [node name="TickTimerComponent" parent="." unique_id=883416690 node_paths=PackedStringArray("tick_component") instance=ExtResource("15_1xsu1")]
 tick_component = NodePath("../TickComponent")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=260881472]
 
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 

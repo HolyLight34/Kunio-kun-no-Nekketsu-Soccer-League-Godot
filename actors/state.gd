@@ -2,7 +2,7 @@
 class_name EntityState
 extends Node
 
-signal transition_requested(from: EntityState, to: Variant)
+signal transition_requested(from: EntityState, to: Variant, data: Variant)
 @export var windup_ticks: int = 0 
 var actor: CharacterBody2D
 @export var anim_name: StringName = &""
@@ -20,8 +20,8 @@ func handle_intent(_intent: int, _delta: float) -> void:
 func physics_tick() -> void:
 	pass
 
-func change_state(target: Variant) -> void:
-	transition_requested.emit(self, target)
+func change_state(target: Variant,data= null) -> void:
+	transition_requested.emit(self, target, data)
 
 
 func enter(data) -> void:

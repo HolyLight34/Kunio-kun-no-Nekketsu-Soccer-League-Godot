@@ -44,7 +44,8 @@ size = Vector2(16, 8)
 size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "parser", "sm")]
-collision_layer = 2
+collision_layer = 0
+collision_mask = 0
 script = ExtResource("2_w62lr")
 input_component = NodePath("Components/InputComponent")
 parser = NodePath("Components/IntentComponent")
@@ -200,16 +201,18 @@ vframes = 8
 [node name="Colliders" type="Node2D" parent="." unique_id=1050309182]
 
 [node name="HitBox" parent="Colliders" unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("17_dg4u3")]
-collision_layer = 64
-collision_mask = 16
+collision_layer = 1
+monitorable = true
 source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
 shape = SubResource("RectangleShape2D_iy78e")
+disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
-monitorable = true
+collision_layer = 0
+collision_mask = 1
 target = NodePath("../..")
 metadata/_edit_lock_ = true
 
@@ -218,7 +221,7 @@ shape = SubResource("RectangleShape2D_pj4mo")
 
 [node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
 collision_layer = 0
-collision_mask = 8
+collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Colliders/PickupSensor" unique_id=1365573373]
@@ -228,10 +231,8 @@ debug_color = Color(1, 1, 0, 0.29803923)
 [node name="ball_anchor" type="Marker2D" parent="Colliders" unique_id=2053744234]
 position = Vector2(12, 1)
 
-[connection signal="area_entered" from="Colliders/HitBox" to="Colliders/HitBox" method="_on_area_entered"]
-[connection signal="hit" from="Colliders/HitBox" to="." method="_on_hit_box_hit"]
 [connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
-[connection signal="area_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_area_entered"]
+[connection signal="body_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_body_entered"]
 
 [editable path="Colliders/HitBox"]
 [editable path="Colliders/HurtBox"]

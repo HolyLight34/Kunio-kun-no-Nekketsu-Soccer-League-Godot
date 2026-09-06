@@ -17,7 +17,7 @@ func exit() -> void:
 func process(_delta: float) -> void:
 	pass
 func physics_tick() -> void:
-	print(player.player_horizontal_movement.get_horizontal_velocity())
+	#print(player.player_horizontal_movement.get_horizontal_velocity())
 	player.player_horizontal_movement.set_move_velocity(2.375,player.input_component.move_dir)
 	pass
 func handle_intent(intent: int, _delta: float) -> void:

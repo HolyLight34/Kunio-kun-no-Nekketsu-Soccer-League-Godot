@@ -1,23 +1,23 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.hit_box.hit_info = _create_hit_info()
+	_prepare_hit_box(Types.AttackType.ELBOW,2.0,2.0,4.0)
 	anim.play(anim_name)
 	await anim.animation_finished
 	change_state(State.IDLE)
 
-func _create_hit_info() -> HitInfo:
-	var hit_info := HitInfo.new()
-	hit_info.damage = 2.0
-	hit_info.attack_direction = player.facing_direction
-	hit_info.knockback_speed = 2.0
-	hit_info.z_velocity = 4.0
-	return hit_info
 func exit() -> void:
-	player.hit_box.set_deferred("monitorable", false)
-	player.hit_box.set_deferred("monitoring", false)
+	player.hit_box.hit_shape.disabled = true
+	player.hit_box.hit_info = null
 
-
+func handle_contact(hurt_box: HurtBox) -> void:
+	var target: Player = hurt_box.target
+	if target == player or target.team_id == player.team_id:
+		return
+	var hurt_data: HurtData 
+	hurt_data = player._create_normal_hurt_data(-player.facing_direction)
+	if player.endurance + 8 < target.endurance:
+		change_state(State.HURT,hurt_data)
 func process(_delta: float) -> void:
 
 	pass
@@ -29,4 +29,5 @@ func physics_process(_delta: float) -> void:
 
 
 func handle_intent(intent: int, _delta: float) -> void:
+	
 	pass

@@ -13,7 +13,8 @@ var carrier: Player = null
 @onready var ball_z_movement: BallZMovement = $BallZMovement
 @onready var entity_visual_controller: EntityVisualController = $EntityVisualController
 @onready var tick_timer_component: TickTimerComponent = $TickTimerComponent
-
+func can_be_picked_up() -> bool:
+	return carrier == null
 func _ready() -> void:
 	sm.init(self)
 	tick_component.tick_triggered.connect(_on_3_tick)
@@ -27,31 +28,30 @@ func _on_3_tick() -> void:
 	ball_horizontal_component.step_logic_tick()
 	step_animation_component.advance_tick()
 	Log.debug(Log.Cat.PHYSICS,"物理帧：%d " % [Engine.get_physics_frames()])
-
+func receive_kick(hit_info):
+	sm.change_state(BallState.State.SHOT,hit_info)
+	pass
 # 被捡起时的切换接口
 func set_carried_by(new_carrier: Player) -> void:
 	print("设置足球携带状态")
-	#is_free = false
 	carrier = new_carrier
 	sm.change_state(BallState.State.HOLD)
 
 # 被踢出去或传出去时的释放接口
 func release_from_carrier() -> void:
 	carrier = null
-	print("丢失球")
 	sm.change_state(BallState.State.FREE)
 #region
 @onready var sm: StateMachine = $StateMachine
-@onready var pickup_area: Area2D = $PickupArea
 @onready var tick_component: TickComponent = $TickComponent
 @onready var ball_horizontal_component: BallHorizontalComponent = $BallHorizontalComponent
 
 #endregion
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	if incoming.hit_info.damage != 0:
-		sm.change_state(BallState.State.SHOT)
-		hit_box.hit_info = incoming.hit_info
-	else :
-		carrier = incoming.attacker
-		sm.change_state(BallState.State.HOLD)
+	#if incoming.hit_info.damage != 0:
+		#sm.change_state(BallState.State.SHOT)
+		#hit_box.hit_info = incoming.hit_info
+	#else :
+		#carrier = incoming.attacker
+		#sm.change_state(BallState.State.HOLD)
 	pass # Replace with function body.

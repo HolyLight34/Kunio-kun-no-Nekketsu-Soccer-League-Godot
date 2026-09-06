@@ -1,9 +1,6 @@
 class_name HitBox
 extends Area2D
+
+@onready var hit_shape: CollisionShape2D = $CollisionShape2D
 @export var source: CharacterBody2D
-var hit_info: HitInfo
-signal hit(hurt_box: HurtBox)
-func _on_area_entered(area: Area2D) -> void:
-	if not area is HurtBox:
-		return
-	hit.emit(area as HurtBox)
+var hit_info: HitInfo = null

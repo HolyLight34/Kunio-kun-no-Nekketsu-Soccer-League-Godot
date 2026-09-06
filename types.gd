@@ -5,3 +5,10 @@ enum HurtType {
 	NORMAL,
 	HEAVY,
 }
+
+enum AttackType {
+	KICK,
+	SLIDE,
+	ELBOW,
+	BALL,
+}

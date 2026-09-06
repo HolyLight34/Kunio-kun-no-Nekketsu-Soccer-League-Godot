@@ -123,13 +123,8 @@ p2_button_select={
 
 [layer_names]
 
-2d_physics/layer_1="Pl_Wall"
-2d_physics/layer_2="Pl_Player_Body"
-2d_physics/layer_3="Pl_Ball"
-2d_physics/layer_4="Pl_Ball_For_Pickup"
-2d_physics/layer_5="Pl_Hurt_Box"
-2d_physics/layer_6="Pl_Target_Player"
-2d_physics/layer_7="Pl_Target_Ball"
+2d_physics/layer_1="HitBox"
+2d_physics/layer_2="Ball"
 
 [rendering]
 

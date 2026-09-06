@@ -1,8 +1,6 @@
 extends BallState
 
 func enter(_data) -> void:
-	ball.pickup_area.set_deferred("monitorable", false)
-	print(ball.carrier)
 	ball.possession_changed.emit(ball.carrier)
 	pass
 

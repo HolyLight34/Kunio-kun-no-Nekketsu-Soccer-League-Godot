@@ -67,7 +67,7 @@ func advance_tick() -> void:
 	var render_pos := current_tick_count * TICK_DELTA
 	anim_player.seek(render_pos, true)
 	
-	print("当前 Tick: ", current_tick_count, " / 总 Tick: ", Engine.get_physics_frames(), " | 秒数: ", render_pos)
+	#print("当前 Tick: ", current_tick_count, " / 总 Tick: ", Engine.get_physics_frames(), " | 秒数: ", render_pos)
 	
 	if has_finished:
 		is_playing = false

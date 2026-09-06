@@ -2,6 +2,7 @@ extends PlayerState
 
 
 func enter(_data) -> void:
+	_prepare_hit_box(Types.AttackType.SLIDE,0.0,0.0,0.0)
 	anim.play(anim_name)
 	if player.input_component.move_dir == Vector2.ZERO:
 		player.player_horizontal_movement.set_horizontal_velocity(5*player.facing_direction)
@@ -10,12 +11,12 @@ func enter(_data) -> void:
 	await anim.animation_finished
 	change_state(State.LAND)
 	pass
-
 func physics_tick() -> void:
 	player.player_horizontal_movement.decelerate_xy(x_decel_rate)
 	pass
 func exit() -> void:
-
+	player.hit_box.hit_shape.disabled = true
+	player.hit_box.hit_info = null
 	pass
 
 
