@@ -1,11 +1,6 @@
 extends BallState
 
 func enter(_data) -> void:
-	print("我是shot")
-	ball.pickup_area.set_deferred(
-		"monitorable",
-		false
-	)
 	ball.ball_horizontal_component.set_horizontal_velocity(
 		Vector2(8.0, 0.0)
 	)

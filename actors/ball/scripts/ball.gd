@@ -48,6 +48,9 @@ func release_from_carrier() -> void:
 
 #endregion
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
+	print("踢")
+	if incoming.hit_info.attack_type == Types.AttackType.KICK:
+		sm.change_state(BallState.State.SHOT)
 	#if incoming.hit_info.damage != 0:
 		#sm.change_state(BallState.State.SHOT)
 		#hit_box.hit_info = incoming.hit_info

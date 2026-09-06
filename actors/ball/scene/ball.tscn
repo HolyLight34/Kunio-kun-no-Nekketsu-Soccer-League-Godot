@@ -100,7 +100,7 @@ shape = SubResource("RectangleShape2D_jabx6")
 
 [node name="HurtBox" parent="." unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("10_d7d46")]
 collision_layer = 0
-collision_mask = 0
+collision_mask = 1
 monitorable = true
 target = NodePath("..")
 
