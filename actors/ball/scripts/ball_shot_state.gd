@@ -1,6 +1,7 @@
 extends BallState
-
+var kicker: Player
 func enter(data: HitInfo) -> void:
+	kicker = ball.current_kicker
 	anim.play(anim_name)
 	data.attack_type = Types.AttackType.BALL_HIT
 	ball.hit_box.hit_info = data
@@ -20,8 +21,10 @@ func enter(data: HitInfo) -> void:
 	)
 	await ball.tick_timer_component.timer_finished
 	change_state(State.FREE)
-
+func physics_tick() -> void:
+	ball.ball_horizontal_component.apply_air_steering(kicker.input_component.move_dir)
 func exit() -> void:
+	ball.current_kicker = null
 	pass
 
 

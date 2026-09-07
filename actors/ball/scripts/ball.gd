@@ -23,6 +23,7 @@ var carrier: Player = null
 # ==============================================================================
 # 4. 生命周期
 # ==============================================================================
+var current_kicker: Player
 func _ready() -> void:
 	state_machine.init(self)
 	tick_component.tick_triggered.connect(_on_logic_tick)
@@ -77,8 +78,7 @@ func release_from_carrier() -> void:
 # ==============================================================================
 # 7. 外部交互接口
 # ==============================================================================
-func nihao():
-	print("你好")
+
 func receive_kick(hit_info: HitInfo) -> void:
 	release_from_carrier()
 	state_machine.change_state(
@@ -93,6 +93,7 @@ func _on_hurt_box_hit_received(incoming: HitBox) -> void:
 		return
 	match incoming.hit_info.attack_type:
 		Types.AttackType.KICK:
+			current_kicker = incoming.source
 			_receive_kick_hit(incoming)
 		Types.AttackType.SLIDE:
 			_receive_slide_hit(incoming)

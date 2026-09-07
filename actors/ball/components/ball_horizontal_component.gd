@@ -70,7 +70,7 @@ const PHYSICS_FRAMES_PER_LOGIC_TICK: int = 3
 # 动作 $05 空中操控
 # ==============================================================================
 ## 0.5 × 256 = 128 raw
-const STEERING_STEP_RAW: int = 128
+const AIR_STEERING_STEP_RAW: int = 128
 # ==============================================================================
 # 低速衰减
 # ==============================================================================
@@ -195,30 +195,21 @@ func get_horizontal_velocity() -> Vector2:
 ## 只有动作 $05 允许空中微调时为 true。
 ##
 ## 本函数只修改速度。
-func process_air_velocity(
-	steering_y: int = 0,
-	steering_enabled: bool = false
-) -> void:
-	if steering_enabled and steering_y != 0:
-		_apply_action_05_steering_raw(
-			steering_y
-		)
-	is_rolling = false
-## 单独执行动作 $05 上下微调。
-func apply_action_05_steering(
-	direction_y: int
-) -> void:
-	if direction_y == 0:
+const AIR_STEERING_MAX_SPEED :float = 3.5
+func apply_air_steering(direction: Vector2) -> void:
+	if direction.y == 0.0:
 		return
-	_apply_action_05_steering_raw(
-		direction_y
+
+	horizontal_velocity_raw.y += roundi(
+		signf(direction.y) * AIR_STEERING_STEP_RAW
 	)
-func _apply_action_05_steering_raw(
-	direction_y: int
-) -> void:
-	horizontal_velocity_raw.y += (
-		signi(direction_y)
-		* STEERING_STEP_RAW
+
+	var max_speed_raw := _to_raw(AIR_STEERING_MAX_SPEED)
+
+	horizontal_velocity_raw.y = clampi(
+		horizontal_velocity_raw.y,
+		-max_speed_raw,
+		max_speed_raw
 	)
 # ==============================================================================
 # LANDING

@@ -12,7 +12,6 @@ func enter(_data):
 func exit():
 	pass
 func physics_tick() -> void:
-	#print(player.player_horizontal_movement.get_velocity())
 	player.player_horizontal_movement.apply_air_steering(player.input_component.move_dir)
 	pass
 
