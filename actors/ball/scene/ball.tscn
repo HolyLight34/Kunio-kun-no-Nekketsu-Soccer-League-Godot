@@ -261,6 +261,11 @@ script = ExtResource("11_begx4")
 [node name="TickComponent" type="Node" parent="Components" unique_id=1146282096]
 script = ExtResource("11_d7d46")
 
+[node name="PassTargetDetector" type="Area2D" parent="." unique_id=529687811]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PassTargetDetector" unique_id=343417979]
+polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
+
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 
 [editable path="HitBox"]

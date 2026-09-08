@@ -208,10 +208,6 @@ tile_map_data = PackedByteArray("AAAzAAYAAAAAAAAAAAAzAAcAAAAAAAEAAAAzAAgAAAAAAAI
 tile_set = SubResource("TileSet_cmi3i")
 metadata/_edit_lock_ = true
 
-[node name="Area2D" type="Area2D" parent="." unique_id=792340361]
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D" unique_id=787521963]
-
 [node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_73vmh")]
 position = Vector2(48, 75)
 

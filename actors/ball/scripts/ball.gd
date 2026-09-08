@@ -16,6 +16,8 @@ signal possession_lost
 @onready var ball_z_movement: BallZMovement = $Components/BallZMovement
 @onready var step_animation_component: StepAnimationComponent = $Components/StepAnimationComponent
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
+@onready var pass_target_detector: Area2D = $PassTargetDetector
+
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
@@ -48,6 +50,10 @@ func _on_logic_tick() -> void:
 # ==============================================================================
 # 6. 球权
 # ==============================================================================
+func set_search_direction(direction: Vector2) -> void:
+	if direction == Vector2.ZERO:
+		return
+	pass_target_detector.rotation = direction.angle()
 func can_be_picked_up() -> bool:
 	if state_machine.current_state.name == "Shot":
 		return false

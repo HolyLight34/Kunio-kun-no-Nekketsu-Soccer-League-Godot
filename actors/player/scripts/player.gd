@@ -44,7 +44,7 @@ extends CharacterBody2D
 # 3. 运行状态
 # ==============================================================================
 var facing_direction: Vector2 = Vector2.RIGHT
-var carried_ball: Ball
+var carried_ball: Ball = null
 # ==============================================================================
 # 4. 生命周期
 # ==============================================================================
@@ -60,6 +60,8 @@ func _physics_process(delta: float) -> void:
 		intent_component.get_intent()
 	)
 	state_machine.handle_intent(intent, delta)
+	if carried_ball:
+		carried_ball.set_search_direction(input_component.move_dir)
 # ==============================================================================
 # 5. 初始化
 # ==============================================================================
