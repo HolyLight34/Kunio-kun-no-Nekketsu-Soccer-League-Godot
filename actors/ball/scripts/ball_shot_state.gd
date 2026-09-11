@@ -6,7 +6,7 @@ func enter(data: HitInfo) -> void:
 	data.attack_type = Types.AttackType.BALL_HIT
 	ball.hit_box.hit_info = data
 	var hit_info: HitInfo = ball.hit_box.hit_info
-	ball.ball_horizontal_component.set_horizontal_velocity(
+	ball.ball_horizontal_movement.set_horizontal_velocity(
 		hit_info.attack_direction*8
 	)
 	# 固定在 Z = 8。
@@ -22,7 +22,7 @@ func enter(data: HitInfo) -> void:
 	await ball.tick_timer_component.timer_finished
 	change_state(State.FREE)
 func physics_tick() -> void:
-	ball.ball_horizontal_component.apply_air_steering(kicker.input_component.move_dir)
+	ball.ball_horizontal_movement.apply_air_steering(kicker.input_component.move_dir)
 func exit() -> void:
 	ball.current_kicker = null
 	pass

@@ -125,6 +125,7 @@ p2_button_select={
 
 2d_physics/layer_1="HitBox"
 2d_physics/layer_2="Ball"
+2d_physics/layer_3="Player"
 
 [rendering]
 

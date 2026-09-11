@@ -40,6 +40,8 @@ extends CharacterBody2D
 @onready var ball_anchor: Marker2D = $Colliders/BallAnchor
 @onready var pickup_sensor: Area2D = $Colliders/PickupSensor
 @onready var endurance_label: Label = $Label
+@onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
+
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
@@ -55,13 +57,25 @@ func _ready() -> void:
 	state_machine.tick_reset_requested.connect(
 		tick_component.reset_tick
 	)
+func get_logical_position() -> Vector3:
+	var horizontal_position := (
+		player_horizontal_movement.get_horizontal_position()
+	)
+	return Vector3(
+		horizontal_position.x,
+		horizontal_position.y,
+		player_z_movement.get_z_height()
+	)
 func _physics_process(delta: float) -> void:
 	var intent: IntentComponent.Intent = (
 		intent_component.get_intent()
 	)
 	state_machine.handle_intent(intent, delta)
 	if carried_ball:
-		carried_ball.set_search_direction(input_component.move_dir)
+		if input_component.move_dir != Vector2.ZERO:
+			pass_target_detector.set_search_direction(input_component.move_dir)
+		else :
+			pass_target_detector.set_search_direction(facing_direction)
 # ==============================================================================
 # 5. 初始化
 # ==============================================================================

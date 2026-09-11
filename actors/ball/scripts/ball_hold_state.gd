@@ -21,6 +21,6 @@ func physics_process(_delta: float) -> void:
 	var anchor_offset := (
 	ball.carrier.get_ball_anchor_offset()
 )
-	ball.ball_horizontal_component.set_horizontal_position(
+	ball.ball_horizontal_movement.set_horizontal_position(
 		carrier_position + anchor_offset
 	)

@@ -12,11 +12,11 @@ signal possession_lost
 @onready var state_machine: StateMachine = $StateMachine
 @onready var tick_component: TickComponent = $Components/TickComponent
 @onready var tick_timer_component: TickTimerComponent = $Components/TickTimerComponent
-@onready var ball_horizontal_component: BallHorizontalComponent = $Components/BallHorizontalComponent
+@onready var ball_horizontal_movement: BallHorizontalMovement = $Components/BallHorizontalMovement
 @onready var ball_z_movement: BallZMovement = $Components/BallZMovement
 @onready var step_animation_component: StepAnimationComponent = $Components/StepAnimationComponent
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
-@onready var pass_target_detector: Area2D = $PassTargetDetector
+@onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 
 # ==============================================================================
 # 3. 运行状态
@@ -26,14 +26,24 @@ var carrier: Player = null
 # 4. 生命周期
 # ==============================================================================
 var current_kicker: Player
+func get_logical_position() -> Vector3:
+	var horizontal_position := (
+		ball_horizontal_movement.get_horizontal_position()
+	)
+
+	return Vector3(
+		horizontal_position.x,
+		horizontal_position.y,
+		ball_z_movement.get_z_height()
+	)
 func _ready() -> void:
 	state_machine.init(self)
 	tick_component.tick_triggered.connect(_on_logic_tick)
 	ball_z_movement.landed.connect(
-		ball_horizontal_component.apply_landing_decay
+		ball_horizontal_movement.apply_landing_decay
 	)
 	ball_z_movement.finished.connect(
-		ball_horizontal_component.roll
+		ball_horizontal_movement.roll
 	)
 # ==============================================================================
 # 5. Logic Tick
@@ -41,7 +51,7 @@ func _ready() -> void:
 func _on_logic_tick() -> void:
 	state_machine.physics_tick()
 	ball_z_movement.process_z_step()
-	ball_horizontal_component.step_logic_tick()
+	ball_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
 	Log.debug(
 		Log.Cat.PHYSICS,
@@ -50,10 +60,6 @@ func _on_logic_tick() -> void:
 # ==============================================================================
 # 6. 球权
 # ==============================================================================
-func set_search_direction(direction: Vector2) -> void:
-	if direction == Vector2.ZERO:
-		return
-	pass_target_detector.rotation = direction.angle()
 func can_be_picked_up() -> bool:
 	if state_machine.current_state.name == "Shot":
 		return false
@@ -84,7 +90,15 @@ func release_from_carrier() -> void:
 # ==============================================================================
 # 7. 外部交互接口
 # ==============================================================================
+func set_logical_velocity(velocity: Vector3) -> void:
+	release_from_carrier()
+	ball_horizontal_movement.set_horizontal_velocity(
+		Vector2(velocity.x, velocity.y)
+	)
 
+	ball_z_movement.launch(
+		velocity.z
+	)
 func receive_kick(hit_info: HitInfo) -> void:
 	release_from_carrier()
 	state_machine.change_state(

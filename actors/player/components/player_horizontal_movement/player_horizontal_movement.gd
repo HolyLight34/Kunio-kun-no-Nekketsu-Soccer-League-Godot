@@ -353,6 +353,8 @@ func _apply_confirmed_right_boundary() -> void:
 # ==============================================================================
 # Raw
 # ==============================================================================
+func get_horizontal_position_raw() -> Vector2i:
+	return horizontal_position_raw
 func _to_raw(value: float) -> int:
 	return roundi(value * RAW_ONE)
 func _from_raw(value: int) -> float:

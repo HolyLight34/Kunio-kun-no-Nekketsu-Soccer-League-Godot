@@ -27,6 +27,7 @@
 [ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://shared/timing/tick_component.gd" id="24_c8mko"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
+[ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
@@ -922,11 +923,11 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tg3sl"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pj4mo"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -934,7 +935,7 @@ size = Vector2(16, 8)
 size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "intent_component", "state_machine")]
-collision_layer = 0
+collision_layer = 4
 collision_mask = 0
 script = ExtResource("2_w62lr")
 input_component = NodePath("Components/InputComponent")
@@ -1097,7 +1098,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_tg3sl")
+shape = SubResource("RectangleShape2D_iy78e")
 disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
@@ -1107,7 +1108,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_iy78e")
+shape = SubResource("RectangleShape2D_pj4mo")
 
 [node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
 collision_layer = 0
@@ -1120,6 +1121,16 @@ debug_color = Color(1, 1, 0, 0.29803923)
 
 [node name="BallAnchor" type="Marker2D" parent="Colliders" unique_id=2053744234]
 position = Vector2(12, 1)
+
+[node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+script = ExtResource("28_iy78e")
+player = NodePath("..")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PassTargetDetector" unique_id=259109016]
+polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
 
 [connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
 [connection signal="body_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_body_entered"]
