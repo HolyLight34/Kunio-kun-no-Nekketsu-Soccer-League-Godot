@@ -16,7 +16,7 @@ signal possession_changed(new_carrier: Player)
 @onready var step_animation_component: StepAnimationComponent = $Components/StepAnimationComponent
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
-
+var power: float
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
@@ -89,37 +89,92 @@ func release_from_carrier() -> void:
 # ==============================================================================
 # 7. 外部交互接口
 # ==============================================================================
-func set_logical_velocity(velocity: Vector3) -> void:
-	release_from_carrier()
-	ball_horizontal_movement.set_horizontal_velocity(
-		Vector2(velocity.x, velocity.y)
+
+func receive_kick(
+	source: Player,
+	power: float,
+	velocity: Vector3
+) -> void:
+	current_kicker = source
+	self.power = power
+
+	_apply_horizontal_launch(
+		Vector2(
+			velocity.x,
+			velocity.y
+		)
 	)
 
+	# 射门：这里按你的射门规则设置高度
+	ball_z_movement.set_z_height(
+		velocity.z
+	)
+
+	state_machine.change_state(
+		BallState.State.SHOT
+	)
+
+
+func receive_pass(
+	source: Player,
+	velocity: Vector3
+) -> void:
+	current_kicker = source
+
+	_apply_horizontal_launch(
+		Vector2(
+			velocity.x,
+			velocity.y
+		)
+	)
+
+	# 传球：velocity.z 是初始上升速度
 	ball_z_movement.launch(
 		velocity.z
 	)
-func receive_kick(hit_info: HitInfo) -> void:
-	release_from_carrier()
+
 	state_machine.change_state(
-		BallState.State.SHOT,
-		hit_info
+		BallState.State.FREE
+	)
+
+
+func _apply_horizontal_launch(
+	velocity: Vector2
+) -> void:
+	release_from_carrier()
+
+	ball_horizontal_movement.set_horizontal_velocity(
+		velocity
 	)
 # ==============================================================================
 # 8. HurtBox 回调
 # ==============================================================================
 func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	if incoming.hit_info == null:
-		return
-	match incoming.hit_info.attack_type:
-		Types.AttackType.KICK:
-			current_kicker = incoming.source
-			_receive_kick_hit(incoming)
-		Types.AttackType.SLIDE:
-			_receive_slide_hit(incoming)
-func _receive_kick_hit(incoming: HitBox) -> void:
-	receive_kick(incoming.hit_info)
+	pass
+	#if incoming.hit_info == null:
+		#return
+	#match incoming.hit_info.attack_type:
+		#Types.AttackType.KICK:
+			#current_kicker = incoming.source
+			#_receive_kick_hit(incoming)
+		#Types.AttackType.SLIDE:
+			#_receive_slide_hit(incoming)
+#func _receive_kick_hit(incoming: HitBox) -> void:
+	#receive_kick(incoming.hit_info)
 
 func _receive_slide_hit(incoming: HitBox) -> void:
 	if incoming.source is not Player:
 		return
 	set_carried_by(incoming.source)
+
+
+func _on_hit_box_target_detected(hurt_box: HurtBox, hit_info: HitInfo) -> void:
+	print("我是")
+	var hurt_data = HurtData.new()
+	hurt_data.damage = hit_info.damage
+	hurt_data.hurt_type = Types.HurtType.HEAVY
+	hurt_data.knockback_direction = hit_info.attack_direction
+	hurt_data.knockback_speed = hit_info.horizontal_speed
+	hurt_data.z_velocity =hit_info.z_velocity
+	hurt_box.receive_hurt(hurt_data)
+	pass # Replace with function body.

@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
 [ext_resource type="Script" uid="uid://djtmyon3il0b5" path="res://actors/ball/components/ball_horizontal_component.gd" id="14_1xsu1"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="14_h8xgc"]
+[ext_resource type="Script" uid="uid://bp062wkswhp4n" path="res://actors/ball/components/ball_hurt_resolver.gd" id="16_37of1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
 size = Vector2(16, 12)
@@ -209,8 +210,9 @@ state = 2
 anim_name = &"shot"
 
 [node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("9_m05fq")]
-collision_layer = 1
-monitorable = true
+collision_layer = 0
+collision_mask = 1
+monitoring = true
 source = NodePath("..")
 
 [node name="CollisionShape2D" parent="HitBox" index="0" unique_id=886247332]
@@ -218,8 +220,10 @@ shape = SubResource("RectangleShape2D_jabx6")
 disabled = true
 
 [node name="HurtBox" parent="." unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("10_d7d46")]
-collision_layer = 0
-collision_mask = 1
+collision_layer = 1
+collision_mask = 0
+monitoring = false
+monitorable = true
 target = NodePath("..")
 
 [node name="CollisionShape2D" parent="HurtBox" index="0" unique_id=75084209]
@@ -261,7 +265,10 @@ script = ExtResource("11_begx4")
 [node name="TickComponent" type="Node" parent="Components" unique_id=1146282096]
 script = ExtResource("11_d7d46")
 
-[connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
+[node name="BallHurtResolver" type="Node" parent="Components" unique_id=988805330]
+script = ExtResource("16_37of1")
+
+[connection signal="target_detected" from="HitBox" to="." method="_on_hit_box_target_detected"]
 
 [editable path="HitBox"]
 [editable path="HurtBox"]

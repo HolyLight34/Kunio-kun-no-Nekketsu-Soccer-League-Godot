@@ -8,6 +8,7 @@ enum HurtType {
 
 enum AttackType {
 	KICK,
+	PASS,
 	SLIDE,
 	ELBOW,
 	BALL_HIT,

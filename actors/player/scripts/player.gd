@@ -42,7 +42,7 @@ extends CharacterBody2D
 @onready var pickup_sensor: Area2D = $Colliders/PickupSensor
 @onready var endurance_label: Label = $Label
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
-@onready var player_hurt_resolver: PlayerHurtResolver = $Components/PlayerHurtResolver
+@onready var attack_resolver: AttackResolver = $Components/AttackResolver
 
 # ==============================================================================
 # 3. 运行状态
@@ -157,11 +157,23 @@ func _on_pickup_sensor_body_entered(body: Node2D) -> void:
 # ==============================================================================
 # 9. 受击入口
 # ==============================================================================
-func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	player_hurt_resolver.receive_hit(incoming)
+#func _on_hurt_box_hit_received(incoming: HitBox) -> void:
+	#player_hurt_resolver.receive_hit(incoming)
 func receive_hurt(hurt_data: HurtData) -> void:
+	endurance -= hurt_data.damage
+
 	release_ball()
+
 	state_machine.change_state(
 		PlayerState.State.HURT,
 		hurt_data
 	)
+func is_running() -> bool:
+	return state_machine.current_state.name == "Run"
+
+func _on_hit_box_target_detected(hurt_box: HurtBox,hit_info:HitInfo) -> void:
+	attack_resolver.resolve_hit(hurt_box,hit_box.hit_info)
+
+func _on_hurt_box_hurt_received(hurt_data: HurtData) -> void:
+	print(hurt_data.knockback_speed)
+	receive_hurt(hurt_data)

@@ -87,7 +87,7 @@ func set_search_direction(direction: Vector2) -> void:
 # 获取最终传球目标位置
 # =============================================================================
 
-func get_pass_target_position() -> Vector3:
+func get_pass_target_position(ball: Ball) -> Vector3:
 	var target := _find_best_pass_target()
 
 	# ---------------------------------------------------------
@@ -104,7 +104,7 @@ func get_pass_target_position() -> Vector3:
 	# 生成 FC 默认虚拟目标点。
 	# ---------------------------------------------------------
 
-	return _get_default_pass_target_position()
+	return _get_default_pass_target_position(ball)
 
 
 # =============================================================================
@@ -215,8 +215,8 @@ func _find_best_pass_target() -> Player:
 # 默认传球目标位置
 # =============================================================================
 
-func _get_default_pass_target_position() -> Vector3:
-	var ball_position := player.carried_ball.get_logical_position()
+func _get_default_pass_target_position(ball:Ball) -> Vector3:
+	var ball_position := ball.get_logical_position()
 
 	var offset := _get_default_pass_offset()
 

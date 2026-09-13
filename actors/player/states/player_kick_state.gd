@@ -13,12 +13,7 @@ func exit() -> void:
 	player.hit_box.hit_shape.disabled = true
 	player.hit_box.hit_info = null
 	pass
-func handle_contact(hurt_box: HurtBox) -> void:
-	if hurt_box.target is Player:
-		return
-	if hurt_box.target is Ball:
-		var target = hurt_box.target as Ball
-		target.receive_kick(player.hit_box.hit_info)	
+
 func physics_tick() -> void:
 	pass
 func process(_delta: float) -> void:

@@ -158,8 +158,6 @@ const DIRECTION_LARGE_RAW: Array[int] = [
 #
 
 # 这些全部隐藏在本类内部。
-
-
 func build_pass(
 	ball_position: Vector3,
 	target_position: Vector3

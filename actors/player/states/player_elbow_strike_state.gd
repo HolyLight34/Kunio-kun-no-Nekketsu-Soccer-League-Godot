@@ -2,6 +2,13 @@ extends PlayerState
 
 func enter(_data) -> void:
 	_prepare_hit_box(Types.AttackType.ELBOW,player.facing_direction,2.0,2.0,4.0)
+	#var hit_info = HitInfo.new()
+	#hit_info.attack_type = Types.AttackType.ELBOW
+	#hit_info.attack_direction = player.facing_direction
+	#hit_info.damage = 2
+	#hit_info.horizontal_speed = 2
+	#hit_info.z_velocity = 4
+	
 	anim.play(anim_name)
 	await anim.animation_finished
 	change_state(State.IDLE)

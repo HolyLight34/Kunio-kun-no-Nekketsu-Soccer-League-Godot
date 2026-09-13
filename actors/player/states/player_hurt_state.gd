@@ -31,7 +31,7 @@ func heavy_hurt(hurt_data: HurtData):
 	player.player_horizontal_movement.set_horizontal_velocity(
 		hurt_data.knockback_direction * hurt_data.knockback_speed
 	)
-	print("数据",hurt_data.knockback_direction * hurt_data.knockback_speed)
+	print("数据",hurt_data.knockback_direction * hurt_data.knockback_speed,hurt_data.z_velocity)
 	player.player_z_movement.apply_vertical_velocity(
 		hurt_data.z_velocity
 	)

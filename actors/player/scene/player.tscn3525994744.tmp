@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dl8wemvojp0xc" path="res://actors/player/components/input_component/input_component.tscn" id="11_k3ida"]
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://actors/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://actors/player/states/player_hurt_state.gd" id="13_v0pxu"]
-[ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://actors/player/states/player_kick_state.gd" id="14_ptkv0"]
+[ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://actors/player/states/player_dribble_brake_state.gd" id="14_ptkv0"]
 [ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_action_a_state.gd" id="15_tg3sl"]
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
 [ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://actors/player/states/player_pass_state.gd" id="16_imh8g"]
@@ -1109,9 +1109,8 @@ position_target = NodePath("../..")
 visual_pivot = NodePath("../../Visual")
 shadow_sprite = NodePath("../../Shadow")
 
-[node name="AttackResolver" type="Node" parent="Components" unique_id=978016812 node_paths=PackedStringArray("attacker")]
+[node name="AttackResolver" type="Node" parent="Components" unique_id=978016812]
 script = ExtResource("24_pj4mo")
-attacker = NodePath("../..")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1064463610]
 
@@ -1173,8 +1172,8 @@ player = NodePath("..")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PassTargetDetector" unique_id=259109016]
 polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
 
+[connection signal="area_entered" from="Colliders/HitBox" to="Colliders/HitBox" method="_on_area_entered"]
 [connection signal="target_detected" from="Colliders/HitBox" to="." method="_on_hit_box_target_detected"]
-[connection signal="hurt_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hurt_received"]
 [connection signal="body_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_body_entered"]
 
 [editable path="Colliders/HitBox"]
