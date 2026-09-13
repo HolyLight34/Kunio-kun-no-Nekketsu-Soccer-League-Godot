@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	_prepare_hit_box(Types.AttackType.ELBOW,2.0,2.0,4.0)
+	_prepare_hit_box(Types.AttackType.ELBOW,player.facing_direction,2.0,2.0,4.0)
 	anim.play(anim_name)
 	await anim.animation_finished
 	change_state(State.IDLE)

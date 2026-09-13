@@ -2,13 +2,10 @@ extends PlayerState
 
 var is_tackling: bool = false
 func enter(_data) -> void:
-	match MatchManager.get_possession_for(player):
-		MatchManager.BallPossession.MYSELF:
-			change_state(State.PASS)
-		MatchManager.BallPossession.ENEMY_TEAM:
-			change_state(State.TACKLE)
-		MatchManager.BallPossession.NONE:
-			change_state(State.PASS)
+	anim.play(anim_name)
+	player.carried_ball.ball_z_movement.launch(8)
+	await player.step_animation_component.animation_finished
+	change_state(State.IDLE)
 	pass
 
 

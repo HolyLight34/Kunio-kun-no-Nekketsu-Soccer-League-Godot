@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://actors/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://actors/player/states/player_hurt_state.gd" id="13_v0pxu"]
 [ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://actors/player/states/player_dribble_brake_state.gd" id="14_ptkv0"]
+[ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_action_a_state.gd" id="15_tg3sl"]
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
 [ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://actors/player/states/player_pass_state.gd" id="16_imh8g"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="17_dg4u3"]
@@ -22,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="20_c0821"]
 [ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
 [ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
+[ext_resource type="Script" uid="uid://c35cn2vqvte2v" path="res://actors/player/components/player_hurt_resolver.gd" id="23_iy78e"]
 [ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://shared/timing/tick_component.gd" id="24_c8mko"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
@@ -327,6 +329,47 @@ tracks/5/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_igwkh"]
+resource_name = "flick_up"
+length = 0.30000168231297286
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [22]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Head:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.06666667),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -32)]
 }
 
 [sub_resource type="Animation" id="Animation_26oqr"]
@@ -908,6 +951,7 @@ _data = {
 &"down_back": SubResource("Animation_jcqi0"),
 &"down_front": SubResource("Animation_wwj0w"),
 &"elbow_strike": SubResource("Animation_gb5ua"),
+&"flick_up": SubResource("Animation_igwkh"),
 &"heavy_hurt_front": SubResource("Animation_26oqr"),
 &"hurt_back": SubResource("Animation_x2bss"),
 &"idle": SubResource("Animation_q6r6c"),
@@ -921,11 +965,11 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_igwkh"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tg3sl"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pj4mo"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1000,39 +1044,44 @@ x_decel_rate = 0.75
 
 [node name="Hurt" type="Node" parent="Components/StateMachine" unique_id=559331258]
 script = ExtResource("13_v0pxu")
-state = 7
+state = 5
 facing_mode = 1
 
 [node name="Land" type="Node" parent="Components/StateMachine" unique_id=760253809]
 script = ExtResource("17_ptkv0")
-state = 8
+state = 6
 anim_name = &"land"
 x_decel_rate = 1.0
 
 [node name="Kick" type="Node" parent="Components/StateMachine" unique_id=1329134799]
 script = ExtResource("14_ptkv0")
-state = 9
+state = 7
 facing_mode = 1
 anim_name = &"kick"
 
 [node name="ElbowStrike" type="Node" parent="Components/StateMachine" unique_id=850088266]
 script = ExtResource("15_wkl3h")
-state = 10
+state = 8
 facing_mode = 1
 anim_name = &"elbow_strike"
 
 [node name="Pass" type="Node" parent="Components/StateMachine" unique_id=2005233895]
 script = ExtResource("16_imh8g")
-state = 11
+state = 9
 facing_mode = 1
 anim_name = &"pass"
 
 [node name="Tackle" type="Node" parent="Components/StateMachine" unique_id=309175364]
 script = ExtResource("17_sgsyk")
-state = 12
+state = 10
 facing_mode = 1
 anim_name = &"tackle"
 x_decel_rate = 0.625
+
+[node name="FlickUp" type="Node" parent="Components/StateMachine" unique_id=208771649]
+script = ExtResource("15_tg3sl")
+state = 11
+anim_name = &"flick_up"
 
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
@@ -1060,6 +1109,10 @@ position_target = NodePath("../..")
 visual_pivot = NodePath("../../Visual")
 shadow_sprite = NodePath("../../Shadow")
 
+[node name="PlayerHurtResolver" type="Node" parent="Components" unique_id=171918387 node_paths=PackedStringArray("player")]
+script = ExtResource("23_iy78e")
+player = NodePath("../..")
+
 [node name="Visual" type="Node2D" parent="." unique_id=1064463610]
 
 [node name="Head" type="Sprite2D" parent="Visual" unique_id=411200426]
@@ -1083,7 +1136,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_igwkh")
+shape = SubResource("RectangleShape2D_iy78e")
 disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
@@ -1093,7 +1146,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_tg3sl")
+shape = SubResource("RectangleShape2D_pj4mo")
 
 [node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
 collision_layer = 0

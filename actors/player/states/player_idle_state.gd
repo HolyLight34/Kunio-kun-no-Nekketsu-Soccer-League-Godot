@@ -23,7 +23,10 @@ func handle_intent(intent: int, _delta: float) -> void:
 		PlayerIntentResolver.Intent.PASS:
 			change_state(State.PASS)
 		PlayerIntentResolver.Intent.JUMP:
-			change_state(State.JUMP)
+			if player.carried_ball:
+				change_state(State.FLICK_UP)
+			else :
+				change_state(State.JUMP)
 		PlayerIntentResolver.Intent.ELBOW_STRIKE:
 			change_state(State.ELBOW_STRIKE)
 		PlayerIntentResolver.Intent.TACKLE:

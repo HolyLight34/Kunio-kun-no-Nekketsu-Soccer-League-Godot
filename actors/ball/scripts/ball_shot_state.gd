@@ -3,14 +3,12 @@ var kicker: Player
 func enter(data: HitInfo) -> void:
 	kicker = ball.current_kicker
 	anim.play(anim_name)
-	data.attack_type = Types.AttackType.BALL_HIT
-	ball.hit_box.hit_info = data
-	var hit_info: HitInfo = ball.hit_box.hit_info
+	_prepare_hit_box(Types.AttackType.BALL_HIT,data.attack_direction,5,2,4)
 	ball.ball_horizontal_movement.set_horizontal_velocity(
-		hit_info.attack_direction*8
+		data.attack_direction*data.horizontal_speed
 	)
 	# 固定在 Z = 8。
-	ball.ball_z_movement.set_z_height(8)
+	ball.ball_z_movement.set_z_height(data.z_velocity)
 	# 不产生垂直位移。
 	ball.ball_z_movement.launch(0.0)
 	# 禁用重力，因此不会往下掉。
