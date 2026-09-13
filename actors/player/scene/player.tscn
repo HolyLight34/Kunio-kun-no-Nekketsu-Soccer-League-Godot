@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://actors/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://actors/player/states/player_hurt_state.gd" id="13_v0pxu"]
 [ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://actors/player/states/player_kick_state.gd" id="14_ptkv0"]
-[ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_action_a_state.gd" id="15_tg3sl"]
+[ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_flick_up_state.gd" id="15_tg3sl"]
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
 [ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://actors/player/states/player_pass_state.gd" id="16_imh8g"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="17_dg4u3"]
