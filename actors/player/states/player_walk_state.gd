@@ -22,14 +22,14 @@ func physics_tick() -> void:
 	pass
 func handle_intent(intent: int, _delta: float) -> void:
 	match intent:
-		IntentComponent.Intent.IDLE:
+		PlayerIntentResolver.Intent.IDLE:
 			change_state(State.IDLE)
-		IntentComponent.Intent.JUMP:
+		PlayerIntentResolver.Intent.JUMP:
 			change_state(State.JUMP)
-		IntentComponent.Intent.RUN:
+		PlayerIntentResolver.Intent.RUN:
 			change_state(State.RUN)
-		IntentComponent.Intent.SEND_PASS:
-			change_state(State.ACTION_A)
+		PlayerIntentResolver.Intent.PASS:
+			change_state(State.PASS)
 	pass
 func physics_process(_delta: float) -> void:
 	pass

@@ -6,7 +6,6 @@ func enter(_data) -> void:
 
 
 func exit() -> void:
-	ball.possession_lost.emit()
 	pass
 
 

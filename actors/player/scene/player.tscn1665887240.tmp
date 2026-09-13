@@ -921,22 +921,23 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_igwkh"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tg3sl"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pj4mo"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sgsyk"]
 size = Vector2(16, 8)
 
-[node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "state_machine")]
+[node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "intent_component", "state_machine")]
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("2_w62lr")
 input_component = NodePath("Components/InputComponent")
+intent_component = NodePath("Components/IntentComponent")
 state_machine = NodePath("Components/StateMachine")
 endurance = 50
 
@@ -1037,7 +1038,7 @@ x_decel_rate = 0.625
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
-[node name="PlayerIntentResolver" parent="Components" unique_id=698967064 instance=ExtResource("12_33t0o")]
+[node name="IntentComponent" parent="Components" unique_id=698967064 instance=ExtResource("12_33t0o")]
 
 [node name="PlayerZMovement" type="Node" parent="Components" unique_id=1092353589]
 script = ExtResource("20_pw4o6")
@@ -1083,7 +1084,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_igwkh")
+shape = SubResource("RectangleShape2D_iy78e")
 disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
@@ -1093,7 +1094,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_tg3sl")
+shape = SubResource("RectangleShape2D_pj4mo")
 
 [node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
 collision_layer = 0

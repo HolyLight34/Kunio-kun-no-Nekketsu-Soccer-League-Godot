@@ -3,11 +3,11 @@ extends CharacterBody2D
 # ==============================================================================
 # 1. 配置
 # ==============================================================================
-@export var team_id: MatchManager.Team
+@export var match_stage: Match
+@export var team_id: Types.Team
 @export var player_id: int = 1
 @export_group("Components")
 @export var input_component: InputComponent
-@export var intent_component: IntentComponent
 @export var state_machine: StateMachine
 @export var endurance: int:
 	set(value):
@@ -18,6 +18,7 @@ extends CharacterBody2D
 # ==============================================================================
 # 2. 节点引用
 # ==============================================================================
+@onready var player_intent_resolver: PlayerIntentResolver = $Components/PlayerIntentResolver
 @onready var player_horizontal_movement: PlayerHorizontalMovement = (
 	$Components/PlayerHorizontalMovement
 )
@@ -41,7 +42,6 @@ extends CharacterBody2D
 @onready var pickup_sensor: Area2D = $Colliders/PickupSensor
 @onready var endurance_label: Label = $Label
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
-
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
@@ -67,8 +67,8 @@ func get_logical_position() -> Vector3:
 		player_z_movement.get_z_height()
 	)
 func _physics_process(delta: float) -> void:
-	var intent: IntentComponent.Intent = (
-		intent_component.get_intent()
+	var intent: PlayerIntentResolver.Intent = (
+		player_intent_resolver.get_intent()
 	)
 	state_machine.handle_intent(intent, delta)
 	if carried_ball:
@@ -81,7 +81,7 @@ func _physics_process(delta: float) -> void:
 # ==============================================================================
 func _initialize_components() -> void:
 	player_horizontal_movement.set_horizontal_position(position)
-
+	player_intent_resolver.init(self,input_component,match_stage)
 	player_z_movement.set_z_height(
 		visual.position.y
 	)

@@ -12,3 +12,7 @@ enum AttackType {
 	ELBOW,
 	BALL_HIT,
 }
+enum Team {
+	TEAM_1,
+	TEAM_2,
+}

@@ -50,7 +50,7 @@ func physics_tick() -> void:
 
 
 func handle_intent(
-	intent: IntentComponent.Intent,
+	intent: PlayerIntentResolver.Intent,
 	delta: float
 ) -> void:
 	if current_state:

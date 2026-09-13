@@ -24,11 +24,11 @@ func physics_process(_delta: float) -> void:
 
 func handle_intent(intent: int, _delta: float) -> void:
 	match intent:
-		IntentComponent.Intent.WALK:
+		PlayerIntentResolver.Intent.WALK:
 		## 用归一化的速度进行点积判断
 			if player.input_component.move_dir.x+player.facing_direction.x == 0:
 				#print(player.input_component.move_dir.x+player.facing_direction)
 				change_state(State.BRAKE)
-		IntentComponent.Intent.JUMP:
+		PlayerIntentResolver.Intent.JUMP:
 			change_state(State.JUMP)
 	pass

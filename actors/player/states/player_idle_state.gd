@@ -14,16 +14,20 @@ func physics_tick() -> void:
 
 func handle_intent(intent: int, _delta: float) -> void:                                                               
 	match intent:
-		IntentComponent.Intent.RUN:
+		PlayerIntentResolver.Intent.RUN:
 			change_state(State.RUN)
-		IntentComponent.Intent.WALK:
+		PlayerIntentResolver.Intent.WALK:
 			change_state(State.WALK)
-		IntentComponent.Intent.KICK:
-			change_state(State.ACTION_B)	
-		IntentComponent.Intent.SEND_PASS:
-			change_state(State.ACTION_A)
-		IntentComponent.Intent.JUMP:
+		PlayerIntentResolver.Intent.KICK:
+			change_state(State.KICK)	
+		PlayerIntentResolver.Intent.PASS:
+			change_state(State.PASS)
+		PlayerIntentResolver.Intent.JUMP:
 			change_state(State.JUMP)
+		PlayerIntentResolver.Intent.ELBOW_STRIKE:
+			change_state(State.ELBOW_STRIKE)
+		PlayerIntentResolver.Intent.TACKLE:
+			change_state(State.TACKLE)
 
 
 func physics_process(_delta: float) -> void:
