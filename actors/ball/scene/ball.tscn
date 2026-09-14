@@ -259,8 +259,9 @@ shadow_sprite = NodePath("../../Shadow")
 script = ExtResource("12_d7d46")
 anim_player = NodePath("../../AnimationPlayer")
 
-[node name="BallZMovement" type="Node" parent="Components" unique_id=2046879588]
+[node name="BallZMovement" type="Node" parent="Components" unique_id=2046879588 node_paths=PackedStringArray("ball")]
 script = ExtResource("11_begx4")
+ball = NodePath("../..")
 
 [node name="TickComponent" type="Node" parent="Components" unique_id=1146282096]
 script = ExtResource("11_d7d46")

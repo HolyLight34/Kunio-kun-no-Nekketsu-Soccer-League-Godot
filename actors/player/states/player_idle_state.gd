@@ -1,7 +1,6 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.pickup_sensor.monitoring = true
 	anim.play(anim_name)
 func exit() -> void:
 	pass
@@ -24,6 +23,7 @@ func handle_intent(intent: int, _delta: float) -> void:
 			change_state(State.PASS)
 		PlayerIntentResolver.Intent.JUMP:
 			if player.carried_ball:
+				print('你好')
 				change_state(State.FLICK_UP)
 			else :
 				change_state(State.JUMP)

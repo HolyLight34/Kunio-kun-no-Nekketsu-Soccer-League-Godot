@@ -16,11 +16,14 @@ signal possession_changed(new_carrier: Player)
 @onready var step_animation_component: StepAnimationComponent = $Components/StepAnimationComponent
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
+@onready var ball_collision: CollisionShape2D = $CollisionShape2D
+
 var power: float
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
 var carrier: Player = null
+
 # ==============================================================================
 # 4. 生命周期
 # ==============================================================================
@@ -89,7 +92,8 @@ func release_from_carrier() -> void:
 # ==============================================================================
 # 7. 外部交互接口
 # ==============================================================================
-
+func is_in_air() -> bool:
+	return ball_z_movement.is_in_air
 func receive_kick(
 	source: Player,
 	power: float,
@@ -149,18 +153,6 @@ func _apply_horizontal_launch(
 # ==============================================================================
 # 8. HurtBox 回调
 # ==============================================================================
-func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	pass
-	#if incoming.hit_info == null:
-		#return
-	#match incoming.hit_info.attack_type:
-		#Types.AttackType.KICK:
-			#current_kicker = incoming.source
-			#_receive_kick_hit(incoming)
-		#Types.AttackType.SLIDE:
-			#_receive_slide_hit(incoming)
-#func _receive_kick_hit(incoming: HitBox) -> void:
-	#receive_kick(incoming.hit_info)
 
 func _receive_slide_hit(incoming: HitBox) -> void:
 	if incoming.source is not Player:
@@ -169,7 +161,6 @@ func _receive_slide_hit(incoming: HitBox) -> void:
 
 
 func _on_hit_box_target_detected(hurt_box: HurtBox, hit_info: HitInfo) -> void:
-	print("我是")
 	var hurt_data = HurtData.new()
 	hurt_data.damage = hit_info.damage
 	hurt_data.hurt_type = Types.HurtType.HEAVY

@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_flick_up_state.gd" id="15_tg3sl"]
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
 [ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://actors/player/states/player_pass_state.gd" id="16_imh8g"]
+[ext_resource type="Script" uid="uid://brlddk1s0yv6g" path="res://actors/player/states/player_chest_trap_state.gd" id="16_pj4mo"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="17_dg4u3"]
 [ext_resource type="Script" uid="uid://dd5sf8frv84fy" path="res://actors/player/states/player_land_state.gd" id="17_ptkv0"]
 [ext_resource type="Script" uid="uid://d2v14o8ksrwd1" path="res://actors/player/states/player_tackle_state.gd" id="17_sgsyk"]
@@ -28,6 +29,7 @@
 [ext_resource type="Script" uid="uid://dvuklebdrx5fo" path="res://actors/player/components/attack_resolver.gd" id="24_pj4mo"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
+[ext_resource type="Script" uid="uid://dt7vg0ps0laqs" path="res://actors/player/components/ball_interaction_detector.gd" id="29_5b3gr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
@@ -194,6 +196,47 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [Vector2(9, -32), Vector2(3, -32)]
+}
+
+[sub_resource type="Animation" id="Animation_pj4mo"]
+resource_name = "chest_trap"
+length = 0.7000017031745985
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [22]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Head:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.06666667),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -32)]
 }
 
 [sub_resource type="Animation" id="Animation_jcqi0"]
@@ -948,6 +991,7 @@ tracks/2/keys = {
 _data = {
 &"RESET": SubResource("Animation_0hol4"),
 &"brake": SubResource("Animation_3lvlc"),
+&"chest_trap": SubResource("Animation_pj4mo"),
 &"down_back": SubResource("Animation_jcqi0"),
 &"down_front": SubResource("Animation_wwj0w"),
 &"elbow_strike": SubResource("Animation_gb5ua"),
@@ -965,11 +1009,11 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pj4mo"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pj4mo"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5b3gr"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1083,6 +1127,11 @@ script = ExtResource("15_tg3sl")
 state = 11
 anim_name = &"flick_up"
 
+[node name="ChestTrap" type="Node" parent="Components/StateMachine" unique_id=1281698851]
+script = ExtResource("16_pj4mo")
+state = 12
+anim_name = &"chest_trap"
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -1137,7 +1186,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_iy78e")
+shape = SubResource("RectangleShape2D_pj4mo")
 disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
@@ -1149,14 +1198,16 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_pj4mo")
+shape = SubResource("RectangleShape2D_5b3gr")
 
-[node name="PickupSensor" type="Area2D" parent="Colliders" unique_id=405457032]
+[node name="BallInteractionDetector" type="Area2D" parent="Colliders" unique_id=405457032 node_paths=PackedStringArray("player")]
 collision_layer = 0
 collision_mask = 2
 monitorable = false
+script = ExtResource("29_5b3gr")
+player = NodePath("../..")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Colliders/PickupSensor" unique_id=1365573373]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Colliders/BallInteractionDetector" unique_id=1365573373]
 shape = SubResource("RectangleShape2D_sgsyk")
 debug_color = Color(1, 1, 0, 0.29803923)
 
@@ -1175,7 +1226,8 @@ polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
 
 [connection signal="target_detected" from="Colliders/HitBox" to="." method="_on_hit_box_target_detected"]
 [connection signal="hurt_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hurt_received"]
-[connection signal="body_entered" from="Colliders/PickupSensor" to="." method="_on_pickup_sensor_body_entered"]
+[connection signal="body_entered" from="Colliders/BallInteractionDetector" to="Colliders/BallInteractionDetector" method="_on_body_entered"]
+[connection signal="body_exited" from="Colliders/BallInteractionDetector" to="Colliders/BallInteractionDetector" method="_on_body_exited"]
 
 [editable path="Colliders/HitBox"]
 [editable path="Colliders/HurtBox"]

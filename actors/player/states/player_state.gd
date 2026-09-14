@@ -14,6 +14,7 @@ enum State {
 	PASS,
 	TACKLE,
 	FLICK_UP,
+	CHEST_TRAP,
 } 
 @export_group("State Info")
 @export var state: State

@@ -129,7 +129,7 @@ signal finished
 
 ## 当前地面。
 @export var ground_type: GroundType = GroundType.GRASS
-
+@export var ball: Ball
 ## $050D bit7
 ##
 ## false = 干球
@@ -288,9 +288,9 @@ func _process_landing() -> void:
 	# FC：
 	# 保留 Z 的低 8 位。
 	_apply_landing_height_correction()
-
+	if not ball.carrier:
 	# 根据触地速度计算新的反弹速度。
-	_calculate_rebound_velocity_raw()
+		_calculate_rebound_velocity_raw()
 
 	# 每一次触地都发送。
 	#

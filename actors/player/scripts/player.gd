@@ -39,10 +39,10 @@ extends CharacterBody2D
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
 @onready var ball_anchor: Marker2D = $Colliders/BallAnchor
-@onready var pickup_sensor: Area2D = $Colliders/PickupSensor
 @onready var endurance_label: Label = $Label
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var attack_resolver: AttackResolver = $Components/AttackResolver
+@onready var ball_interaction_detector: BallInteractionDetector = $Colliders/BallInteractionDetector
 
 # ==============================================================================
 # 3. 运行状态
@@ -59,6 +59,8 @@ func _ready() -> void:
 	state_machine.tick_reset_requested.connect(
 		tick_component.reset_tick
 	)
+	ball_interaction_detector.chest_trap_requested.connect(_on_chest_trap_requested)
+	ball_interaction_detector.pickup_requested.connect(_on_pickup_requested)
 func get_logical_position() -> Vector3:
 	var horizontal_position := (
 		player_horizontal_movement.get_horizontal_position()
@@ -100,6 +102,8 @@ func _on_logic_tick() -> void:
 		input_component.move_dir.x
 	)
 	player_horizontal_movement.step_logic_tick()
+	ball_interaction_detector.check_ball_interaction()
+	
 
 # ==============================================================================
 # 7. 朝向
@@ -146,14 +150,24 @@ func release_ball() -> void:
 	carried_ball = null
 	if ball.carrier == self:
 		ball.release_from_carrier()
-func _on_pickup_sensor_body_entered(body: Node2D) -> void:
-	if body is not Ball:
+func _on_chest_trap_requested(ball: Ball) -> void:
+	if carried_ball:
 		return
-	var ball := body as Ball
+	set_carried_ball(ball)
+	ball.carrier = self
+	ball.ball_z_movement.launch(0.5)
+	state_machine.change_state(PlayerState.State.CHEST_TRAP)
+	# 处理胸部停球请求
+	pass
+
+
+func _on_pickup_requested(ball: Ball) -> void:
 	if not ball.can_be_picked_up():
 		return
 	ball.set_carried_by(self)
-	carried_ball = ball
+	set_carried_ball(ball)
+	# 处理拾球请求
+	pass
 # ==============================================================================
 # 9. 受击入口
 # ==============================================================================
