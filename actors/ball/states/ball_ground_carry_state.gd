@@ -1,7 +1,6 @@
 extends BallState
 
 func enter(_data) -> void:
-	ball.possession_changed.emit(ball.carrier)
 	pass
 
 

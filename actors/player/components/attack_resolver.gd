@@ -43,6 +43,8 @@ func _resolve_ball_hit(
 
 		Types.AttackType.PASS:
 			_resolve_pass(ball)
+		Types.AttackType.SLIDE:
+			ball._receive_slide_hit(attacker.hit_box)
 func _resolve_kick(
 	ball: Ball,
 	hit_info: HitInfo

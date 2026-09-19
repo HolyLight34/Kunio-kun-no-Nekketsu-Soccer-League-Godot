@@ -208,15 +208,18 @@ tile_map_data = PackedByteArray("AAAzAAYAAAAAAAAAAAAzAAcAAAAAAAEAAAAzAAgAAAAAAAI
 tile_set = SubResource("TileSet_cmi3i")
 metadata/_edit_lock_ = true
 
-[node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_73vmh")]
+[node name="Player" parent="." unique_id=232419937 node_paths=PackedStringArray("match_stage") instance=ExtResource("5_73vmh")]
 position = Vector2(48, 75)
+match_stage = NodePath("..")
 
-[node name="Player5" parent="." unique_id=337035303 instance=ExtResource("5_73vmh")]
+[node name="Player5" parent="." unique_id=337035303 node_paths=PackedStringArray("match_stage") instance=ExtResource("5_73vmh")]
 position = Vector2(136, 214)
+match_stage = NodePath("..")
 player_id = 0
 
-[node name="Player2" parent="." unique_id=99073540 instance=ExtResource("5_73vmh")]
+[node name="Player2" parent="." unique_id=99073540 node_paths=PackedStringArray("match_stage") instance=ExtResource("5_73vmh")]
 position = Vector2(128, 112)
+match_stage = NodePath("..")
 team_id = 1
 player_id = 2
 endurance = 60

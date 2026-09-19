@@ -28,28 +28,20 @@ enum Intent {
 # 当前球权与自己的关系
 # ============================================================
 
-enum BallPossession {
-	NONE,       # 当前无人持球
-	MYSELF,     # 自己持球
-	TEAMMATE,   # 队友持球
-	OPPONENT,   # 对手持球
-}
-
 
 # ============================================================
 # 外部依赖
 # ============================================================
-
-var possession: Types.BallPossession
+var player: Player
 var input_component: InputComponent
 
 
 
 func init(
-	ball_possession: Types.BallPossession,
+	soure: Player,
 	input_node: InputComponent,
 ) -> void:
-	possession = ball_possession
+	player = soure
 	input_component = input_node
 
 
@@ -232,9 +224,7 @@ func _resolve_buffered_buttons() -> Intent:
 # ============================================================
 
 func _resolve_single_button_intent() -> Intent:
-	
-	match possession:
-
+	match player.ball_possession:
 		# ----------------------------------------------------
 		# 自己持球
 		# ----------------------------------------------------

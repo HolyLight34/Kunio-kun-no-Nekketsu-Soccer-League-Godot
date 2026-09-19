@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://bjiv5srw37o2d"]
 
 [ext_resource type="Script" uid="uid://6q51n0q12xa7" path="res://actors/ball/scripts/ball.gd" id="1_ncgq8"]
-[ext_resource type="Script" uid="uid://8goknn2xmft" path="res://actors/ball/scripts/ball_hold_state.gd" id="3_07s1p"]
-[ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://actors/ball/scripts/ball_shot_state.gd" id="4_b5n0i"]
-[ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://actors/ball/scripts/ball_free_state.gd" id="5_r3iha"]
+[ext_resource type="Script" uid="uid://8goknn2xmft" path="res://actors/ball/states/ball_ground_carry_state.gd" id="3_07s1p"]
+[ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://actors/ball/states/ball_shot_state.gd" id="4_b5n0i"]
+[ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://actors/ball/states/ball_free_state.gd" id="5_r3iha"]
 [ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://actors/player/components/state_machine/state_machine.tscn" id="7_r3iha"]
 [ext_resource type="Texture2D" uid="uid://bepsmh7kemgmh" path="res://actors/ball/assets/ball.png" id="8_iwjb2"]
+[ext_resource type="Script" uid="uid://btqnw73bvo5to" path="res://actors/ball/states/ball_air_control_state.gd" id="8_l8wax"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="9_iwjb2"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="9_m05fq"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://shared/combat/hurt_box.tscn" id="10_d7d46"]
@@ -200,14 +201,20 @@ initial_state = NodePath("Free")
 script = ExtResource("5_r3iha")
 anim_name = &"roll"
 
-[node name="Hold" type="Node" parent="StateMachine" unique_id=1743281351]
+[node name="GroundCarry" type="Node" parent="StateMachine" unique_id=1743281351]
 script = ExtResource("3_07s1p")
 state = 1
 
 [node name="Shot" type="Node" parent="StateMachine" unique_id=408952036]
 script = ExtResource("4_b5n0i")
 state = 2
+windup_ticks = null
 anim_name = &"shot"
+x_decel_rate = null
+
+[node name="AirControl" type="Node" parent="StateMachine" unique_id=79705925]
+script = ExtResource("8_l8wax")
+state = 3
 
 [node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("9_m05fq")]
 collision_layer = 0
@@ -270,6 +277,7 @@ script = ExtResource("11_d7d46")
 script = ExtResource("16_37of1")
 
 [connection signal="target_detected" from="HitBox" to="." method="_on_hit_box_target_detected"]
+[connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]
 
 [editable path="HitBox"]
 [editable path="HurtBox"]

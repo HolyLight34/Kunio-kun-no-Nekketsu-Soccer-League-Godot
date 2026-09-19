@@ -2,6 +2,7 @@ extends PlayerState
 
 func enter(_data) -> void:
 	player.player_horizontal_movement.stop_immediately()
+	player.ball.receive_chest_control(player)
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished
 	change_state(State.IDLE)

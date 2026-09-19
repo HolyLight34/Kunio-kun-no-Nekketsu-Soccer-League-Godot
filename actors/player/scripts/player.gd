@@ -3,9 +3,9 @@ extends CharacterBody2D
 # ==============================================================================
 # 1. 配置
 # ==============================================================================
-@export var match_stage: Match
 @export var team_id: Types.Team
 @export var player_id: int = 1
+var ball: Ball
 @export_group("Components")
 @export var input_component: InputComponent
 @export var state_machine: StateMachine
@@ -35,7 +35,7 @@ extends CharacterBody2D
 	$Components/EntityVisualController
 )
 @onready var visual: Node2D = $Visual
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
+#@onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
 @onready var ball_anchor: Marker2D = $Colliders/BallAnchor
@@ -48,7 +48,6 @@ extends CharacterBody2D
 # 3. 运行状态
 # ==============================================================================
 var facing_direction: Vector2 = Vector2.RIGHT
-var carried_ball: Ball = null
 var ball_possession: Types.BallPossession
 func _on_ball_possession_changed(new_carrier: Player) -> void:
 	if new_carrier == null:
@@ -62,12 +61,6 @@ func _on_ball_possession_changed(new_carrier: Player) -> void:
 
 	else:
 		ball_possession = Types.BallPossession.OPPONENT
-
-
-	if new_carrier == self:
-		ball_interaction_detector.disable()
-	else:
-		ball_interaction_detector.enable()
 # ==============================================================================
 # 4. 生命周期
 # ==============================================================================
@@ -95,7 +88,7 @@ func _physics_process(delta: float) -> void:
 		player_intent_resolver.get_intent()
 	)
 	state_machine.handle_intent(intent, delta)
-	if carried_ball:
+	if ball_possession == Types.BallPossession.MYSELF:
 		if input_component.move_dir != Vector2.ZERO:
 			pass_target_detector.set_search_direction(input_component.move_dir)
 		else :
@@ -105,7 +98,7 @@ func _physics_process(delta: float) -> void:
 # ==============================================================================
 func _initialize_components() -> void:
 	player_horizontal_movement.set_horizontal_position(position)
-	player_intent_resolver.init(ball_possession,input_component)
+	player_intent_resolver.init(self,input_component)
 	player_z_movement.set_z_height(
 		visual.position.y
 	)
@@ -161,31 +154,34 @@ func get_ball_anchor_offset() -> Vector2:
 # ==============================================================================
 # 8. 持球
 # ==============================================================================
-func set_carried_ball(ball: Ball) -> void:
-	carried_ball = ball
 func release_ball() -> void:
-	if carried_ball == null:
+	if ball == null:
 		return
-	var ball := carried_ball
-	carried_ball = null
-	if ball.carrier == self:
-		ball.release_from_carrier()
+	if ball.carrier != self:
+		return
+	ball.release_from_carrier()
 func _on_chest_trap_requested(ball: Ball) -> void:
-	if carried_ball:
-		return
-	set_carried_ball(ball)
 	ball.carrier = self
+	face_position(ball.get_logical_horizontal_position())
 	ball.ball_z_movement.launch(0.5)
 	state_machine.change_state(PlayerState.State.CHEST_TRAP)
 	# 处理胸部停球请求
 	pass
-
-
+func set_facing_direction(direction: Vector2):
+	facing_direction = direction
+	_apply_facing()
+	pass
+func face_position(target_position: Vector2) -> void:
+	var direction := target_position - global_position
+	if direction.x < 0.0:
+		set_facing_direction(Vector2.LEFT)
+	elif direction.x > 0.0:
+		set_facing_direction(Vector2.RIGHT)
 func _on_pickup_requested(ball: Ball) -> void:
 	if not ball.can_be_picked_up():
 		return
+	face_position(ball.get_logical_horizontal_position())
 	ball.set_carried_by(self)
-	set_carried_ball(ball)
 	# 处理拾球请求
 	pass
 # ==============================================================================

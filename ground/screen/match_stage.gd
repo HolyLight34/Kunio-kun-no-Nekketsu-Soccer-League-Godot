@@ -21,7 +21,8 @@ func _collect_teams() -> void:
 			continue
 
 		var player := child as Player
-
+		player.ball = ball
+		ball.possession_changed.connect(player._on_ball_possession_changed)
 		if player.team_id == Types.Team.TEAM_1:
 			team1.append(player)
 		else:

@@ -17,9 +17,9 @@ signal possession_changed(new_carrier: Player)
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var ball_collision: CollisionShape2D = $CollisionShape2D
-@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
-
+var current_kicker: Player
 var power: float
+var control_locked: bool = false
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
@@ -27,14 +27,14 @@ var carrier: Player = null:
 	set(value):
 		if carrier == value:
 			return
-
 		carrier = value
 		possession_changed.emit(carrier)
 
 # ==============================================================================
 # 4. 生命周期
 # ==============================================================================
-var current_kicker: Player
+func get_logical_horizontal_position() -> Vector2:
+	return ball_horizontal_movement.get_horizontal_position()
 func get_logical_position() -> Vector3:
 	var horizontal_position := (
 		ball_horizontal_movement.get_horizontal_position()
@@ -76,26 +76,24 @@ func can_be_picked_up() -> bool:
 func set_carried_by(new_carrier: Player) -> void:
 	if carrier == new_carrier:
 		return
-	# 清理旧持球者
-	if carrier != null:
-		carrier.carried_ball = null
 	# 建立新的双向关系
 	carrier = new_carrier
-	new_carrier.carried_ball = self
 	state_machine.change_state(
-		BallState.State.HOLD
+		BallState.State.GRIYND_CARRY
 	)
-	possession_changed.emit(new_carrier)
+func receive_chest_control(player: Player) -> void:
+	carrier = player
+	state_machine.change_state(
+		BallState.State.AIR_CONTORL
+	)
+	pass
 func release_from_carrier() -> void:
 	if carrier == null:
 		return
-	var old_carrier := carrier
 	carrier = null
-	old_carrier.carried_ball = null
 	state_machine.change_state(
 		BallState.State.FREE
 	)
-	possession_changed.emit(carrier)
 # ==============================================================================
 # 7. 外部交互接口
 # ==============================================================================
@@ -106,9 +104,9 @@ func receive_kick(
 	power: float,
 	velocity: Vector3
 ) -> void:
-	current_kicker = source
 	self.power = power
 	carrier = null
+	current_kicker = source
 	_apply_horizontal_launch(
 		Vector2(
 			velocity.x,
@@ -130,7 +128,6 @@ func receive_pass(
 	source: Player,
 	velocity: Vector3
 ) -> void:
-	current_kicker = source
 	carrier = null
 	_apply_horizontal_launch(
 		Vector2(
@@ -161,13 +158,19 @@ func _apply_horizontal_launch(
 # 8. HurtBox 回调
 # ==============================================================================
 
+func receive_flick_up() -> void:
+	control_locked = true 
+	ball_z_movement.launch(8)
+	release_from_carrier()
+	
+	pass
 func _receive_slide_hit(incoming: HitBox) -> void:
 	if incoming.source is not Player:
 		return
 	set_carried_by(incoming.source)
 
-
 func _on_hit_box_target_detected(hurt_box: HurtBox, hit_info: HitInfo) -> void:
+	print("被产")
 	var hurt_data = HurtData.new()
 	hurt_data.damage = hit_info.damage
 	hurt_data.hurt_type = Types.HurtType.HEAVY
@@ -175,4 +178,9 @@ func _on_hit_box_target_detected(hurt_box: HurtBox, hit_info: HitInfo) -> void:
 	hurt_data.knockback_speed = hit_info.horizontal_speed
 	hurt_data.z_velocity =hit_info.z_velocity
 	hurt_box.receive_hurt(hurt_data)
+	pass # Replace with function body.
+
+
+func _on_ball_z_movement_landed() -> void:
+	control_locked = false
 	pass # Replace with function body.

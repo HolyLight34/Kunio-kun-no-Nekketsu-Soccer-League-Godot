@@ -15,17 +15,13 @@ var ball_in_range: Ball = null
 
 # 自己刚释放出去的球。
 # 在它离开当前检测范围之前，暂时忽略交互。
-var ignored_ball: Ball = null
 
-
+func require_ball_reentry() -> void:
+	ball_in_range = null
 func check_ball_interaction() -> void:
+	
 	if ball_in_range == null:
 		return
-
-	# 自己刚释放的球，在离开范围之前不允许再次交互。
-	if ball_in_range == ignored_ball:
-		return
-
 	# 优先判断胸停。
 	if _can_chest_trap(ball_in_range):
 		chest_trap_requested.emit(ball_in_range)
@@ -34,27 +30,18 @@ func check_ball_interaction() -> void:
 	# 再判断普通拾球。
 	if _can_pickup_ball(ball_in_range):
 		pickup_requested.emit(ball_in_range)
+	ball_in_range = null
 
-
-# ------------------------------------------------------------------------------
-# 交互规则
-# ------------------------------------------------------------------------------
-func enable() -> void:
-	collision_shape_2d.disabled = false
-	pass
-	
-func disable()-> void:
-	collision_shape_2d.disabled = true
-	pass
 func _can_chest_trap(ball: Ball) -> bool:
 	# 已经被某个角色持有，不允许胸停。
 	if ball.carrier != null:
 		return false
-
+	if ball_in_range.control_locked:
+		return false
+	
 	# 胸停只处理空中的球。
 	if not ball.is_in_air():
 		return false
-
 	var ball_position := ball.get_logical_position()
 	var player_position := player.get_logical_position()
 
@@ -75,7 +62,6 @@ func _can_pickup_ball(ball: Ball) -> bool:
 	# 已经被某个角色持有，不允许再次拾取。
 	if ball.carrier != null:
 		return false
-
 	# 普通拾球只处理地面上的球。
 	if ball.is_in_air():
 		return false
@@ -87,12 +73,8 @@ func _can_pickup_ball(ball: Ball) -> bool:
 # 临时忽略自己刚释放的球
 # ------------------------------------------------------------------------------
 
-func ignore_ball_until_exit(ball: Ball) -> void:
-	ignored_ball = ball
 
 
-func clear_ignored_ball() -> void:
-	ignored_ball = null
 
 
 # ------------------------------------------------------------------------------
@@ -103,15 +85,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if body is not Ball:
 		return
 	var ball := body as Ball
-
 	ball_in_range = ball
-
-	print(
-		"BALL ENTER: ",
-		ball,
-		" ignored=",
-		ball == ignored_ball
-	)
 
 
 func _on_body_exited(body: Node2D) -> void:
@@ -121,11 +95,6 @@ func _on_body_exited(body: Node2D) -> void:
 	var ball := body as Ball
 
 	print("BALL EXIT: ", ball)
-
-	# 如果是自己刚释放的球，
-	# 直到它真正离开交互范围以后才解除忽略。
-	if ball == ignored_ball:
-		ignored_ball = null
 
 	# 清除当前范围内的球。
 	if ball == ball_in_range:

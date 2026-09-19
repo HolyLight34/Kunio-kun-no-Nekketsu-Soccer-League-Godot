@@ -22,7 +22,7 @@ func handle_intent(intent: int, _delta: float) -> void:
 		PlayerIntentResolver.Intent.PASS:
 			change_state(State.PASS)
 		PlayerIntentResolver.Intent.JUMP:
-			if player.carried_ball:
+			if player.ball_possession == Types.BallPossession.MYSELF:
 				print('你好')
 				change_state(State.FLICK_UP)
 			else :

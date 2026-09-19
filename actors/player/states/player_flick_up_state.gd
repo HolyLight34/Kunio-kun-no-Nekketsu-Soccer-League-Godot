@@ -1,11 +1,9 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.ball_interaction_detector.ignore_ball_until_exit(player.carried_ball)
 	player.player_horizontal_movement.stop_immediately()
+	player.ball.receive_flick_up()
 	anim.play(anim_name)
-	player.carried_ball.ball_z_movement.launch(8)
-	player.release_ball()
 	await player.step_animation_component.animation_finished
 	change_state(State.IDLE)
 	pass

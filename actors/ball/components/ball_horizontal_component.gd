@@ -199,7 +199,7 @@ const AIR_STEERING_MAX_SPEED :float = 3.5
 func apply_air_steering(direction: Vector2) -> void:
 	if direction.y == 0.0:
 		return
-
+	
 	horizontal_velocity_raw.y += roundi(
 		signf(direction.y) * AIR_STEERING_STEP_RAW
 	)
