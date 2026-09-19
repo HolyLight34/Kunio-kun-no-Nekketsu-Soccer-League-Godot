@@ -4,6 +4,7 @@ class_name BallInteractionDetector
 
 @export var player: Player
 
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
 signal chest_trap_requested(ball: Ball)
 signal pickup_requested(ball: Ball)
@@ -38,7 +39,13 @@ func check_ball_interaction() -> void:
 # ------------------------------------------------------------------------------
 # 交互规则
 # ------------------------------------------------------------------------------
-
+func enable() -> void:
+	collision_shape_2d.disabled = false
+	pass
+	
+func disable()-> void:
+	collision_shape_2d.disabled = true
+	pass
 func _can_chest_trap(ball: Ball) -> bool:
 	# 已经被某个角色持有，不允许胸停。
 	if ball.carrier != null:

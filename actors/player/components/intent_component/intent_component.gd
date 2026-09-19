@@ -40,19 +40,17 @@ enum BallPossession {
 # 外部依赖
 # ============================================================
 
-var player: Player
+var possession: Types.BallPossession
 var input_component: InputComponent
-var match_context: Match
+
 
 
 func init(
-	player_node: Player,
+	ball_possession: Types.BallPossession,
 	input_node: InputComponent,
-	match_node: Match
 ) -> void:
-	player = player_node
+	possession = ball_possession
 	input_component = input_node
-	match_context = match_node
 
 
 # ============================================================
@@ -234,16 +232,14 @@ func _resolve_buffered_buttons() -> Intent:
 # ============================================================
 
 func _resolve_single_button_intent() -> Intent:
-	var possession := _get_ball_possession()
-
-
+	
 	match possession:
 
 		# ----------------------------------------------------
 		# 自己持球
 		# ----------------------------------------------------
 
-		BallPossession.MYSELF:
+		Types.BallPossession.MYSELF:
 			if buffered_b_pressed:
 				return Intent.KICK
 
@@ -255,7 +251,7 @@ func _resolve_single_button_intent() -> Intent:
 		# 队友持球
 		# ----------------------------------------------------
 
-		BallPossession.TEAMMATE:
+		Types.BallPossession.TEAMMATE:
 			if buffered_b_pressed:
 				return Intent.COMMAND_SHOOT
 
@@ -267,7 +263,7 @@ func _resolve_single_button_intent() -> Intent:
 		# 对手持球
 		# ----------------------------------------------------
 
-		BallPossession.OPPONENT:
+		Types.BallPossession.OPPONENT:
 			if buffered_a_pressed:
 				return Intent.TACKLE
 
@@ -279,7 +275,7 @@ func _resolve_single_button_intent() -> Intent:
 		# 无人持球
 		# ----------------------------------------------------
 
-		BallPossession.NONE:
+		Types.BallPossession.NONE:
 			if (
 				buffered_b_pressed
 				and _is_moving_horizontally()
@@ -299,27 +295,7 @@ func _resolve_single_button_intent() -> Intent:
 # 查询当前球权
 # ============================================================
 
-func _get_ball_possession() -> BallPossession:
-	var current_carrier := match_context.get_ball_carrier()
 
-
-	# 无人持球。
-	if current_carrier == null:
-		return BallPossession.NONE
-
-
-	# 自己持球。
-	if current_carrier == player:
-		return BallPossession.MYSELF
-
-
-	# 队友持球。
-	if current_carrier.team_id == player.team_id:
-		return BallPossession.TEAMMATE
-
-
-	# 对手持球。
-	return BallPossession.OPPONENT
 
 
 # ============================================================

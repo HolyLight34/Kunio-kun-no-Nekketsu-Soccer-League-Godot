@@ -22,7 +22,13 @@ var power: float
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
-var carrier: Player = null
+var carrier: Player = null:
+	set(value):
+		if carrier == value:
+			return
+
+		carrier = value
+		possession_changed.emit(carrier)
 
 # ==============================================================================
 # 4. 生命周期
@@ -101,7 +107,7 @@ func receive_kick(
 ) -> void:
 	current_kicker = source
 	self.power = power
-
+	carrier = null
 	_apply_horizontal_launch(
 		Vector2(
 			velocity.x,
@@ -124,7 +130,7 @@ func receive_pass(
 	velocity: Vector3
 ) -> void:
 	current_kicker = source
-
+	carrier = null
 	_apply_horizontal_launch(
 		Vector2(
 			velocity.x,

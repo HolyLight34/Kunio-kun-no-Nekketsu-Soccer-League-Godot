@@ -49,6 +49,25 @@ extends CharacterBody2D
 # ==============================================================================
 var facing_direction: Vector2 = Vector2.RIGHT
 var carried_ball: Ball = null
+var ball_possession: Types.BallPossession
+func _on_ball_possession_changed(new_carrier: Player) -> void:
+	if new_carrier == null:
+		ball_possession = Types.BallPossession.NONE
+
+	elif new_carrier == self:
+		ball_possession = Types.BallPossession.MYSELF
+
+	elif new_carrier.team_id == team_id:
+		ball_possession = Types.BallPossession.TEAMMATE
+
+	else:
+		ball_possession = Types.BallPossession.OPPONENT
+
+
+	if new_carrier == self:
+		ball_interaction_detector.disable()
+	else:
+		ball_interaction_detector.enable()
 # ==============================================================================
 # 4. 生命周期
 # ==============================================================================
@@ -70,6 +89,7 @@ func get_logical_position() -> Vector3:
 		horizontal_position.y,
 		player_z_movement.get_z_height()
 	)
+
 func _physics_process(delta: float) -> void:
 	var intent: PlayerIntentResolver.Intent = (
 		player_intent_resolver.get_intent()
@@ -85,7 +105,7 @@ func _physics_process(delta: float) -> void:
 # ==============================================================================
 func _initialize_components() -> void:
 	player_horizontal_movement.set_horizontal_position(position)
-	player_intent_resolver.init(self,input_component,match_stage)
+	player_intent_resolver.init(ball_possession,input_component)
 	player_z_movement.set_z_height(
 		visual.position.y
 	)
