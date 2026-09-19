@@ -191,8 +191,6 @@ func _on_pickup_requested(ball: Ball) -> void:
 # ==============================================================================
 # 9. 受击入口
 # ==============================================================================
-#func _on_hurt_box_hit_received(incoming: HitBox) -> void:
-	#player_hurt_resolver.receive_hit(incoming)
 func receive_hurt(hurt_data: HurtData) -> void:
 	endurance -= hurt_data.damage
 
@@ -209,5 +207,4 @@ func _on_hit_box_target_detected(hurt_box: HurtBox,hit_info:HitInfo) -> void:
 	attack_resolver.resolve_hit(hurt_box,hit_box.hit_info)
 
 func _on_hurt_box_hurt_received(hurt_data: HurtData) -> void:
-	print(hurt_data.knockback_speed)
 	receive_hurt(hurt_data)

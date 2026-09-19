@@ -102,7 +102,6 @@ func clear_ignored_ball() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body is not Ball:
 		return
-
 	var ball := body as Ball
 
 	ball_in_range = ball

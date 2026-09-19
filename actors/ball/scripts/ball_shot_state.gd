@@ -1,6 +1,7 @@
 extends BallState
 var kicker: Player
 func enter(data: HitInfo) -> void:
+	ball.collision_shape_2d.set_deferred("disabled", true)
 	kicker = ball.current_kicker
 	anim.play(anim_name)
 	_prepare_hit_box(Types.AttackType.BALL_HIT,Vector2.RIGHT,5,2,4)
@@ -23,6 +24,7 @@ func physics_tick() -> void:
 	ball.ball_horizontal_movement.apply_air_steering(kicker.input_component.move_dir)
 func exit() -> void:
 	ball.current_kicker = null
+	ball.collision_shape_2d.set_deferred("disabled", false)
 	pass
 
 

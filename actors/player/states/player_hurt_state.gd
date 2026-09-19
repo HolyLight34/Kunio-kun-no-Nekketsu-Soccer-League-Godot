@@ -2,7 +2,6 @@ extends PlayerState
 var hurt_type: Types.HurtType
 
 func enter(data) -> void:
-	player.pickup_sensor.monitoring = false
 	var hurt_data := data as HurtData
 	if hurt_data == null:
 		return
@@ -46,7 +45,6 @@ func heavy_hurt(hurt_data: HurtData):
 	pass
 
 func exit() -> void:
-	player.pickup_sensor.monitoring = false
 	pass
 
 func process(_delta: float) -> void:
