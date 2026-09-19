@@ -81,6 +81,8 @@ func set_carried_by(new_carrier: Player) -> void:
 	state_machine.change_state(
 		BallState.State.GRIYND_CARRY
 	)
+func get_z_height() -> float:
+	return ball_z_movement.get_z_height()
 func receive_chest_control(player: Player) -> void:
 	carrier = player
 	state_machine.change_state(

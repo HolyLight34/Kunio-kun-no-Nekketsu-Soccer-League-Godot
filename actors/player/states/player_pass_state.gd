@@ -1,6 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
+	player.ball_interaction_detector.disable()
 	_prepare_hit_box(Types.AttackType.PASS,Vector2.ZERO,0,0,0)
 	#var pass_trajectory_calculator := PassTrajectoryCalculator.new()
 	#var target_postion = player.pass_target_detector.get_pass_target_position()
@@ -16,6 +17,7 @@ func enter(_data) -> void:
 	pass
 
 func exit() -> void:
+	player.ball_interaction_detector.enable()
 	player.hit_box.hit_shape.disabled = true
 	player.hit_box.hit_info = null
 	pass

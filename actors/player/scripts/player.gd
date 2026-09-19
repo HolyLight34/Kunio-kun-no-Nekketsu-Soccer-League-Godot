@@ -35,7 +35,6 @@ var ball: Ball
 	$Components/EntityVisualController
 )
 @onready var visual: Node2D = $Visual
-#@onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
 @onready var ball_anchor: Marker2D = $Colliders/BallAnchor
@@ -177,6 +176,8 @@ func face_position(target_position: Vector2) -> void:
 		set_facing_direction(Vector2.LEFT)
 	elif direction.x > 0.0:
 		set_facing_direction(Vector2.RIGHT)
+func get_z_height() -> float:
+	return player_z_movement.get_z_height()
 func _on_pickup_requested(ball: Ball) -> void:
 	if not ball.can_be_picked_up():
 		return

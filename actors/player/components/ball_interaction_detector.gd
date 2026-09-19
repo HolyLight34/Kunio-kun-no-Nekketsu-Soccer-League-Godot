@@ -30,8 +30,13 @@ func check_ball_interaction() -> void:
 	# 再判断普通拾球。
 	if _can_pickup_ball(ball_in_range):
 		pickup_requested.emit(ball_in_range)
-	ball_in_range = null
-
+func enable() -> void:
+	collision_shape_2d.disabled = false
+	pass
+	
+func disable()-> void:
+	collision_shape_2d.disabled = true
+	pass
 func _can_chest_trap(ball: Ball) -> bool:
 	# 已经被某个角色持有，不允许胸停。
 	if ball.carrier != null:
@@ -42,8 +47,8 @@ func _can_chest_trap(ball: Ball) -> bool:
 	# 胸停只处理空中的球。
 	if not ball.is_in_air():
 		return false
-	var ball_position := ball.get_logical_position()
-	var player_position := player.get_logical_position()
+	var ball_z := ball.get_z_height()
+	var player_z := player.get_z_height()
 
 	# FC 的 Z 高度范围判断：
 	#
@@ -53,8 +58,8 @@ func _can_chest_trap(ball: Ball) -> bool:
 	# 等价于：
 	# -16 < ball_z - player_z < 32
 	return (
-		ball_position.z < player_position.z + 32.0
-		and player_position.z < ball_position.z + 16.0
+		ball_z < player_z + 32.0
+		and player_z < ball_z + 16.0
 	)
 
 

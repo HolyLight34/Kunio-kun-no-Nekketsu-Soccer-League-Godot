@@ -208,9 +208,7 @@ state = 1
 [node name="Shot" type="Node" parent="StateMachine" unique_id=408952036]
 script = ExtResource("4_b5n0i")
 state = 2
-windup_ticks = null
 anim_name = &"shot"
-x_decel_rate = null
 
 [node name="AirControl" type="Node" parent="StateMachine" unique_id=79705925]
 script = ExtResource("8_l8wax")

@@ -49,12 +49,17 @@ func _resolve_kick(
 	ball: Ball,
 	hit_info: HitInfo
 ) -> void:
+	var ball_z := ball.get_z_height()
+	var player_z := attacker.get_z_height()
+	if not (ball_z < player_z + 32.0 and player_z < ball_z + 16.0):
+		return
+	if ball_z == 0:
+		ball_z = 8
 	var velocity := Vector3(
 		hit_info.attack_direction.x * hit_info.horizontal_speed,
 		hit_info.attack_direction.y * hit_info.horizontal_speed,
-		hit_info.z_velocity
+		ball_z
 	)
-
 	ball.receive_kick(
 		attacker,
 		hit_info.power,

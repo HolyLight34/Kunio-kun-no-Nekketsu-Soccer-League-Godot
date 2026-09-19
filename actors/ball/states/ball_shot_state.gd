@@ -1,6 +1,7 @@
 extends BallState
 var kicker: Player
 func enter(data: HitInfo) -> void:
+	print("飞行高度",ball.get_z_height())
 	ball.ball_collision.set_deferred("disabled", true)
 	kicker = ball.current_kicker
 	anim.play(anim_name)
