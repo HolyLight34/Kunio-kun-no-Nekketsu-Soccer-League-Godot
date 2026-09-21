@@ -37,7 +37,7 @@ var ball: Ball
 @onready var visual: Node2D = $Visual
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
-@onready var ball_anchor: Marker2D = $Colliders/BallAnchor
+@onready var ball_anchor: Marker2D = $Visual/BallAnchor
 @onready var endurance_label: Label = $Label
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var attack_resolver: AttackResolver = $Components/AttackResolver

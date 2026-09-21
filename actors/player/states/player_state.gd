@@ -16,6 +16,7 @@ enum State {
 	STATIONARY_FLICK,
 	CHEST_TRAP,
 	MOVING_FLICK,
+	BICYCLE_KICK,
 } 
 @export_group("State Info")
 @export var state: State

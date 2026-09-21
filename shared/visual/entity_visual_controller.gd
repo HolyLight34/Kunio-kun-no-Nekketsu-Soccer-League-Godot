@@ -133,7 +133,6 @@ func _get_visual_z_height() -> float:
 
 	if not z_movement.is_in_air:
 		return 0.0
-
 	return maxf(
 		z_movement.get_z_height(),
 		0.0

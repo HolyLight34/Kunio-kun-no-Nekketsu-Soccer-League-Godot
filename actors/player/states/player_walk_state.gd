@@ -17,7 +17,6 @@ func exit() -> void:
 func process(_delta: float) -> void:
 	pass
 func physics_tick() -> void:
-	#print(player.player_horizontal_movement.get_horizontal_velocity())
 	player.player_horizontal_movement.set_move_velocity(2.375,player.input_component.move_dir)
 	pass
 func handle_intent(intent: int, _delta: float) -> void:
@@ -26,9 +25,10 @@ func handle_intent(intent: int, _delta: float) -> void:
 			change_state(State.IDLE)
 		PlayerIntentResolver.Intent.JUMP:
 			if player.ball_possession == Types.BallPossession.MYSELF:
-				change_state(State.MOVING_FLICK)
-			else :
-				change_state(State.JUMP)
+				if player.input_component.move_dir == Vector2.LEFT or player.input_component.move_dir == Vector2.RIGHT:
+					change_state(State.MOVING_FLICK)
+					return
+			change_state(State.JUMP)
 		PlayerIntentResolver.Intent.RUN:
 			change_state(State.RUN)
 		PlayerIntentResolver.Intent.PASS:

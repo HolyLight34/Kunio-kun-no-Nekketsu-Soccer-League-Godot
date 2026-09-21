@@ -17,6 +17,7 @@ signal possession_changed(new_carrier: Player)
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var ball_collision: CollisionShape2D = $CollisionShape2D
+
 var current_kicker: Player
 var power: float
 var control_locked: bool = false

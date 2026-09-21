@@ -19,6 +19,7 @@
 [ext_resource type="Script" uid="uid://cawkdxaliusnj" path="res://actors/player/states/player_moving_flick_state.gd" id="17_f2m0f"]
 [ext_resource type="Script" uid="uid://dd5sf8frv84fy" path="res://actors/player/states/player_land_state.gd" id="17_ptkv0"]
 [ext_resource type="Script" uid="uid://d2v14o8ksrwd1" path="res://actors/player/states/player_tackle_state.gd" id="17_sgsyk"]
+[ext_resource type="Script" uid="uid://c1ovn4hmpr3vy" path="res://actors/player/states/player_bicycle_kick_state.gd" id="18_6npms"]
 [ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://actors/player/assets/head.png" id="18_c0821"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://shared/combat/hurt_box.tscn" id="18_v0pxu"]
 [ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://actors/player/assets/body.png" id="19_864cw"]
@@ -160,7 +161,7 @@ tracks/9/keys = {
 tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("Colliders/BallAnchor:position")
+tracks/10/path = NodePath("Visual/BallAnchor:position")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
@@ -169,6 +170,10 @@ tracks/10/keys = {
 "update": 0,
 "values": [Vector2(12, 1)]
 }
+
+[sub_resource type="Animation" id="Animation_6npms"]
+resource_name = "bicycle_kick"
+step = 0.016666668
 
 [sub_resource type="Animation" id="Animation_3lvlc"]
 resource_name = "brake"
@@ -511,7 +516,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Colliders/BallAnchor:position")
+tracks/5/path = NodePath("Visual/BallAnchor:position")
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -761,7 +766,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Colliders/BallAnchor:position")
+tracks/4/path = NodePath("Visual/BallAnchor:position")
 tracks/4/interp = 0
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -1082,6 +1087,7 @@ tracks/2/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tg3sl"]
 _data = {
 &"RESET": SubResource("Animation_0hol4"),
+&"bicycle_kick": SubResource("Animation_6npms"),
 &"brake": SubResource("Animation_3lvlc"),
 &"chest_trap": SubResource("Animation_pj4mo"),
 &"down_back": SubResource("Animation_jcqi0"),
@@ -1230,6 +1236,10 @@ script = ExtResource("17_f2m0f")
 state = 13
 anim_name = &"moving_flick"
 
+[node name="BicycleKick" type="Node" parent="Components/StateMachine" unique_id=1901457681]
+script = ExtResource("18_6npms")
+state = 14
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -1261,6 +1271,9 @@ script = ExtResource("24_pj4mo")
 attacker = NodePath("../..")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1064463610]
+
+[node name="BallAnchor" type="Marker2D" parent="Visual" unique_id=2053744234]
+position = Vector2(12, 1)
 
 [node name="Head" type="Sprite2D" parent="Visual" unique_id=411200426]
 position = Vector2(3, -32)
@@ -1308,9 +1321,6 @@ player = NodePath("../..")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Colliders/BallInteractionDetector" unique_id=1365573373]
 shape = SubResource("RectangleShape2D_sgsyk")
 debug_color = Color(1, 1, 0, 0.29803923)
-
-[node name="BallAnchor" type="Marker2D" parent="Colliders" unique_id=2053744234]
-position = Vector2(12, 1)
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0
