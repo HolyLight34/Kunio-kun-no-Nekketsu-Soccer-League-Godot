@@ -160,19 +160,23 @@ func _apply_horizontal_launch(
 # 8. HurtBox 回调
 # ==============================================================================
 
-func receive_flick_up() -> void:
+func receive_stationary_flick() -> void:
 	control_locked = true 
 	ball_z_movement.launch(8)
 	release_from_carrier()
 	
-	pass
+func receive_moving_flick(kicker: Player) -> void:
+	release_from_carrier()
+	ball_horizontal_movement.set_horizontal_velocity(2.25* kicker.facing_direction)
+	ball_z_movement.set_z_height(10)
+	ball_z_movement.launch(9)
+	
 func _receive_slide_hit(incoming: HitBox) -> void:
 	if incoming.source is not Player:
 		return
 	set_carried_by(incoming.source)
 
 func _on_hit_box_target_detected(hurt_box: HurtBox, hit_info: HitInfo) -> void:
-	print("被产")
 	var hurt_data = HurtData.new()
 	hurt_data.damage = hit_info.damage
 	hurt_data.hurt_type = Types.HurtType.HEAVY

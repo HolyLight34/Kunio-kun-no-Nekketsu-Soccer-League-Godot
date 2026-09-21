@@ -150,6 +150,8 @@ func get_ball_anchor_offset() -> Vector2:
 	var offset := ball_anchor.position
 	offset.x *= facing_direction.x
 	return offset
+func is_in_air() -> bool:
+	return player_z_movement.is_in_air
 # ==============================================================================
 # 8. 持球
 # ==============================================================================

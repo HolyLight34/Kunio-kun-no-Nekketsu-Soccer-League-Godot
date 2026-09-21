@@ -25,7 +25,10 @@ func handle_intent(intent: int, _delta: float) -> void:
 		PlayerIntentResolver.Intent.IDLE:
 			change_state(State.IDLE)
 		PlayerIntentResolver.Intent.JUMP:
-			change_state(State.JUMP)
+			if player.ball_possession == Types.BallPossession.MYSELF:
+				change_state(State.MOVING_FLICK)
+			else :
+				change_state(State.JUMP)
 		PlayerIntentResolver.Intent.RUN:
 			change_state(State.RUN)
 		PlayerIntentResolver.Intent.PASS:

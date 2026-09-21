@@ -11,11 +11,12 @@
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://actors/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://actors/player/states/player_hurt_state.gd" id="13_v0pxu"]
 [ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://actors/player/states/player_kick_state.gd" id="14_ptkv0"]
-[ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_flick_up_state.gd" id="15_tg3sl"]
+[ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_stationary_flick_state.gd" id="15_tg3sl"]
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
 [ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://actors/player/states/player_pass_state.gd" id="16_imh8g"]
 [ext_resource type="Script" uid="uid://brlddk1s0yv6g" path="res://actors/player/states/player_chest_trap_state.gd" id="16_pj4mo"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="17_dg4u3"]
+[ext_resource type="Script" uid="uid://cawkdxaliusnj" path="res://actors/player/states/player_moving_flick_state.gd" id="17_f2m0f"]
 [ext_resource type="Script" uid="uid://dd5sf8frv84fy" path="res://actors/player/states/player_land_state.gd" id="17_ptkv0"]
 [ext_resource type="Script" uid="uid://d2v14o8ksrwd1" path="res://actors/player/states/player_tackle_state.gd" id="17_sgsyk"]
 [ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://actors/player/assets/head.png" id="18_c0821"]
@@ -155,6 +156,18 @@ tracks/9/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Colliders/BallAnchor:position")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(12, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_3lvlc"]
@@ -374,47 +387,6 @@ tracks/5/keys = {
 "values": [false]
 }
 
-[sub_resource type="Animation" id="Animation_igwkh"]
-resource_name = "flick_up"
-length = 0.30000168231297286
-step = 0.016666668
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/Body:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [22]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Visual/Head:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.033333335),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [1]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Visual/Head:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.06666667),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-2, -32)]
-}
-
 [sub_resource type="Animation" id="Animation_26oqr"]
 resource_name = "heavy_hurt_front"
 step = 0.016666668
@@ -535,6 +507,18 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Colliders/BallAnchor:position")
+tracks/5/interp = 0
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(12, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_0i15t"]
@@ -720,6 +704,73 @@ tracks/4/keys = {
 "values": [true]
 }
 
+[sub_resource type="Animation" id="Animation_f2m0f"]
+resource_name = "moving_flick"
+length = 0.35000168492067607
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Body:frame")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.050000004, 0.15),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [4, 27, 23]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Head:frame")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.050000004, 0.15),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 0, 0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Head:position")
+tracks/2/interp = 0
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.050000004, 0.15),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Vector2(9, -32), Vector2(10, -32), Vector2(9, -31)]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Components/StateMachine/MovingFlick")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.15),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"on_moving_flick_contact"
+}]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Colliders/BallAnchor:position")
+tracks/4/interp = 0
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.15, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-12, 1), Vector2(12, 1)]
+}
+
 [sub_resource type="Animation" id="Animation_wwmeh"]
 resource_name = "normal_hurt_front"
 length = 1.7000017553286628
@@ -868,6 +919,47 @@ tracks/2/keys = {
 "values": [Vector2(5, -33), Vector2(5, -33), Vector2(3, -32), Vector2(3, -32)]
 }
 
+[sub_resource type="Animation" id="Animation_igwkh"]
+resource_name = "stationary_flick"
+length = 0.30000168231297286
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [22]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Head:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.06666667),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -32)]
+}
+
 [sub_resource type="Animation" id="Animation_3lilj"]
 resource_name = "tackle"
 length = 0.4000016875283793
@@ -995,25 +1087,26 @@ _data = {
 &"down_back": SubResource("Animation_jcqi0"),
 &"down_front": SubResource("Animation_wwj0w"),
 &"elbow_strike": SubResource("Animation_gb5ua"),
-&"flick_up": SubResource("Animation_igwkh"),
 &"heavy_hurt_front": SubResource("Animation_26oqr"),
 &"hurt_back": SubResource("Animation_x2bss"),
 &"idle": SubResource("Animation_q6r6c"),
 &"jump": SubResource("Animation_0i15t"),
 &"kick": SubResource("Animation_vbpfx"),
 &"land": SubResource("Animation_sj8lg"),
+&"moving_flick": SubResource("Animation_f2m0f"),
 &"normal_hurt_front": SubResource("Animation_wwmeh"),
 &"pass": SubResource("Animation_j5ji6"),
 &"run": SubResource("Animation_0e48y"),
+&"stationary_flick": SubResource("Animation_igwkh"),
 &"tackle": SubResource("Animation_3lilj"),
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5b3gr"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f2m0f"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_f2m0f"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6npms"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1024,8 +1117,6 @@ size = Vector2(16, 8)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("2_w62lr")
-team_id = null
-player_id = null
 input_component = NodePath("Components/InputComponent")
 state_machine = NodePath("Components/StateMachine")
 endurance = 50
@@ -1124,15 +1215,20 @@ facing_mode = 1
 anim_name = &"tackle"
 x_decel_rate = 0.625
 
-[node name="FlickUp" type="Node" parent="Components/StateMachine" unique_id=208771649]
+[node name="StationaryFlick" type="Node" parent="Components/StateMachine" unique_id=208771649]
 script = ExtResource("15_tg3sl")
 state = 11
-anim_name = &"flick_up"
+anim_name = &"stationary_flick"
 
 [node name="ChestTrap" type="Node" parent="Components/StateMachine" unique_id=1281698851]
 script = ExtResource("16_pj4mo")
 state = 12
 anim_name = &"chest_trap"
+
+[node name="MovingFlick" type="Node" parent="Components/StateMachine" unique_id=79259128]
+script = ExtResource("17_f2m0f")
+state = 13
+anim_name = &"moving_flick"
 
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
@@ -1188,7 +1284,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_5b3gr")
+shape = SubResource("RectangleShape2D_f2m0f")
 disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
@@ -1200,7 +1296,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_f2m0f")
+shape = SubResource("RectangleShape2D_6npms")
 
 [node name="BallInteractionDetector" type="Area2D" parent="Colliders" unique_id=405457032 node_paths=PackedStringArray("player")]
 collision_layer = 0

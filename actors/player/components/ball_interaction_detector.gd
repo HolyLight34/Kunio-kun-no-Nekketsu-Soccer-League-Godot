@@ -45,7 +45,7 @@ func _can_chest_trap(ball: Ball) -> bool:
 		return false
 	
 	# 胸停只处理空中的球。
-	if not ball.is_in_air():
+	if (not ball.is_in_air()) and (not player.is_in_air()):
 		return false
 	var ball_z := ball.get_z_height()
 	var player_z := player.get_z_height()

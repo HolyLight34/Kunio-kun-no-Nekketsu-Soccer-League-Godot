@@ -3,11 +3,10 @@ extends PlayerState
 
 func enter(_data):
 	anim.play(anim_name)
-	player.player_z_movement.apply_vertical_velocity(4)
-	player.player_horizontal_movement.halve_y_velocity()
-	print(player.player_z_movement.get_z_velocity())
+	if not player.player_z_movement.is_in_air:
+		player.player_z_movement.apply_vertical_velocity(4)
+		player.player_horizontal_movement.halve_y_velocity()
 	await player.player_z_movement.landed
-	print("当前位置",player.position)
 	change_state(State.LAND)
 func exit():
 	pass

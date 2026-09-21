@@ -209,7 +209,7 @@ tile_set = SubResource("TileSet_cmi3i")
 metadata/_edit_lock_ = true
 
 [node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_73vmh")]
-position = Vector2(48, 75)
+position = Vector2(-72, 8)
 
 [node name="Player5" parent="." unique_id=337035303 instance=ExtResource("5_73vmh")]
 position = Vector2(136, 214)
@@ -222,4 +222,4 @@ player_id = 2
 endurance = 60
 
 [node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_73vmh")]
-position = Vector2(228, 102)
+position = Vector2(-84, -2)

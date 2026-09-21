@@ -13,6 +13,8 @@ func enter(_data):
 	_prepare_hit_box(Types.AttackType.KICK,player.facing_direction,5,8,z_height)
 	anim.play(anim_name)
 	await anim.animation_finished
+	if player.player_z_movement.is_in_air:
+		change_state(State.JUMP)
 	change_state(State.IDLE)
 	pass
 

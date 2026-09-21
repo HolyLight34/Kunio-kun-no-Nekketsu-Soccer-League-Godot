@@ -23,8 +23,7 @@ func handle_intent(intent: int, _delta: float) -> void:
 			change_state(State.PASS)
 		PlayerIntentResolver.Intent.JUMP:
 			if player.ball_possession == Types.BallPossession.MYSELF:
-				print('你好')
-				change_state(State.FLICK_UP)
+				change_state(State.STATIONARY_FLICK)
 			else :
 				change_state(State.JUMP)
 		PlayerIntentResolver.Intent.ELBOW_STRIKE:
