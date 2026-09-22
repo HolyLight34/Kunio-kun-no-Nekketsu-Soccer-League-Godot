@@ -1108,11 +1108,11 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_f2m0f"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6npms"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6npms"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2yjh"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1297,7 +1297,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_f2m0f")
+shape = SubResource("RectangleShape2D_6npms")
 disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
@@ -1309,7 +1309,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_6npms")
+shape = SubResource("RectangleShape2D_a2yjh")
 
 [node name="BallInteractionDetector" type="Area2D" parent="Colliders" unique_id=405457032 node_paths=PackedStringArray("player")]
 collision_layer = 0

@@ -29,5 +29,8 @@ func handle_intent(intent: int, _delta: float) -> void:
 		PlayerIntentResolver.Intent.KICK:
 			player.player_z_movement.apply_vertical_velocity(4)
 			change_state(State.KICK)	
+		PlayerIntentResolver.Intent.PASS:
+			if player.ball_possession == Types.BallPossession.MYSELF:
+				change_state(State.PASS)
 	pass
 	
