@@ -22,4 +22,5 @@ func physics_process(_delta: float) -> void:
 	ball.ball_horizontal_movement.set_horizontal_position(
 		carrier_position + anchor_offset
 	)
-	ball.ball_z_movement.set_z_height(ball.carrier.get_z_height())
+	if ball.carrier.is_in_air():
+		ball.ball_z_movement.set_z_height(ball.carrier.get_z_height())

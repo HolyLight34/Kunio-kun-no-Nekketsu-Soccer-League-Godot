@@ -195,16 +195,27 @@ func get_horizontal_velocity() -> Vector2:
 ## 只有动作 $05 允许空中微调时为 true。
 ##
 ## 本函数只修改速度。
-const AIR_STEERING_MAX_SPEED :float = 3.5
-func apply_air_steering(direction: Vector2) -> void:
-	if direction.y == 0.0:
-		return
-	
-	horizontal_velocity_raw.y += roundi(
-		signf(direction.y) * AIR_STEERING_STEP_RAW
-	)
+const AIR_STEERING_MAX_SPEED: float = 3.5
 
+
+## 根据纵向输入调整足球空中 Y 轴速度。
+## vertical_input:
+##   < 0.0 = 向上
+##   = 0.0 = 无纵向输入
+##   > 0.0 = 向下
+##
+## 输入幅度不影响调整量，每个逻辑步固定调整 AIR_STEERING_STEP_RAW，
+## 最终速度限制在 AIR_STEERING_MAX_SPEED 范围内。
+func apply_air_steering(vertical_input: float) -> void:
+	if vertical_input == 0.0:
+		return
+
+	var steering_direction := int(signf(vertical_input))
 	var max_speed_raw := _to_raw(AIR_STEERING_MAX_SPEED)
+
+	horizontal_velocity_raw.y += (
+		steering_direction * AIR_STEERING_STEP_RAW
+	)
 
 	horizontal_velocity_raw.y = clampi(
 		horizontal_velocity_raw.y,

@@ -35,6 +35,21 @@ func _check_landing() -> bool:
 	)
 
 
+func process_z_step() -> void:
+	if not is_in_air:
+		return
+
+	# 当前 VZ 锁定为本 Tick 总位移。
+	tick_displacement_raw = z_velocity_raw
+
+	# FC：
+	# VZ -= 0.5
+	z_velocity_raw -= _to_raw(GRAVITY)
+
+	if GameSettings.is_classic_motion():
+		_process_classic_motion()
+	else:
+		_prepare_smooth_motion()
 func _process_landing() -> void:
 	z_height_raw = 0
 	z_velocity_raw = 0

@@ -150,7 +150,24 @@ signal finished
 ## 暂时不修改 VZ。
 @export var gravity_enabled: bool = true
 
+## 足球是否暂停 Z 轴运动。
+## 用于平飞等特殊状态。
+var z_motion_paused: bool = false
 
+
+## 暂停足球 Z 轴运动。
+## 清除当前垂直速度，之后恢复时从 VZ = 0 开始。
+func pause_z_motion() -> void:
+	z_motion_paused = true
+	z_velocity_raw = 0
+	tick_displacement_raw = 0
+	tick_motion_frame = PHYSICS_FRAMES_PER_LOGIC_TICK
+
+
+## 恢复足球 Z 轴运动。
+## 恢复后从 VZ = 0 开始重新受到重力影响。
+func resume_z_motion() -> void:
+	z_motion_paused = false
 # ==============================================================================
 # 视觉状态
 # ==============================================================================
@@ -163,7 +180,6 @@ signal finished
 ## 足球触地以后即使马上反弹，
 ## 当前触地瞬间阴影仍然可以关闭。
 var shadow_visible: bool = false
-
 
 # ==============================================================================
 # Finished 延迟
@@ -226,6 +242,13 @@ func process_z_step() -> void:
 		return
 
 	# --------------------------------------------------------------------------
+	# Z 运动暂停
+	# --------------------------------------------------------------------------
+
+	if z_motion_paused:
+		return
+
+	# --------------------------------------------------------------------------
 	# 反弹后的新 Tick 开始时重新显示阴影
 	# --------------------------------------------------------------------------
 
@@ -240,7 +263,17 @@ func process_z_step() -> void:
 	# 通用 Z 运动
 	# --------------------------------------------------------------------------
 
-	super.process_z_step()
+	# 当前 VZ 锁定为本 Tick 总位移。
+	tick_displacement_raw = z_velocity_raw
+
+	# FC：
+	# VZ -= 0.5
+	z_velocity_raw -= _to_raw(GRAVITY)
+
+	if GameSettings.is_classic_motion():
+		_process_classic_motion()
+	else:
+		_prepare_smooth_motion()
 
 
 # ==============================================================================

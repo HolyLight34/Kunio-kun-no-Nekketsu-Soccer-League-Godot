@@ -31,7 +31,8 @@ var btn_start_just: bool = false # 瞬按 Start
 
 var btn_select: bool = false # 长按 Select
 var btn_select_just: bool = false # 瞬按 Select
-
+func get_move_direction() -> Vector2:
+	return move_dir
 func _ready() -> void:
 	action_up= "p%d_move_up" % player.player_id
 	action_down= "p%d_move_down" % player.player_id

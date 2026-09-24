@@ -81,7 +81,13 @@ func get_logical_position() -> Vector3:
 		horizontal_position.y,
 		player_z_movement.get_z_height()
 	)
-
+## 提供 Shot 飞行期间的纵向控制输入。
+## 返回：
+##   -1.0 = 上
+##    0.0 = 无纵向输入
+##    1.0 = 下
+func get_shot_control_input() -> float:
+	return input_component.get_move_direction().y
 func _physics_process(delta: float) -> void:
 	var intent: PlayerIntentResolver.Intent = (
 		player_intent_resolver.get_intent()

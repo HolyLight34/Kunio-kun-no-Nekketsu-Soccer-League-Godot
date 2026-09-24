@@ -50,25 +50,10 @@ func apply_vertical_velocity(initial_velocity: float) -> void:
 # ==============================================================================
 
 func process_z_step() -> void:
-	if not is_in_air:
-		return
-
-	# 当前 VZ 锁定为本 Tick 总位移。
-	tick_displacement_raw = z_velocity_raw
-
-	# FC：
-	# VZ -= 0.5
-	if _should_apply_gravity():
-		z_velocity_raw -= _to_raw(GRAVITY)
-
-	if GameSettings.is_classic_motion():
-		_process_classic_motion()
-	else:
-		_prepare_smooth_motion()
+	pass
 
 
-func _should_apply_gravity() -> bool:
-	return true
+
 
 
 # ==============================================================================

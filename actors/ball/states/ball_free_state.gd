@@ -2,7 +2,7 @@ extends BallState
 
 func enter(_data) -> void:
 	anim.play(anim_name)
-	ball.ball_z_movement.gravity_enabled = true
+	ball.ball_z_movement.resume_z_motion()
 	pass
 
 

@@ -61,9 +61,9 @@ func _resolve_kick(
 		ball_z
 	)
 	ball.receive_kick(
-		attacker,
-		hit_info.power,
-		velocity
+		attacker.facing_direction,
+		attacker.endurance,
+		attacker.get_shot_control_input
 	)
 
 

@@ -94,38 +94,26 @@ func release_from_carrier() -> void:
 	if carrier == null:
 		return
 	carrier = null
-	state_machine.change_state(
-		BallState.State.FREE
-	)
 # ==============================================================================
 # 7. 外部交互接口
 # ==============================================================================
 func is_in_air() -> bool:
 	return ball_z_movement.is_in_air
+
 func receive_kick(
-	source: Player,
-	power: float,
-	velocity: Vector3
+	kick_direction: Vector2,
+	kicker_endurance: float,
+	control_provider: Callable
 ) -> void:
-	self.power = power
-	carrier = null
-	current_kicker = source
-	_apply_horizontal_launch(
-		Vector2(
-			velocity.x,
-			velocity.y
-		)
+	release_from_carrier()
+	if not is_in_air():
+		ball_z_movement.set_z_height(8)
+	ball_horizontal_movement.set_horizontal_velocity(
+		kick_direction * 8
 	)
-
-	# 射门：这里按你的射门规则设置高度
-	ball_z_movement.set_z_height(
-		velocity.z
-	)
-
-	state_machine.change_state(
-		BallState.State.SHOT
-	)
-
+	power = kicker_endurance + 15
+	state_machine.change_state(BallState.State.SHOT,control_provider)
+	pass
 
 func receive_pass(
 	source: Player,
@@ -165,6 +153,7 @@ func receive_stationary_flick() -> void:
 	control_locked = true 
 	ball_z_movement.launch(8)
 	release_from_carrier()
+	state_machine.change_state(BallState.State.FREE)
 	
 func receive_moving_flick(kicker: Player) -> void:
 	release_from_carrier()
