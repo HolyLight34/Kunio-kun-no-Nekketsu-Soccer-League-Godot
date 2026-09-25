@@ -74,21 +74,18 @@ func _resolve_kick(
 # PassState 到达真正出球帧时，直接调用这个接口。
 
 func _resolve_pass(ball: Ball) -> void:
-	var pass_trajectory_calculator := PassTrajectoryCalculator.new()
+	#var pass_trajectory_calculator := PassTrajectoryCalculator.new()
 
-	var target_position := (
-		attacker.pass_target_detector.get_pass_target_position(ball)
+	var target_position = (
+		attacker.pass_target_detector.get_pass_target_position(ball.get_logical_position())
 	)
 
-	var pass_velocity := pass_trajectory_calculator.build_pass(
-		ball.get_logical_position(),
-		target_position
-	)
+	#var pass_velocity := pass_trajectory_calculator.build_pass(
+		#ball.get_logical_position(),
+		#target_position
+	#)
 
-	ball.receive_pass(
-		attacker,
-		pass_velocity
-	)
+	ball.receive_pass(target_position)
 
 
 # ==============================================================================

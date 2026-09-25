@@ -94,6 +94,7 @@ func set_horizontal_velocity(value: Vector2) -> void:
 		_to_raw(value.x),
 		_to_raw(value.y)
 	)
+
 func get_horizontal_velocity() -> Vector2:
 	return Vector2(
 		_from_raw(horizontal_velocity_raw.x),

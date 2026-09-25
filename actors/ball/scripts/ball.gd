@@ -34,18 +34,9 @@ var carrier: Player = null:
 # ==============================================================================
 # 4. 生命周期
 # ==============================================================================
-func get_logical_horizontal_position() -> Vector2:
+func get_logical_position() -> Vector2:
 	return ball_horizontal_movement.get_horizontal_position()
-func get_logical_position() -> Vector3:
-	var horizontal_position := (
-		ball_horizontal_movement.get_horizontal_position()
-	)
 
-	return Vector3(
-		horizontal_position.x,
-		horizontal_position.y,
-		ball_z_movement.get_z_height()
-	)
 func _ready() -> void:
 	state_machine.init(self)
 	tick_component.tick_triggered.connect(_on_logic_tick)
@@ -114,28 +105,38 @@ func receive_kick(
 	power = kicker_endurance + 15
 	state_machine.change_state(BallState.State.SHOT,control_provider)
 	pass
-
+## 让足球向指定目标位置执行传球。
+##
+## target_position：
+## 传球最终目标的逻辑 XY 位置。
+##
+## 足球根据自身当前位置和 Z 高度，
+## 按 FC 规则计算并应用传球初始速度。
 func receive_pass(
-	source: Player,
-	velocity: Vector3
+	target_position: Vector2
 ) -> void:
-	carrier = null
+	release_from_carrier()
+
+	var pass_velocity := PassTrajectoryCalculator.calculate(
+		get_logical_position(),
+		get_z_height(),
+		target_position
+	)
+
 	_apply_horizontal_launch(
 		Vector2(
-			velocity.x,
-			velocity.y
+			pass_velocity.x,
+			pass_velocity.y
 		)
 	)
 
-	# 传球：velocity.z 是初始上升速度
 	ball_z_movement.launch(
-		velocity.z
+		pass_velocity.z
 	)
 
 	state_machine.change_state(
 		BallState.State.FREE
 	)
-
 
 func _apply_horizontal_launch(
 	velocity: Vector2

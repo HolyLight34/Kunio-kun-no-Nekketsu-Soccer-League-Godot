@@ -72,15 +72,9 @@ func _ready() -> void:
 	)
 	ball_interaction_detector.chest_trap_requested.connect(_on_chest_trap_requested)
 	ball_interaction_detector.pickup_requested.connect(_on_pickup_requested)
-func get_logical_position() -> Vector3:
-	var horizontal_position := (
-		player_horizontal_movement.get_horizontal_position()
-	)
-	return Vector3(
-		horizontal_position.x,
-		horizontal_position.y,
-		player_z_movement.get_z_height()
-	)
+func get_logical_position() -> Vector2:
+	return player_horizontal_movement.get_horizontal_position()
+
 ## 提供 Shot 飞行期间的纵向控制输入。
 ## 返回：
 ##   -1.0 = 上
@@ -189,7 +183,7 @@ func get_z_height() -> float:
 func _on_pickup_requested(ball: Ball) -> void:
 	if not ball.can_be_picked_up():
 		return
-	face_position(ball.get_logical_horizontal_position())
+	face_position(ball.get_logical_position())
 	ball.set_carried_by(self)
 	# 处理拾球请求
 	pass

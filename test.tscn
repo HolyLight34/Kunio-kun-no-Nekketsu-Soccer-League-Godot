@@ -1,6 +1,103 @@
 [gd_scene format=3 uid="uid://b1tjc7cd1ck33"]
 
-[ext_resource type="Script" uid="uid://dahngl7uxmk33" path="res://test.gd" id="1_37kl0"]
+[sub_resource type="GDScript" id="GDScript_mf4mk"]
+script/source = "extends Node
+const RATIO_TO_DIRECTION_INDEX: Array[int] = [
+	0, 1, 2, 4, 5, 6, 8, 9,
+	10, 11, 12, 13, 14, 16, 17, 18,
+	19, 20, 21, 22, 23, 24, 25, 26,
+	27, 28, 28, 29, 30, 31, 31, 32,
+]
+
+
+const DIRECTION_SMALL_RAW: Array[int] = [
+	0, 7, 15, 20, 25, 33, 38, 48,
+	51, 56, 64, 69, 76, 81, 87, 94,
+	99, 107, 110, 115, 122, 128, 133, 138,
+	140, 148, 153, 158, 163, 166, 174, 176,
+	179,
+]
+
+
+const DIRECTION_LARGE_RAW: Array[int] = [
+	255, 255, 255, 254, 254, 253, 253, 251,
+	250, 249, 248, 246, 245, 243, 240, 238,
+	235, 232, 230, 227, 225, 222, 220, 215,
+	212, 207, 204, 202, 197, 194, 189, 184,
+	179,
+]
+
+
+func _get_pass_direction_raw(delta: Vector2i) -> Vector2i:
+	var abs_x := absi(delta.x)
+	var abs_y := absi(delta.y)
+
+	# 零向量
+	if abs_x == 0 and abs_y == 0:
+		return Vector2i.ZERO
+
+	# 纯 Y
+	if abs_x == 0:
+		return Vector2i(
+			0,
+			256 if delta.y > 0 else -256
+		)
+
+	# 纯 X
+	if abs_y == 0:
+		return Vector2i(
+			256 if delta.x > 0 else -256,
+			0
+		)
+
+	# 45°
+	if abs_x == abs_y:
+		return Vector2i(
+			179 if delta.x > 0 else -179,
+			179 if delta.y > 0 else -179
+		)
+
+	var smaller := mini(abs_x, abs_y)
+	var larger := maxi(abs_x, abs_y)
+
+	var quotient := (
+		smaller * 256
+	) / larger
+
+	var ratio_bucket := (
+		mini(quotient + 3, 255)
+		>> 3
+	)
+
+	var direction_index := (
+		RATIO_TO_DIRECTION_INDEX[ratio_bucket]
+	)
+
+	var small := DIRECTION_SMALL_RAW[
+		direction_index
+	]
+
+	var large := DIRECTION_LARGE_RAW[
+		direction_index
+	]
+
+	var result := Vector2i.ZERO
+
+	if abs_x > abs_y:
+		result.x = large
+		result.y = small
+	else:
+		result.x = small
+		result.y = large
+
+	if delta.x < 0:
+		result.x = -result.x
+
+	if delta.y < 0:
+		result.y = -result.y
+
+	return result
+"
 
 [node name="test" type="Node2D" unique_id=947535736]
-script = ExtResource("1_37kl0")
+script = SubResource("GDScript_mf4mk")

@@ -35,8 +35,6 @@ func spawn_team(parent_node: Node, stats_list: Array[PlayerStats]):
 		marker.add_child(player)
 		if parent_node.name == "HomeTeam":
 			player.get_node_or_null("Sprite2D").flip_h = true
-			#print(player)
-			#player.should_flip = true
 			pass
 
 		player.global_position = marker.global_position

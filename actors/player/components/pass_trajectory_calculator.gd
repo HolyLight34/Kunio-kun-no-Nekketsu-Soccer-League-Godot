@@ -1,96 +1,83 @@
+## FC 传球轨迹计算器。
+##
+## 根据足球当前位置、当前 Z 高度和目标位置，
+## 按照 FC 原版传球规则计算足球的初始运动速度。
+##
+## 本类是无状态的静态算法类，只负责轨迹计算：
+## - 不保存足球状态
+## - 不修改足球
+## - 不处理球权
+## - 不切换足球状态
+## - 不负责实际位置更新
+##
+## 对外统一使用正常逻辑单位：
+## - Vector2：水平位置
+## - float：Z 高度
+## - Vector3：最终初始速度
+##
+## FC 内部使用的整数坐标、1/256 定点数、方向量化和 ROM 表
+## 均隐藏在本类内部。查
 class_name PassTrajectoryCalculator
 extends RefCounted
-# ==============================================================================
-# FC 定点基础参数
-# ==============================================================================
-# FC 的 8.8 定点数：
-#
-# 1.0   = 256 raw = $0100
-# 2.0   = 512 raw = $0200
-# 10.0  = 2560 raw = $0A00
-#
 
-# 所有 FC 内部计算尽量使用 raw 整数，
-# 对外才转换成 float。
-const RAW_ONE: int = 256
-# ==============================================================================
-# 普通传球水平速度表
-# ==============================================================================
-#
-# ROM $A4C6 中保存的是 Q8.8 速度。
-#
-# 注意：
-# 以前曾经把它简化成：
-#
-# [1, 2, 2, 3, 4, 5, 6, 6]
-#
-# 然后直接：
-#
-# delta * factor
-#
-# 这个实现已经被实机数据否定。
-#
-# 正确流程是：
-#
-# direction_raw × speed_raw >> 8
-#
-# 所以这里直接保存原始 Q8.8 值。
 
+# ==============================================================================
+# 传球速度参数
+# ==============================================================================
+
+## 普通传球水平速度表。
+##
+## ROM $A4C6 中保存的是 Q8.8 速度。
+##
+## 最终水平速度：
+##
+##     direction_raw * speed_raw >> 8
+##
+## 得到 Q8.8 velocity。
 const PASS_SPEED_RAW: Array[int] = [
-	256, # 1.0
-	512, # 2.0
-	512, # 2.0
-	768, # 3.0
-	1024, # 4.0
-	1280, # 5.0
-	1536, # 6.0
-	1536, # 6.0
+	256,   # 1.0
+	512,   # 2.0
+	512,   # 2.0
+	768,   # 3.0
+	1024,  # 4.0
+	1280,  # 5.0
+	1536,  # 6.0
+	1536,  # 6.0
 ]
 
-# 近距离贴地传球使用的特殊速度。
-#
-# $0A00 = 2560 raw = 10.0
-const FLAT_PASS_SPEED_RAW: int = 2560 # 10.0
+
+## 近距离贴地传球使用的特殊速度。
+##
+## $0A00 = 2560 raw = 10.0
+const FLAT_PASS_SPEED_RAW: int = 2560
+
 
 # ==============================================================================
 # Z 轴参数
 # ==============================================================================
 
-# 空中传球最大初始 Z 速度。
-#
-# $1000 = 4096 raw = 16.0
-const MAX_PASS_Z_VELOCITY_RAW: int = 0x1000
+## 空中传球最大初始 Z 速度。
+##
+## $1000 = 4096 raw = 16.0
+const MAX_PASS_Z_VELOCITY_RAW: int = 4096
 
-# 每增加一个预计飞行逻辑步，
-# 初始 VZ 增加：
-#
-# 64 raw = 0.25
+
+## 每增加一个预计飞行逻辑步，
+## 初始 Z 速度增加：
+##
+## 64 raw = 0.25
 const PASS_INITIAL_VZ_PER_FLIGHT_STEP_RAW: int = 64
+
 
 # ==============================================================================
 # FC 方向量化 ROM 表
 # ==============================================================================
-#
-# $F691-$F8E6 根据目标坐标差生成 FC 自己的方向分量。
-#
-# 它不是：
-#
-#     delta.normalized()
-#
-# 而是：
-#
-# 坐标比例
-# ↓
-# 整数除法
-# ↓
-# ratio bucket
-# ↓
-# ROM 查表
-# ↓
-# Q8.8 方向分量
-#
-# 因此必须保留这套表，不能使用现代 Vector2.normalized() 替代。
 
+## ratio bucket → direction index
+##
+## FC 不使用 Vector2.normalized() 计算传球方向。
+## 而是根据两个坐标分量的比例查 ROM 表，
+## 得到量化后的 Q8.8 方向分量。
 const RATIO_TO_DIRECTION_INDEX: Array[int] = [
 	0, 1, 2, 4, 5, 6, 8, 9,
 	10, 11, 12, 13, 14, 16, 17, 18,
@@ -98,6 +85,8 @@ const RATIO_TO_DIRECTION_INDEX: Array[int] = [
 	27, 28, 28, 29, 30, 31, 31, 32,
 ]
 
+
+## FC 量化方向的小轴 Q8.8 分量。
 const DIRECTION_SMALL_RAW: Array[int] = [
 	0, 7, 15, 20, 25, 33, 38, 48,
 	51, 56, 64, 69, 76, 81, 87, 94,
@@ -106,6 +95,8 @@ const DIRECTION_SMALL_RAW: Array[int] = [
 	179,
 ]
 
+
+## FC 量化方向的大轴 Q8.8 分量。
 const DIRECTION_LARGE_RAW: Array[int] = [
 	255, 255, 255, 254, 254, 253, 253, 251,
 	250, 249, 248, 246, 245, 243, 240, 238,
@@ -114,905 +105,498 @@ const DIRECTION_LARGE_RAW: Array[int] = [
 	179,
 ]
 
+
 # ==============================================================================
 # 对外接口
 # ==============================================================================
 
-# 根据：
-#
-# 足球当前位置
-# 目标当前位置
-#
-# 计算传球初始速度。
-#
-# 输入：
-#
-# ball_position:
-#     x = 足球逻辑 X
-#     y = 足球逻辑 Y
-#     z = 足球逻辑 Z
-#
-# target_position:
-#     x = 目标逻辑 X
-#     y = 目标逻辑 Y
-#     z = 目标逻辑 Z
-#
-# 返回：
-#
-# Vector3(
-#     VX,
-#     VY,
-#     VZ
-# )
-#
-#
-# 对外全部使用正常 float。
-#
-# 调用方不需要知道：
-#
-# - RAW_ONE
-# - Q8.8
-# - ROM 查表
-# - 整数除法
-# - FC 方向量化
-#
-
-# 这些全部隐藏在本类内部。
-func build_pass(
-	ball_position: Vector3,
-	target_position: Vector3
+## 计算 FC 传球的初始速度。
+##
+## 参数：
+## - ball_position：足球当前水平逻辑位置。
+## - ball_z_height：足球当前逻辑 Z 高度。
+## - target_position：传球目标的水平逻辑位置。
+##
+## 返回：
+##     Vector3(VX, VY, VZ)
+##
+## 调用方不需要知道内部使用的：
+## - 1/256 定点数
+## - 整数坐标
+## - ROM 方向表
+## - 距离档位
+## - Q8.8 乘法
+static func calculate(
+	ball_position: Vector2,
+	ball_z_height: float,
+	target_position: Vector2
 ) -> Vector3:
-
-# --------------------------------------------------------------------------
-# 1. 将外部 float 位置重新转换成 FC Q8.8 raw。
-# --------------------------------------------------------------------------
-
-	var ball_position_raw := _to_raw(ball_position)
-	var target_position_raw := _to_raw(target_position)
-
-	# 调试时可以打开：
+	# FC 传球先分别取得足球和目标的整数坐标，
+	# 然后再计算两者之间的坐标差。
 	#
-	# print(
-	#     "足球 raw = ", ball_position_raw,
-	#     " 目标 raw = ", target_position_raw
-	# )
-
-	# --------------------------------------------------------------------------
-	# 2. FC 传球使用的是“整数坐标差”。
-	#
-	# 必须先：
-	#
-	# ball_raw   -> ball_int
-	# target_raw -> target_int
-	#
-	# 然后：
-	#
-	# delta = target_int - ball_int
-	#
-	#
-	# 例如：
-	#
-	# ball = 10.75
-	# target = 20.25
-	#
-	# FC 使用：
-	#
-	# 20 - 10 = 10
-	#
-	# 而不是先算：
-	#
-	# 20.25 - 10.75 = 9.5
-	# 再取整。
-	#
-	# 两种顺序可能得到不同结果。
-	# --------------------------------------------------------------------------
-
-	var ball_position_int := Vector2i(
-		ball_position_raw.x >> 8,
-		ball_position_raw.y >> 8
+	# 不能先计算浮点坐标差，再对结果取整。
+	var ball_position_integer := FixedPoint.vector_to_integer(
+		ball_position
+	)
+	var ball_z_integer := FixedPoint.to_integer(
+		ball_z_height
 	)
 
-	var target_position_int := Vector2i(
-		target_position_raw.x >> 8,
-		target_position_raw.y >> 8
+	var target_position_integer := FixedPoint.vector_to_integer(
+		target_position
 	)
 
-	var delta := target_position_int - ball_position_int
+	var position_delta := (
+		target_position_integer
+		- ball_position_integer
+	)
 
-	# 调试：
-	#
-	# print("pass delta = ", delta)
-
-	# --------------------------------------------------------------------------
-	# 3. 计算 FC 的传球距离档位 q。
+	# FC 距离档位：
 	#
 	# q =
-	#
 	# floor(abs(dx) / 16)
 	# +
 	# floor(abs(dy) / 16)
-	#
-	#
-	# 因为 abs 后一定是非负整数：
-	#
-	# >> 4
-	#
-	# 就等价于整数除以 16。
-	# --------------------------------------------------------------------------
-
 	var distance_q := (
-		(absi(delta.x) >> 4)
+		(absi(position_delta.x) >> 4)
 		+
-		(absi(delta.y) >> 4)
+		(absi(position_delta.y) >> 4)
 	)
 
-	# 调试：
-	#
-	# print("distance_q = ", distance_q)
+	# 近距离且足球位于地面高度：
+	# 使用特殊贴地传球。
+	if (
+		distance_q <= 5 and ball_z_integer == 0
+	):
+		return _calculate_flat_pass_velocity(
+			position_delta
+			)
 
-	# --------------------------------------------------------------------------
-	# 4. 普通地面传球：
-	#
-	# q <= 5
-	#
-	# 使用特殊贴地传球：
-	#
-	# speed_raw = $0A00
-	# VZ_raw = 0
-	#
-	# 注意：
-	#
-	# 这里只计算“初始速度”。
-	#
-	# 原版随后会进入足球动作 $07，
-	# 再按照地面球自己的运动规则继续更新。
-	# --------------------------------------------------------------------------
-
-	if distance_q <= 5:
-		return _build_flat_pass(delta)
-
-	# --------------------------------------------------------------------------
-	# 5. q > 5：
-	#
-	# 使用抛物线传球。
-	# --------------------------------------------------------------------------
-
-	return _build_air_pass(
-		delta,
+# 其他情况：
+# 使用抛物线传球。
+	return _calculate_air_pass_velocity(
+		position_delta,
 		distance_q,
-		ball_position_raw.z
-	)
-
-	# ==============================================================================
-	# 贴地传球
-	# ==============================================================================
+		ball_z_integer
+		)
 
 
-func _build_flat_pass(
-	delta: Vector2i
+# ==============================================================================
+# 贴地传球
+# ==============================================================================
+
+## 计算近距离贴地传球的初始速度。
+static func _calculate_flat_pass_velocity(
+	position_delta: Vector2i
 ) -> Vector3:
-
-	# --------------------------------------------------------------------------
-	# 1. 根据目标坐标差生成 FC 方向。
-	#
-	# 例如：
-	#
-	# delta = (43, 28)
-	#
-	# FC 可能得到：
-	#
-	# direction_raw = (212, 140)
-	#
-	# 注意：
-	#
-	# 这里不是 normalized()。
-	# --------------------------------------------------------------------------
-
-	var direction_raw := _get_pass_direction_raw(delta)
-
-	# --------------------------------------------------------------------------
-	# 2. FC $9867：
-	#
-	# Q8.8 direction
-	# ×
-	# Q8.8 speed
-	#
-	# 得到 Q8.8 velocity。
-	#
-	#
-	# 例如：
-	#
-	# direction_x = 212
-	# speed_raw    = 2560 ($0A00)
-	#
-	# VX_raw =
-	#
-	# (212 * 2560) >> 8
-	#
-	# = 2120
-	# --------------------------------------------------------------------------
+	var direction_raw := _calculate_direction_raw(
+		position_delta
+	)
 
 	var velocity_raw := Vector3i(
 		_signed_q8_multiply(
 			direction_raw.x,
 			FLAT_PASS_SPEED_RAW
 		),
-
 		_signed_q8_multiply(
 			direction_raw.y,
 			FLAT_PASS_SPEED_RAW
 		),
-
 		0
 	)
 
-	# --------------------------------------------------------------------------
-	# 3. VZ = 0。
-	#
-	# 转换成外部 float Vector3。
-	# --------------------------------------------------------------------------
-
-	return _from_raw(velocity_raw)
-
-	# ==============================================================================
-	# 抛物线传球
-	# ==============================================================================
+	return _raw_velocity_to_vector3(
+		velocity_raw
+	)
 
 
-func _build_air_pass(
-	delta: Vector2i,
+# ==============================================================================
+# 抛物线传球
+# ==============================================================================
+
+## 计算抛物线传球的初始速度。
+static func _calculate_air_pass_velocity(
+	position_delta: Vector2i,
 	distance_q: int,
-	current_ball_z_raw: int
+	ball_z_integer: int
 ) -> Vector3:
-
-	# --------------------------------------------------------------------------
-	# 1. ROM 距离索引：
-	#
-	# index_raw =
+	# ROM 使用的距离索引：
 	#
 	# min(q, 14) & $0E
 	#
-	#
-	# 最终只可能得到：
-	#
-	# 0
-	# 2
-	# 4
-	# 6
-	# 8
-	# 10
-	# 12
-	# 14
-	#
-	#
-	# 对我们当前普通地面传球来说：
-	#
-	# q <= 5 已经在外面进入贴地传球。
-	#
-	# 因此这里实际上主要使用：
-	#
-	# q 6-7   -> index 6
-	# q 8-9   -> index 8
-	# q 10-11 -> index 10
-	# q >= 12 -> index 12 / 14
-	# --------------------------------------------------------------------------
-
+	# 最终只会得到偶数：
+	# 0, 2, 4, 6, 8, 10, 12, 14
 	var distance_index := (
 		mini(distance_q, 14)
 		& 0x0E
 	)
 
-	# --------------------------------------------------------------------------
-	# 2. ROM 的索引是：
+	# ROM 索引是：
+	# 0,2,4,6...
 	#
-	# 0,2,4,6,8,10,12,14
-	#
-	# 但 Godot Array 的索引是：
-	#
-	# 0,1,2,3,4,5,6,7
-	#
-	# 所以：
-	#
-	# distance_index >> 1
-	# --------------------------------------------------------------------------
-
-	var speed_raw := PASS_SPEED_RAW[
+	# Godot Array 索引是：
+	# 0,1,2,3...
+	var pass_speed_raw := PASS_SPEED_RAW[
 		distance_index >> 1
 	]
 
-	# --------------------------------------------------------------------------
-	# 3. 根据 delta 生成 FC 量化方向。
-	# --------------------------------------------------------------------------
+	# 根据目标坐标差生成 FC 量化方向。
+	var direction_raw := _calculate_direction_raw(
+		position_delta
+	)
 
-	var direction_raw := _get_pass_direction_raw(delta)
-
-	# --------------------------------------------------------------------------
-	# 4. 方向 × 速度。
-	#
-	# 两边都是 Q8.8，所以使用：
-	#
-	# result =
-	# (a * b) >> 8
-	#
-	# 得到真正用于足球运动的：
-	#
-	# VX_raw
-	# VY_raw
-	# --------------------------------------------------------------------------
-
+	# Q8.8 direction × Q8.8 speed
+	# 得到真正的水平 Q8.8 velocity。
 	var horizontal_velocity_raw := Vector2i(
 		_signed_q8_multiply(
 			direction_raw.x,
-			speed_raw
+			pass_speed_raw
 		),
-
 		_signed_q8_multiply(
 			direction_raw.y,
-			speed_raw
+			pass_speed_raw
 		)
 	)
 
 	# --------------------------------------------------------------------------
-	# 5. $A4D8：
-	#
-	# 根据实际生成出来的 VX / VY，
-	# 选择绝对速度最大的轴。
-	#
-	#
-	# 必须使用“同一个轴”的：
-	#
-	# distance
-	# velocity
-	#
-	#
-	# 例如 X 是主轴：
-	#
-	# dominant_distance = abs(delta.x)
-	# dominant_speed    = abs(VX_raw)
-	#
-	#
-	# 不能再使用旧算法：
-	#
-	# flight_steps = 256 / speed_factor
-	#
-	# 因为现在已经确认：
-	#
-	# 实际速度还受到 FC 方向量化影响。
+	# 计算水平预计飞行时间
 	# --------------------------------------------------------------------------
 
+	# FC 根据实际生成的 VX / VY，
+	# 选择绝对速度最大的轴作为主轴。
+	#
+	# 距离和速度必须来自同一个轴。
 	var dominant_distance: int
 	var dominant_speed_raw: int
 
-	if absi(horizontal_velocity_raw.x) >= absi(horizontal_velocity_raw.y):
-		dominant_distance = absi(delta.x)
-		dominant_speed_raw = absi(horizontal_velocity_raw.x)
-
+	if (
+		absi(horizontal_velocity_raw.x)
+		>=
+		absi(horizontal_velocity_raw.y)
+	):
+		dominant_distance = absi(
+			position_delta.x
+		)
+		dominant_speed_raw = absi(
+			horizontal_velocity_raw.x
+		)
 	else:
-		dominant_distance = absi(delta.y)
-		dominant_speed_raw = absi(horizontal_velocity_raw.y)
+		dominant_distance = absi(
+			position_delta.y
+		)
+		dominant_speed_raw = absi(
+			horizontal_velocity_raw.y
+		)
 
 	# 正常抛物线传球不应该出现主轴速度为 0。
 	#
-	# 如果这里触发，说明：
-	#
-	# - 方向算法有问题
-	# - speed_raw 有问题
-	# - 或存在还没有逆向出的特殊情况
+	# 如果触发，说明方向、速度或尚未逆向出的特殊情况存在问题。
 	assert(
 		dominant_speed_raw > 0,
 		"Pass dominant speed must be greater than zero."
 	)
 
-	# --------------------------------------------------------------------------
-	# 6. 计算预计水平飞行逻辑步数。
+	# dominant_distance：
+	#     整数像素
 	#
-	#
-	# dominant_distance 单位：
-	#
-	# 整数像素
-	#
-	#
-	# dominant_speed_raw 单位：
-	#
-	# 1/256 像素 / logic tick
-	#
+	# dominant_speed_raw：
+	#     1/256 像素 / logic tick
 	#
 	# 所以：
 	#
-	# distance * 256 / speed_raw
-	#
-	# 得到预计需要的逻辑步数。
-	#
-	#
-	# flight_steps =
-	#
+	# estimated_flight_steps =
 	# floor(
 	#     dominant_distance * 256
 	#     /
 	#     dominant_speed_raw
 	# )
-	# --------------------------------------------------------------------------
-
-	var flight_steps := (
+	var estimated_flight_steps := (
 		dominant_distance
-		* RAW_ONE
+		* FixedPoint.RAW_ONE
 	) / dominant_speed_raw
 
 	# --------------------------------------------------------------------------
-	# 7. 根据预计飞行时间生成初始 VZ。
-	#
-	#
-	# 每一个预计飞行 Tick：
-	#
-	# +64 raw
-	#
-	# 即：
-	#
-	# +0.25
-	#
-	#
-	# 最大：
-	#
-	# 4096 raw
-	# =
-	# 16.0
+	# 计算初始 Z 速度
 	# --------------------------------------------------------------------------
 
+	# 每增加一个预计飞行 Tick：
+	# VZ += 64 raw
+	#
+	# 最大：
+	# VZ = 4096 raw = 16.0
 	var z_velocity_raw := mini(
-		flight_steps
+		estimated_flight_steps
 		* PASS_INITIAL_VZ_PER_FLIGHT_STEP_RAW,
-
 		MAX_PASS_Z_VELOCITY_RAW
 	)
 
-	# --------------------------------------------------------------------------
-	# 8. 当前足球高度修正。
+	# 当前足球高度修正。
 	#
-	# 首先取得足球当前 Z 的整数部分：
-	#
-	# ball_z_int =
-	# current_ball_z_raw >> 8
-	#
-	#
-	# 然后：
+	# ball_z_integer =
+	#     current_ball_z_raw >> 8
 	#
 	# VZ_raw -=
+	#     floor(ball_z_integer / 16) * 256
 	#
-	# floor(ball_z_int / 16)
-	# * 256
-	#
-	#
-	# 足球已经越高，
-	# 新生成的向上速度就越低。
-	# --------------------------------------------------------------------------
-
-	var ball_z_int := current_ball_z_raw >> 8
+	# 足球当前越高，新生成的向上速度越低。
+	
 
 	z_velocity_raw -= (
-		(ball_z_int >> 4)
-		* RAW_ONE
+		(ball_z_integer >> 4)
+		* FixedPoint.RAW_ONE
 	)
 
-	# --------------------------------------------------------------------------
-	# 9. 合并：
-	#
-	# VX
-	# VY
-	# VZ
-	#
-	# 成一个 Vector3i raw。
-	# --------------------------------------------------------------------------
-
+	# 合并 VX / VY / VZ。
 	var velocity_raw := Vector3i(
 		horizontal_velocity_raw.x,
 		horizontal_velocity_raw.y,
 		z_velocity_raw
 	)
 
-	# --------------------------------------------------------------------------
-	# 10. 转回外部 float。
-	# --------------------------------------------------------------------------
-
-	return _from_raw(velocity_raw)
-
-	# ==============================================================================
-	# FC 方向量化
-	# ==============================================================================
+	return _raw_velocity_to_vector3(
+		velocity_raw
+	)
 
 
-func _get_pass_direction_raw(
-	delta: Vector2i
+# ==============================================================================
+# FC 方向量化
+# ==============================================================================
+
+## 根据整数坐标差计算 FC 的 Q8.8 方向向量。
+##
+## FC 不使用 Vector2.normalized()。
+##
+## 普通流程：
+##
+##     坐标比例
+##         ↓
+##     整数除法
+##         ↓
+##     ratio bucket
+##         ↓
+##     ROM 查表
+##         ↓
+##     Q8.8 方向分量
+static func _calculate_direction_raw(
+	position_delta: Vector2i
 ) -> Vector2i:
-
-	var abs_x := absi(delta.x)
-	var abs_y := absi(delta.y)
+	var abs_x := absi(position_delta.x)
+	var abs_y := absi(position_delta.y)
 
 	# --------------------------------------------------------------------------
-	# 特例 1：
-	#
-	# 完全没有方向。
-	#
-	# (0, 0)
-	# ->
-	# (0, 0)
+	# 特例：没有方向
 	# --------------------------------------------------------------------------
 
 	if abs_x == 0 and abs_y == 0:
 		return Vector2i.ZERO
 
 	# --------------------------------------------------------------------------
-	# 特例 2：
+	# 特例：纯 Y 轴
 	#
-	# 纯 Y 轴。
-	#
-	# FC 会直接生成：
-	#
-	# 0
-	# ±$0100
-	#
-	# 也就是：
-	#
+	# FC 使用：
 	# (0, ±256)
 	#
-	# 注意：
-	#
-	# 不是 255。
+	# 这里不能使用 ROM 表中的 255。
 	# --------------------------------------------------------------------------
 
 	if abs_x == 0:
 		return Vector2i(
 			0,
-			RAW_ONE if delta.y > 0 else - RAW_ONE
+			FixedPoint.RAW_ONE
+				if position_delta.y > 0
+				else -FixedPoint.RAW_ONE
 		)
 
 	# --------------------------------------------------------------------------
-	# 特例 3：
+	# 特例：纯 X 轴
 	#
-	# 纯 X 轴。
-	#
-	# FC 直接：
-	#
+	# FC 使用：
 	# (±256, 0)
 	# --------------------------------------------------------------------------
 
 	if abs_y == 0:
 		return Vector2i(
-			RAW_ONE if delta.x > 0 else - RAW_ONE,
+			FixedPoint.RAW_ONE
+				if position_delta.x > 0
+				else -FixedPoint.RAW_ONE,
 			0
 		)
 
 	# --------------------------------------------------------------------------
-	# 特例 4：
-	#
-	# 精确 45°。
+	# 特例：精确 45°
 	#
 	# FC 使用：
+	# (±179, ±179)
 	#
-	# 179
-	# 179
-	#
-	# 即大约：
-	#
-	# 0.69921875
-	#
-	#
-	# 现代数学 normalized：
-	#
-	# 1 / sqrt(2)
-	# ≈ 0.7071
-	#
-	# ×256 ≈ 181
-	#
-	# 所以两者并不一样。
+	# 而不是现代 normalized() 得到的约 181。
 	# --------------------------------------------------------------------------
 
 	if abs_x == abs_y:
 		return Vector2i(
-			179 if delta.x > 0 else - 179,
-			179 if delta.y > 0 else - 179
+			179
+				if position_delta.x > 0
+				else -179,
+			179
+				if position_delta.y > 0
+				else -179
 		)
 
 	# --------------------------------------------------------------------------
-	# 普通情况：
-	#
-	# 找出较小和较大的坐标分量。
+	# 普通方向量化
 	# --------------------------------------------------------------------------
 
-	var smaller := mini(
+	var minor_delta := mini(
 		abs_x,
 		abs_y
 	)
 
-	var larger := maxi(
+	var major_delta := maxi(
 		abs_x,
 		abs_y
 	)
 
-	# --------------------------------------------------------------------------
-	# quotient =
-	#
+	# ratio_raw =
 	# floor(
-	#     smaller * 256
+	#     minor_delta * 256
 	#     /
-	#     larger
+	#     major_delta
 	# )
-	#
-	#
-	# 得到一个 Q8 比例。
-	#
-	# 范围大约：
-	#
-	# 0 ～ 255
-	# --------------------------------------------------------------------------
+	var ratio_raw := (
+		minor_delta
+		* FixedPoint.RAW_ONE
+	) / major_delta
 
-	var quotient := (
-		smaller
-		* RAW_ONE
-	) / larger
-
-	# --------------------------------------------------------------------------
-	# 把比例压缩成 32 个 bucket：
-	#
-	# min(quotient + 3, 255) >> 3
-	#
-	#
-	# 最终范围：
-	#
-	# 0 ～ 31
-	# --------------------------------------------------------------------------
-
+	# 将比例压缩成 0～31 的 bucket。
 	var ratio_bucket := (
 		mini(
-			quotient + 3,
+			ratio_raw + 3,
 			255
 		)
 		>> 3
 	)
 
-	# --------------------------------------------------------------------------
-	# 第一张 ROM 表：
-	#
-	# ratio bucket
-	# ->
-	# direction index
-	#
-	# direction_index 范围：
-	#
-	# 0 ～ 32
-	# --------------------------------------------------------------------------
-
+	# ratio bucket → ROM direction index
 	var direction_index := (
 		RATIO_TO_DIRECTION_INDEX[
-		ratio_bucket
+			ratio_bucket
 		]
 	)
 
 	# --------------------------------------------------------------------------
-	# 特殊情况：
-	#
-	# 即使原始 delta 并不是完全纯轴，
-	# 如果比例足够小，也可能被 FC 量化到：
-	#
-	# direction_index == 0
-	#
-	#
-	# ROM 此时不会使用：
-	#
-	# DIRECTION_LARGE_RAW[0]
-	#
-	# 因为它是：
-	#
-	# 255
-	#
-	#
-	# ROM 会直接让主轴变成：
-	#
-	# 256
-	#
-	# 次轴：
-	#
-	# 0
-	#
-	#
-	# 所以这里必须特别处理。
+	# 极小角度量化成纯轴
 	# --------------------------------------------------------------------------
 
+	# 即使原始 position_delta 并不是纯轴，
+	# 比例足够小时也可能得到 direction_index == 0。
+	#
+	# FC 此时主轴使用 ±256，而不是表中的 255。
 	if direction_index == 0:
-
-		var result := Vector2i.ZERO
+		var direction_raw := Vector2i.ZERO
 
 		if abs_x > abs_y:
-			result.x = (
-				RAW_ONE
-				if delta.x > 0
-				else - RAW_ONE
+			direction_raw.x = (
+				FixedPoint.RAW_ONE
+					if position_delta.x > 0
+					else -FixedPoint.RAW_ONE
 			)
-
 		else:
-			result.y = (
-				RAW_ONE
-				if delta.y > 0
-				else - RAW_ONE
+			direction_raw.y = (
+				FixedPoint.RAW_ONE
+					if position_delta.y > 0
+					else -FixedPoint.RAW_ONE
 			)
 
-		return result
+		return direction_raw
 
 	# --------------------------------------------------------------------------
-	# 从 ROM 表获得：
-	#
-	# 小轴分量
-	# 大轴分量
+	# ROM 查表
 	# --------------------------------------------------------------------------
 
-	var small := DIRECTION_SMALL_RAW[
-		direction_index
-	]
+	var minor_component_raw := (
+		DIRECTION_SMALL_RAW[
+			direction_index
+		]
+	)
 
-	var large := DIRECTION_LARGE_RAW[
-		direction_index
-	]
+	var major_component_raw := (
+		DIRECTION_LARGE_RAW[
+			direction_index
+		]
+	)
 
-	# --------------------------------------------------------------------------
-	# 谁的原始绝对坐标更大，
-	# 谁就使用 large。
-	#
-	#
-	# 例如：
-	#
-	# delta = (43, 28)
-	#
-	# X > Y
-	#
-	# 所以：
-	#
-	# X = large
-	# Y = small
-	# --------------------------------------------------------------------------
+	var direction_raw := Vector2i.ZERO
 
-	var result := Vector2i.ZERO
-
+	# 原始坐标差较大的轴使用 major，
+	# 较小的轴使用 minor。
 	if abs_x > abs_y:
-		result.x = large
-		result.y = small
-
+		direction_raw.x = major_component_raw
+		direction_raw.y = minor_component_raw
 	else:
-		result.x = small
-		result.y = large
+		direction_raw.x = minor_component_raw
+		direction_raw.y = major_component_raw
 
-	# --------------------------------------------------------------------------
-	# 最后恢复原始方向符号。
-	#
-	# 查表只处理绝对值，
-	# 所以这里再恢复：
-	#
-	# 左 / 右
-	# 上 / 下
-	# --------------------------------------------------------------------------
+	# 恢复原始 X / Y 方向符号。
+	if position_delta.x < 0:
+		direction_raw.x = -direction_raw.x
 
-	if delta.x < 0:
-		result.x = -result.x
+	if position_delta.y < 0:
+		direction_raw.y = -direction_raw.y
 
-	if delta.y < 0:
-		result.y = -result.y
-
-	return result
-
-	# ==============================================================================
-	# Q8.8 有符号乘法
-	# ==============================================================================
-
-# 两个 Q8.8 raw 相乘。
-#
-# 例如：
-#
-# direction_raw = 212
-# speed_raw     = 2560
-#
-# 普通整数乘法：
-#
-# 212 * 2560
-#
-# 会多出一个 256 倍的缩放。
-#
-# 所以最终：
-#
-# >> 8
-#
-# 把结果重新恢复成 Q8.8。
-#
-#
-# 这里显式处理正负号，
-# 更接近 FC 的：
-#
-# 取绝对值
-# ↓
-# 乘法
-# ↓
-# 截断
-# ↓
-# 恢复符号
-#
-#
-# 如果以后继续追求 $9867 的逐指令一致，
-# 可以只修改这个函数，
-# 外部结构完全不用改。
+	return direction_raw
 
 
-func _signed_q8_multiply(
+# ==============================================================================
+# Q8.8 运算
+# ==============================================================================
+
+## 两个有符号 Q8.8 raw 相乘。
+##
+## 返回值仍然是 Q8.8 raw。
+##
+## 当前显式处理正负号：
+##
+##     取绝对值
+##         ↓
+##     相乘
+##         ↓
+##     >> 8
+##         ↓
+##     恢复符号
+##
+## 如果以后继续追求 FC 乘法例程的逐指令一致，
+## 可以只修改本函数。
+static func _signed_q8_multiply(
 	a_raw: int,
 	b_raw: int
 ) -> int:
-
-	var negative := (
+	var is_negative := (
 		(a_raw < 0)
 		!=
 		(b_raw < 0)
 	)
 
-	var magnitude := (
+	var magnitude_raw := (
 		absi(a_raw)
 		* absi(b_raw)
 	) >> 8
 
-	return(
-		- magnitude
-		if negative
-		else magnitude
+	return (
+		-magnitude_raw
+		if is_negative
+		else magnitude_raw
 	)
 
-	# ==============================================================================
-	# float ↔ FC raw
-	# ==============================================================================
 
-# 外部：
-#
-# Vector3 float
-#
-# 转换为：
-#
-# Vector3i Q8.8 raw
-#
-#
-# 例如：
-#
-# Vector3(10.5, 20.0, 4.0)
-#
-# ->
-#
-# Vector3i(
-#     2688,
-#     5120,
-#     1024
-# )
+# ==============================================================================
+# 输出转换
+# ==============================================================================
 
-
-func _to_raw(
-	value: Vector3
-) -> Vector3i:
-
-	return Vector3i(
-		roundi(value.x * RAW_ONE),
-		roundi(value.y * RAW_ONE),
-		roundi(value.z * RAW_ONE)
-	)
-
-# Q8.8 raw
-# ->
-# 外部 float。
-#
-# 例如：
-#
-# 2120 raw
-# ->
-# 8.28125
-
-
-func _from_raw(
-	value: Vector3i
+## Q8.8 raw 速度 → 普通 Vector3 速度。
+static func _raw_velocity_to_vector3(
+	velocity_raw: Vector3i
 ) -> Vector3:
-
 	return Vector3(
-		float(value.x) / RAW_ONE,
-		float(value.y) / RAW_ONE,
-		float(value.z) / RAW_ONE
+		FixedPoint.from_raw(velocity_raw.x),
+		FixedPoint.from_raw(velocity_raw.y),
+		FixedPoint.from_raw(velocity_raw.z)
 	)
