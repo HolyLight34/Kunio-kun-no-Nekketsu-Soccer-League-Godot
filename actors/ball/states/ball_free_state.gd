@@ -3,7 +3,9 @@ extends BallState
 func enter(_data) -> void:
 	anim.play(anim_name)
 	ball.ball_z_movement.resume_z_motion()
-	pass
+	if ball.stationary_flick_active:
+		await ball.ball_z_movement.bounced
+		ball.stationary_flick_active = false
 
 
 func exit() -> void:

@@ -2,7 +2,8 @@ extends PlayerState
 
 
 func enter(_data):
-	player.ball_interaction_detector.disable()
+	#player.ball_interaction_detector.disable()
+	player.ball_receiver_area.disable()
 	player.player_horizontal_movement.stop_immediately()
 	var z_height: float
 	if player.get_z_height() > 0:
@@ -19,7 +20,8 @@ func enter(_data):
 	pass
 
 func exit() -> void:
-	player.ball_interaction_detector.enable()
+	player.ball_receiver_area.enable()
+	#player.ball_interaction_detector.enable()
 	player.hit_box.hit_shape.disabled = true
 	player.hit_box.hit_info = null
 	pass

@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://btqnw73bvo5to" path="res://actors/ball/states/ball_air_control_state.gd" id="8_l8wax"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="9_iwjb2"]
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="9_m05fq"]
+[ext_resource type="Script" uid="uid://b8kiuxfdmkau" path="res://actors/ball/states/ball_stationary_flick_state.gd" id="9_ospjx"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://shared/combat/hurt_box.tscn" id="10_d7d46"]
 [ext_resource type="Script" uid="uid://ddgryvlc3eucy" path="res://shared/timing/tick_timer_component.gd" id="11_aduox"]
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://actors/ball/components/ball_z_movement.gd" id="11_begx4"]
@@ -17,6 +18,7 @@
 [ext_resource type="Script" uid="uid://djtmyon3il0b5" path="res://actors/ball/components/ball_horizontal_component.gd" id="14_1xsu1"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="14_h8xgc"]
 [ext_resource type="Script" uid="uid://bp062wkswhp4n" path="res://actors/ball/components/ball_hurt_resolver.gd" id="16_37of1"]
+[ext_resource type="Script" uid="uid://cef2t5i82oamh" path="res://actors/ball/scripts/ball_control_area.gd" id="18_au374"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
 size = Vector2(16, 12)
@@ -178,6 +180,9 @@ size = Vector2(16, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ef6ou"]
 size = Vector2(16, 12)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
+size = Vector2(16, 12)
+
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
 collision_layer = 2
 collision_mask = 0
@@ -213,6 +218,10 @@ anim_name = &"shot"
 [node name="AirControl" type="Node" parent="StateMachine" unique_id=79705925]
 script = ExtResource("8_l8wax")
 state = 3
+
+[node name="StationaryFlick" type="Node" parent="StateMachine" unique_id=71999773]
+script = ExtResource("9_ospjx")
+state = 4
 
 [node name="HitBox" parent="." unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("9_m05fq")]
 collision_layer = 0
@@ -274,8 +283,17 @@ script = ExtResource("11_d7d46")
 [node name="BallHurtResolver" type="Node" parent="Components" unique_id=988805330]
 script = ExtResource("16_37of1")
 
+[node name="BallControlArea" type="Area2D" parent="." unique_id=12959500]
+collision_layer = 16
+collision_mask = 8
+script = ExtResource("18_au374")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BallControlArea" unique_id=755554628]
+shape = SubResource("RectangleShape2D_qbh5u")
+
 [connection signal="target_detected" from="HitBox" to="." method="_on_hit_box_target_detected"]
 [connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]
+[connection signal="area_entered" from="BallControlArea" to="BallControlArea" method="_on_area_entered"]
 
 [editable path="HitBox"]
 [editable path="HurtBox"]

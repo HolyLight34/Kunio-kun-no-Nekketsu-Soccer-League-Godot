@@ -17,10 +17,12 @@ signal possession_changed(new_carrier: Player)
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var ball_collision: CollisionShape2D = $CollisionShape2D
-
+@onready var ball_control_area: BallControlArea = $BallControlArea
+const COLLISION_HEIGHT: float = 16.0
 var current_kicker: Player
 var power: float
 var control_locked: bool = false
+var stationary_flick_active: bool = false
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
@@ -29,6 +31,10 @@ var carrier: Player = null:
 		if carrier == value:
 			return
 		carrier = value
+		if carrier == null:
+			ball_control_area.enable()
+		else :
+			ball_control_area.disable()
 		possession_changed.emit(carrier)
 
 # ==============================================================================
@@ -40,12 +46,21 @@ func get_logical_position() -> Vector2:
 func _ready() -> void:
 	state_machine.init(self)
 	tick_component.tick_triggered.connect(_on_logic_tick)
+	ball_control_area.player_detected.connect(_on_player_detected)
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
 	)
 	ball_z_movement.finished.connect(
 		ball_horizontal_movement.roll
 	)
+func _on_player_detected(player: Player) -> void:
+	if stationary_flick_active:
+		return
+	carrier = player
+	if is_in_air():
+		state_machine.change_state(BallState.State.AIR_CONTORL)
+	else :
+		state_machine.change_state(BallState.State.GRIYND_CARRY)
 # ==============================================================================
 # 5. Logic Tick
 # ==============================================================================
@@ -54,6 +69,7 @@ func _on_logic_tick() -> void:
 	ball_z_movement.process_z_step()
 	ball_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
+	ball_control_area.logic_tick()
 	Log.debug(
 		Log.Cat.PHYSICS,
 		"物理帧：%d" % Engine.get_physics_frames()
@@ -61,10 +77,6 @@ func _on_logic_tick() -> void:
 # ==============================================================================
 # 6. 球权
 # ==============================================================================
-func can_be_picked_up() -> bool:
-	if state_machine.current_state.name == "Shot":
-		return false
-	return carrier == null
 func set_carried_by(new_carrier: Player) -> void:
 	if carrier == new_carrier:
 		return
@@ -73,14 +85,14 @@ func set_carried_by(new_carrier: Player) -> void:
 	state_machine.change_state(
 		BallState.State.GRIYND_CARRY
 	)
+# Ball.gd
+
+
+func get_collision_height() -> float:
+	return COLLISION_HEIGHT
 func get_z_height() -> float:
 	return ball_z_movement.get_z_height()
-func receive_chest_control(player: Player) -> void:
-	carrier = player
-	state_machine.change_state(
-		BallState.State.AIR_CONTORL
-	)
-	pass
+
 func release_from_carrier() -> void:
 	if carrier == null:
 		return
@@ -151,10 +163,10 @@ func _apply_horizontal_launch(
 # ==============================================================================
 
 func receive_stationary_flick() -> void:
-	control_locked = true 
+	stationary_flick_active = true 
 	ball_z_movement.launch(8)
-	release_from_carrier()
 	state_machine.change_state(BallState.State.FREE)
+	release_from_carrier()
 	
 func receive_moving_flick(kicker: Player) -> void:
 	release_from_carrier()
@@ -175,9 +187,4 @@ func _on_hit_box_target_detected(hurt_box: HurtBox, hit_info: HitInfo) -> void:
 	hurt_data.knockback_speed = hit_info.horizontal_speed
 	hurt_data.z_velocity =hit_info.z_velocity
 	hurt_box.receive_hurt(hurt_data)
-	pass # Replace with function body.
-
-
-func _on_ball_z_movement_landed() -> void:
-	control_locked = false
 	pass # Replace with function body.

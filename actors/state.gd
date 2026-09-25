@@ -24,7 +24,7 @@ func change_state(target: Variant,data= null) -> void:
 	transition_requested.emit(self, target, data)
 
 
-func enter(data) -> void:
+func enter(_data) -> void:
 	pass
 
 

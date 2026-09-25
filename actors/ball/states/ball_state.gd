@@ -6,6 +6,7 @@ enum State {
 	GRIYND_CARRY,
 	SHOT,
 	AIR_CONTORL,
+	STATIONARY_FLICK,
 } 
 
 @export var state: State # 当前状态设置

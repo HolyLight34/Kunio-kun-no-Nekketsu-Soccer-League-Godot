@@ -41,13 +41,17 @@ var ball: Ball
 @onready var endurance_label: Label = $Label
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var attack_resolver: AttackResolver = $Components/AttackResolver
-@onready var ball_interaction_detector: BallInteractionDetector = $Colliders/BallInteractionDetector
+#@onready var ball_interaction_detector: BallInteractionDetector = $Colliders/BallInteractionDetector
+@onready var ball_receiver_area: BallReceiverArea = $BallReceiverArea
 
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
 var facing_direction: Vector2 = Vector2.RIGHT
 var ball_possession: Types.BallPossession
+const COLLISION_HEIGHT: float = 32.0
+func get_collision_height() -> float:
+	return COLLISION_HEIGHT
 func _on_ball_possession_changed(new_carrier: Player) -> void:
 	if new_carrier == null:
 		ball_possession = Types.BallPossession.NONE
@@ -70,8 +74,9 @@ func _ready() -> void:
 	state_machine.tick_reset_requested.connect(
 		tick_component.reset_tick
 	)
-	ball_interaction_detector.chest_trap_requested.connect(_on_chest_trap_requested)
-	ball_interaction_detector.pickup_requested.connect(_on_pickup_requested)
+	ball_receiver_area.ball_detected.connect(_on_ball_detected)
+	#ball_interaction_detector.chest_trap_requested.connect(_on_chest_trap_requested)
+	#ball_interaction_detector.pickup_requested.connect(_on_pickup_requested)
 func get_logical_position() -> Vector2:
 	return player_horizontal_movement.get_horizontal_position()
 
@@ -114,9 +119,16 @@ func _on_logic_tick() -> void:
 		input_component.move_dir.x
 	)
 	player_horizontal_movement.step_logic_tick()
-	ball_interaction_detector.check_ball_interaction()
+	ball_receiver_area.logic_tick()
+	#ball_interaction_detector.check_ball_interaction()
 	
-
+func _on_ball_detected(ball: Ball) -> void:
+	if is_in_air():
+		return
+	else :
+		if ball.is_in_air() and ball.stationary_flick_active == false:
+			state_machine.change_state(PlayerState.State.CHEST_TRAP)
+	pass
 # ==============================================================================
 # 7. 朝向
 # ==============================================================================
@@ -185,8 +197,6 @@ func _on_pickup_requested(ball: Ball) -> void:
 		return
 	face_position(ball.get_logical_position())
 	ball.set_carried_by(self)
-	# 处理拾球请求
-	pass
 # ==============================================================================
 # 9. 受击入口
 # ==============================================================================
