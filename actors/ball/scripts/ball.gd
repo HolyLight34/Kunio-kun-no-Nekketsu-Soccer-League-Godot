@@ -17,9 +17,8 @@ signal possession_changed(new_carrier: Player)
 @onready var entity_visual_controller: EntityVisualController = $Components/EntityVisualController
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var ball_collision: CollisionShape2D = $CollisionShape2D
-@onready var ball_control_area: BallControlArea = $BallControlArea
-const COLLISION_HEIGHT: float = 16.0
-var current_kicker: Player
+
+const COLLISION_HEIGHT: int = 16
 var power: float
 var control_locked: bool = false
 var stationary_flick_active: bool = false
@@ -31,10 +30,6 @@ var carrier: Player = null:
 		if carrier == value:
 			return
 		carrier = value
-		if carrier == null:
-			ball_control_area.enable()
-		else :
-			ball_control_area.disable()
 		possession_changed.emit(carrier)
 
 # ==============================================================================
@@ -42,25 +37,19 @@ var carrier: Player = null:
 # ==============================================================================
 func get_logical_position() -> Vector2:
 	return ball_horizontal_movement.get_horizontal_position()
-
+func can_be_received() -> bool:
+	return carrier == null
 func _ready() -> void:
 	state_machine.init(self)
 	tick_component.tick_triggered.connect(_on_logic_tick)
-	ball_control_area.player_detected.connect(_on_player_detected)
+	#ball_control_area.player_detected.connect(_on_player_detected)
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
 	)
 	ball_z_movement.finished.connect(
 		ball_horizontal_movement.roll
 	)
-func _on_player_detected(player: Player) -> void:
-	if stationary_flick_active:
-		return
-	carrier = player
-	if is_in_air():
-		state_machine.change_state(BallState.State.AIR_CONTORL)
-	else :
-		state_machine.change_state(BallState.State.GRIYND_CARRY)
+
 # ==============================================================================
 # 5. Logic Tick
 # ==============================================================================
@@ -69,30 +58,53 @@ func _on_logic_tick() -> void:
 	ball_z_movement.process_z_step()
 	ball_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
-	ball_control_area.logic_tick()
-	Log.debug(
-		Log.Cat.PHYSICS,
-		"物理帧：%d" % Engine.get_physics_frames()
-	)
 # ==============================================================================
 # 6. 球权
 # ==============================================================================
-func set_carried_by(new_carrier: Player) -> void:
-	if carrier == new_carrier:
-		return
-	# 建立新的双向关系
-	carrier = new_carrier
+func is_stationary_flick_active() -> bool:
+	return stationary_flick_active
+func receive_ground_pickup(player: Player) -> void:
+	carrier = player
 	state_machine.change_state(
 		BallState.State.GRIYND_CARRY
 	)
-# Ball.gd
+var _receiver_candidates: Array[Player] = []
 
 
-func get_collision_height() -> float:
+func register_receiver(player: Player) -> void:
+	if player in _receiver_candidates:
+		return
+
+	_receiver_candidates.append(player)
+
+
+func unregister_receiver(player: Player) -> void:
+	_receiver_candidates.erase(player)
+
+
+func get_receiver() -> Player:
+	for player in _receiver_candidates:
+		if _is_z_overlapping(player):
+			return player
+
+	return null
+func _is_z_overlapping(player: Player) -> bool:
+	var player_z := FixedPoint.to_integer(player.get_z_height())
+	var ball_z := FixedPoint.to_integer(get_z_height())
+
+	return (
+		ball_z < player_z + player.get_collision_height()
+		and
+		player_z < ball_z + get_collision_height()
+	)
+func get_collision_height() -> int:
 	return COLLISION_HEIGHT
 func get_z_height() -> float:
 	return ball_z_movement.get_z_height()
-
+func receive_chest_control(player: Player) -> void:
+	carrier = player
+	state_machine.change_state(BallState.State.AIR_CONTORL)
+	pass
 func release_from_carrier() -> void:
 	if carrier == null:
 		return
@@ -154,7 +166,6 @@ func _apply_horizontal_launch(
 	velocity: Vector2
 ) -> void:
 	release_from_carrier()
-
 	ball_horizontal_movement.set_horizontal_velocity(
 		velocity
 	)
@@ -177,7 +188,7 @@ func receive_moving_flick(kicker: Player) -> void:
 func _receive_slide_hit(incoming: HitBox) -> void:
 	if incoming.source is not Player:
 		return
-	set_carried_by(incoming.source)
+	receive_ground_pickup(incoming.source)
 
 func _on_hit_box_target_detected(hurt_box: HurtBox, hit_info: HitInfo) -> void:
 	var hurt_data = HurtData.new()

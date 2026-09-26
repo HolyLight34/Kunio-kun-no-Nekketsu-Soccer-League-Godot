@@ -20,7 +20,6 @@ func enter(_data):
 	pass
 
 func exit() -> void:
-	player.ball_receiver_area.enable()
 	#player.ball_interaction_detector.enable()
 	player.hit_box.hit_shape.disabled = true
 	player.hit_box.hit_info = null

@@ -1,6 +1,7 @@
 extends BallState
 
 func enter(_data) -> void:
+	#ball.ball_interactable_area.enable()
 	anim.play(anim_name)
 	ball.ball_z_movement.resume_z_motion()
 	if ball.stationary_flick_active:

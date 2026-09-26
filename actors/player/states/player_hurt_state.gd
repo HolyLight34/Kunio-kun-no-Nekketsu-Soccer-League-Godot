@@ -2,6 +2,7 @@ extends PlayerState
 var hurt_type: Types.HurtType
 
 func enter(data) -> void:
+	player.ball_receiver_area.disable()
 	var hurt_data := data as HurtData
 	if hurt_data == null:
 		return

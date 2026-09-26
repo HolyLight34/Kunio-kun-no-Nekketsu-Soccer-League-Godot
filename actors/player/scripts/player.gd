@@ -41,7 +41,6 @@ var ball: Ball
 @onready var endurance_label: Label = $Label
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var attack_resolver: AttackResolver = $Components/AttackResolver
-#@onready var ball_interaction_detector: BallInteractionDetector = $Colliders/BallInteractionDetector
 @onready var ball_receiver_area: BallReceiverArea = $BallReceiverArea
 
 # ==============================================================================
@@ -49,8 +48,8 @@ var ball: Ball
 # ==============================================================================
 var facing_direction: Vector2 = Vector2.RIGHT
 var ball_possession: Types.BallPossession
-const COLLISION_HEIGHT: float = 32.0
-func get_collision_height() -> float:
+const COLLISION_HEIGHT: int = 32
+func get_collision_height() -> int:
 	return COLLISION_HEIGHT
 func _on_ball_possession_changed(new_carrier: Player) -> void:
 	if new_carrier == null:
@@ -74,9 +73,6 @@ func _ready() -> void:
 	state_machine.tick_reset_requested.connect(
 		tick_component.reset_tick
 	)
-	ball_receiver_area.ball_detected.connect(_on_ball_detected)
-	#ball_interaction_detector.chest_trap_requested.connect(_on_chest_trap_requested)
-	#ball_interaction_detector.pickup_requested.connect(_on_pickup_requested)
 func get_logical_position() -> Vector2:
 	return player_horizontal_movement.get_horizontal_position()
 
@@ -108,6 +104,11 @@ func _initialize_components() -> void:
 	)
 	entity_visual_controller.initialize()
 	state_machine.init(self)
+func is_moving() -> bool:
+	return (
+		player_horizontal_movement.get_horizontal_velocity() != Vector2.ZERO
+		or player_z_movement.get_z_velocity() != 0.0
+	)
 # ==============================================================================
 # 6. Logic Tick
 # ==============================================================================
@@ -119,16 +120,26 @@ func _on_logic_tick() -> void:
 		input_component.move_dir.x
 	)
 	player_horizontal_movement.step_logic_tick()
-	ball_receiver_area.logic_tick()
-	#ball_interaction_detector.check_ball_interaction()
-	
-func _on_ball_detected(ball: Ball) -> void:
+	_process_ball_contact()
+func _process_ball_contact() -> void:
+	if not ball.can_be_received():
+		return
+	if ball.get_receiver() != self:
+		return
+
+	if not ball.is_in_air():
+		ball.receive_ground_pickup(self)
+		return
+
 	if is_in_air():
 		return
-	else :
-		if ball.is_in_air() and ball.stationary_flick_active == false:
-			state_machine.change_state(PlayerState.State.CHEST_TRAP)
-	pass
+
+	if ball.is_stationary_flick_active() and not is_moving():
+		return
+
+	state_machine.change_state(PlayerState.State.CHEST_TRAP)
+	ball.receive_chest_control(self)
+
 # ==============================================================================
 # 7. 朝向
 # ==============================================================================
@@ -173,13 +184,7 @@ func release_ball() -> void:
 	if ball.carrier != self:
 		return
 	ball.release_from_carrier()
-func _on_chest_trap_requested(ball: Ball) -> void:
-	ball.carrier = self
-	face_position(ball.get_logical_horizontal_position())
-	ball.ball_z_movement.launch(0.5)
-	state_machine.change_state(PlayerState.State.CHEST_TRAP)
-	# 处理胸部停球请求
-	pass
+
 func set_facing_direction(direction: Vector2):
 	facing_direction = direction
 	_apply_facing()
@@ -192,11 +197,7 @@ func face_position(target_position: Vector2) -> void:
 		set_facing_direction(Vector2.RIGHT)
 func get_z_height() -> float:
 	return player_z_movement.get_z_height()
-func _on_pickup_requested(ball: Ball) -> void:
-	if not ball.can_be_picked_up():
-		return
-	face_position(ball.get_logical_position())
-	ball.set_carried_by(self)
+
 # ==============================================================================
 # 9. 受击入口
 # ==============================================================================

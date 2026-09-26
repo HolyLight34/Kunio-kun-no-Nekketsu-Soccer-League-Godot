@@ -1334,8 +1334,9 @@ player = NodePath("..")
 polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
 
 [node name="BallReceiverArea" type="Area2D" parent="." unique_id=979579271]
-collision_layer = 8
-collision_mask = 16
+collision_layer = 0
+collision_mask = 8
+monitorable = false
 script = ExtResource("33_a2yjh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BallReceiverArea" unique_id=1617378699]
@@ -1346,6 +1347,7 @@ shape = SubResource("RectangleShape2D_qbh5u")
 [connection signal="body_entered" from="Colliders/BallInteractionDetector" to="Colliders/BallInteractionDetector" method="_on_body_entered"]
 [connection signal="body_exited" from="Colliders/BallInteractionDetector" to="Colliders/BallInteractionDetector" method="_on_body_exited"]
 [connection signal="area_entered" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_entered"]
+[connection signal="area_exited" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_exited"]
 
 [editable path="Colliders/HitBox"]
 [editable path="Colliders/HurtBox"]

@@ -13,6 +13,9 @@ func process(_delta: float) -> void:
 
 
 func physics_process(_delta: float) -> void:
+	if ball.carrier == null:
+		change_state(State.FREE)
+		return
 	var carrier_position = (
 		ball.carrier.player_horizontal_movement.get_horizontal_position()
 	)
