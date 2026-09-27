@@ -37,7 +37,8 @@ var ball: Ball
 @onready var visual: Node2D = $Visual
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
-@onready var ball_anchor: Marker2D = $Visual/BallAnchor
+@onready var ball_anchor: Marker2D = $BallAnchor
+
 @onready var endurance_label: Label = $Label
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 @onready var attack_resolver: AttackResolver = $Components/AttackResolver
@@ -46,7 +47,15 @@ var ball: Ball
 # ==============================================================================
 # 3. 运行状态
 # ==============================================================================
-var facing_direction: Vector2 = Vector2.RIGHT
+var facing_direction := Vector2.RIGHT:
+	set(value):
+		if facing_direction == value:
+			return
+
+		facing_direction = value
+
+		if value.x != 0:
+			ball_anchor.position.x = absf(ball_anchor.position.x) * signf(value.x)
 var ball_possession: Types.BallPossession
 const COLLISION_HEIGHT: int = 32
 func get_collision_height() -> int:
@@ -83,6 +92,19 @@ func get_logical_position() -> Vector2:
 ##    1.0 = 下
 func get_shot_control_input() -> float:
 	return input_component.get_move_direction().y
+## 当前足球控制锚点的位置。
+func get_ball_anchor_position() -> Vector2:
+	return ball_anchor.global_position
+# Player 自己的 State 使用：修改锚点局部偏移
+func set_ball_anchor_offset(offset: Vector2) -> void:
+	ball_anchor.position = offset
+## 当前角色水平速度。
+func get_horizontal_velocity() -> Vector2:
+	return player_horizontal_movement.get_horizontal_velocity()
+
+## 当前角色 Z 速度。
+func get_z_velocity() -> float:
+	return player_z_movement.get_z_velocity()
 func _physics_process(delta: float) -> void:
 	var intent: PlayerIntentResolver.Intent = (
 		player_intent_resolver.get_intent()
@@ -124,6 +146,7 @@ func _on_logic_tick() -> void:
 func _process_ball_contact() -> void:
 	if not ball.can_be_received():
 		return
+
 	if ball.get_receiver() != self:
 		return
 
@@ -131,15 +154,31 @@ func _process_ball_contact() -> void:
 		ball.receive_ground_pickup(self)
 		return
 
-	if is_in_air():
-		return
-
 	if ball.is_stationary_flick_active() and not is_moving():
 		return
 
-	state_machine.change_state(PlayerState.State.CHEST_TRAP)
-	ball.receive_chest_control(self)
+	# 接到空中球时，角色朝向足球。
+	_face_ball()
 
+	if is_in_air():
+		ball.receive_air_control(self)
+		return
+
+	state_machine.change_state(PlayerState.State.CHEST_TRAP)
+	ball.receive_air_control(self)
+func _face_ball() -> void:
+	var player_x := FixedPoint.to_integer(
+		get_logical_position().x
+	)
+
+	var ball_x := FixedPoint.to_integer(
+		ball.get_logical_position().x
+	)
+
+	if ball_x < player_x:
+		set_facing_direction(Vector2.LEFT)
+	elif ball_x > player_x:
+		set_facing_direction(Vector2.RIGHT)
 # ==============================================================================
 # 7. 朝向
 # ==============================================================================
@@ -189,12 +228,7 @@ func set_facing_direction(direction: Vector2):
 	facing_direction = direction
 	_apply_facing()
 	pass
-func face_position(target_position: Vector2) -> void:
-	var direction := target_position - global_position
-	if direction.x < 0.0:
-		set_facing_direction(Vector2.LEFT)
-	elif direction.x > 0.0:
-		set_facing_direction(Vector2.RIGHT)
+
 func get_z_height() -> float:
 	return player_z_movement.get_z_height()
 

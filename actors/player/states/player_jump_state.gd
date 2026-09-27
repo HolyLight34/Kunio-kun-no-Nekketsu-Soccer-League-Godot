@@ -2,6 +2,7 @@ extends PlayerState
 
 
 func enter(_data):
+	player.set_ball_anchor_offset(Vector2i(10,1))
 	anim.play(anim_name)
 	if not player.player_z_movement.is_in_air:
 		player.player_z_movement.apply_vertical_velocity(4)

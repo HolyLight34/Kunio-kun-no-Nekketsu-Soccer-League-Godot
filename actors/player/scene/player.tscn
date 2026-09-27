@@ -161,7 +161,7 @@ tracks/9/keys = {
 tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("Visual/BallAnchor:position")
+tracks/10/path = NodePath("BallAnchor:position")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
@@ -516,7 +516,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Visual/BallAnchor:position")
+tracks/5/path = NodePath("BallAnchor:position")
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -766,7 +766,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Visual/BallAnchor:position")
+tracks/4/path = NodePath("BallAnchor:position")
 tracks/4/interp = 0
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -1116,9 +1116,6 @@ size = Vector2(22, 12)
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sgsyk"]
-size = Vector2(16, 8)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 8)
 
@@ -1275,9 +1272,6 @@ attacker = NodePath("../..")
 
 [node name="Visual" type="Node2D" parent="." unique_id=1064463610]
 
-[node name="BallAnchor" type="Marker2D" parent="Visual" unique_id=2053744234]
-position = Vector2(12, 1)
-
 [node name="Head" type="Sprite2D" parent="Visual" unique_id=411200426]
 position = Vector2(3, -32)
 texture = ExtResource("18_c0821")
@@ -1314,15 +1308,6 @@ metadata/_edit_lock_ = true
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
 shape = SubResource("RectangleShape2D_a2yjh")
 
-[node name="BallInteractionDetector" type="Area2D" parent="Colliders" unique_id=405457032]
-collision_layer = 0
-collision_mask = 2
-monitorable = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Colliders/BallInteractionDetector" unique_id=1365573373]
-shape = SubResource("RectangleShape2D_sgsyk")
-debug_color = Color(1, 1, 0, 0.29803923)
-
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0
 collision_mask = 4
@@ -1332,6 +1317,9 @@ player = NodePath("..")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PassTargetDetector" unique_id=259109016]
 polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
+
+[node name="BallAnchor" type="Marker2D" parent="." unique_id=2053744234]
+position = Vector2(12, 1)
 
 [node name="BallReceiverArea" type="Area2D" parent="." unique_id=979579271]
 collision_layer = 0
@@ -1344,8 +1332,6 @@ shape = SubResource("RectangleShape2D_qbh5u")
 
 [connection signal="target_detected" from="Colliders/HitBox" to="." method="_on_hit_box_target_detected"]
 [connection signal="hurt_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hurt_received"]
-[connection signal="body_entered" from="Colliders/BallInteractionDetector" to="Colliders/BallInteractionDetector" method="_on_body_entered"]
-[connection signal="body_exited" from="Colliders/BallInteractionDetector" to="Colliders/BallInteractionDetector" method="_on_body_exited"]
 [connection signal="area_entered" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_entered"]
 [connection signal="area_exited" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_exited"]
 

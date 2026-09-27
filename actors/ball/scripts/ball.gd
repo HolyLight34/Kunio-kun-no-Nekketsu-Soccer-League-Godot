@@ -42,7 +42,6 @@ func can_be_received() -> bool:
 func _ready() -> void:
 	state_machine.init(self)
 	tick_component.tick_triggered.connect(_on_logic_tick)
-	#ball_control_area.player_detected.connect(_on_player_detected)
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
 	)
@@ -66,11 +65,13 @@ func is_stationary_flick_active() -> bool:
 func receive_ground_pickup(player: Player) -> void:
 	carrier = player
 	state_machine.change_state(
-		BallState.State.GRIYND_CARRY
+		BallState.State.GROUND_CARRY
 	)
 var _receiver_candidates: Array[Player] = []
 
-
+func receive_air_control(player: Player) -> void:
+	carrier = player
+	state_machine.change_state(BallState.State.AIR_CONTROL)
 func register_receiver(player: Player) -> void:
 	if player in _receiver_candidates:
 		return
@@ -101,10 +102,6 @@ func get_collision_height() -> int:
 	return COLLISION_HEIGHT
 func get_z_height() -> float:
 	return ball_z_movement.get_z_height()
-func receive_chest_control(player: Player) -> void:
-	carrier = player
-	state_machine.change_state(BallState.State.AIR_CONTORL)
-	pass
 func release_from_carrier() -> void:
 	if carrier == null:
 		return

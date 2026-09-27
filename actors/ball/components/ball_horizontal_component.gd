@@ -170,6 +170,8 @@ func get_horizontal_position() -> Vector2:
 		_from_raw(horizontal_position_raw.x),
 		_from_raw(horizontal_position_raw.y)
 	)
+func set_y_position(value: float) -> void:
+	horizontal_position_raw.y = FixedPoint.to_raw(value)
 func set_horizontal_velocity(value: Vector2) -> void:
 	horizontal_velocity_raw = Vector2i(
 		_to_raw(value.x),

@@ -3,10 +3,9 @@ class_name BallState
 extends EntityState # 继承自你的通用 State
 enum State {
 	FREE,
-	GRIYND_CARRY,
+	GROUND_CARRY,
 	SHOT,
-	AIR_CONTORL,
-	STATIONARY_FLICK,
+	AIR_CONTROL,
 } 
 
 @export var state: State # 当前状态设置

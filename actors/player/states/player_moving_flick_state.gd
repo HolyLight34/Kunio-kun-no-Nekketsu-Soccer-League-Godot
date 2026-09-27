@@ -3,7 +3,7 @@ var flick_executed: bool = false
 
 func enter(_data) -> void:
 	flick_executed = false
-	#player.ball_interaction_detector.disable()
+	player.ball_receiver_area.disable()
 	player.player_horizontal_movement.stop_immediately()
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished
@@ -20,7 +20,6 @@ func on_moving_flick_contact() -> void:
 		return
 	ball.receive_moving_flick(player)
 func exit() -> void:
-	#player.ball_interaction_detector.enable()
 	pass
 
 
