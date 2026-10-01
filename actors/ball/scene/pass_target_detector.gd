@@ -5,12 +5,25 @@
 ## - 从当前搜索区域内寻找最佳接球队友。
 ## - 按 FC 固定球队成员顺序进行候选比较。
 ## - 根据 FC 距离评分规则选择目标。
-## - 没有合适队友时，根据足球位置、搜索方向和角色朝向
-##   生成 FC 默认传球目标。
+## - 没有合适队友时，根据搜索方向和角色朝向
+##   计算 FC 默认传球目标偏移。
 ##
-## 本组件只负责决定“传到哪里”。
-## 足球最终如何根据目标位置生成传球轨迹，
-## 由 Ball / PassTrajectoryCalculator 负责。
+## 本组件只负责回答：
+##
+##     “有没有合适的传球目标？”
+##
+## 以及：
+##
+##     “没有目标时，FC 默认目标偏移是多少？”
+##
+## 本组件不负责：
+## - 构造 PassData / HitInfo。
+## - 获取足球位置。
+## - 将偏移转换成最终世界目标位置。
+## - 计算足球传球速度或轨迹。
+##
+## PassData 由上层 Player 构造。
+## Ball 在真正收到 PASS Hit 时，根据自己的当前位置解析 PassData。
 class_name PassTargetDetector
 extends Area2D
 
@@ -92,8 +105,8 @@ const DISTANCE_CORRECTION_LOW: Array[int] = [
 ## CollisionPolygon2D 默认朝右，因此直接使用方向角度
 ## 旋转整个搜索区域。
 ##
-## 这里只改变真实的搜索方向。
-## 角色 facing 不会影响搜索区域方向。
+## 这里只改变真实搜索方向。
+## 角色 facing 不影响搜索区域方向。
 func set_search_direction(direction: Vector2) -> void:
 	if direction == Vector2.ZERO:
 		return
@@ -101,27 +114,37 @@ func set_search_direction(direction: Vector2) -> void:
 	rotation = direction.angle()
 
 
-## 获取当前传球的最终目标位置。
+## 获取当前搜索区域中的最佳传球目标。
 ##
-## 找到合适的接球队友：
-##     返回该队友的逻辑位置。
+## 找到目标：
+##     返回 Player。
 ##
-## 没有找到接球队友：
-##     根据足球当前位置生成 FC 默认目标位置。
+## 没有目标：
+##     返回 null。
 ##
-## ball_position：
-##     足球当前逻辑 XY 位置。
-func get_pass_target_position(
-	ball_position: Vector2
-) -> Vector2:
-	var target := _find_best_pass_target()
+## 本方法只负责目标搜索，
+## 不负责生成 PassData。
+func find_best_target() -> Player:
+	return _find_best_pass_target()
 
-	if target != null:
-		return target.get_logical_position()
 
-	return _calculate_default_target_position(
-		ball_position
-	)
+## 获取无人接应时的 FC 默认目标偏移。
+##
+## 返回值表示：
+##
+##     最终目标位置 - 足球命中时的整数位置
+##
+## 例如：
+##
+##     (96, 0)
+##     (-96, 0)
+##     (67, -67)
+##     (-67, 67)
+##
+## 本方法不需要足球位置。
+## 最终目标位置由 Ball 在收到 PASS Hit 时计算。
+func get_default_target_offset() -> Vector2i:
+	return _calculate_default_target_offset()
 
 
 # ==============================================================================
@@ -130,7 +153,8 @@ func get_pass_target_position(
 
 ## 从当前搜索区域内选择最佳接球队友。
 func _find_best_pass_target() -> Player:
-	# Area2D 只负责告诉我们当前有哪些对象处于搜索区域。
+	# Area2D 只负责告诉我们：
+	# 当前有哪些 Player 位于搜索区域。
 	#
 	# 最终扫描顺序不能依赖 get_overlapping_bodies()，
 	# 因为 FC 使用固定球队成员顺序。
@@ -182,40 +206,20 @@ func _find_best_pass_target() -> Player:
 
 
 # ==============================================================================
-# 默认目标
+# 默认目标偏移
 # ==============================================================================
 
-## 计算无人接应时的 FC 默认目标位置。
+## 计算无人接应时，相对于足球位置的 FC 默认目标偏移。
 ##
-## 默认目标：
-##
-##     足球整数位置 + 默认目标偏移
-##
-## 注意：
-## 先将足球位置转换成 FC 整数坐标，
-## 再加默认偏移。
-func _calculate_default_target_position(
-	ball_position: Vector2
-) -> Vector2:
-	var ball_position_integer := FixedPoint.vector_to_integer(
-		ball_position
-	)
-
-	var default_offset := _calculate_default_target_offset()
-
-	return Vector2(
-		ball_position_integer
-		+ default_offset
-	)
-
-
-## 计算无人接应时，相对于足球位置的默认目标偏移。
+## 本方法只计算偏移，不需要知道足球位置。
 ##
 ## 通常根据当前搜索方向生成。
 ##
 ## FC 特殊规则：
+##
 ## 当搜索方向为纯上 / 纯下时，
-## 默认目标的 X 方向由角色 facing 决定。
+## 搜索区域仍然保持纯上 / 纯下，
+## 但默认目标的 X 方向由角色 facing 决定。
 func _calculate_default_target_offset() -> Vector2i:
 	var search_direction := _get_search_direction()
 
@@ -231,17 +235,15 @@ func _calculate_default_target_offset() -> Vector2i:
 	# 纯上 / 纯下
 	# --------------------------------------------------------------------------
 	#
-	# 搜索区域本身仍然保持正上 / 正下。
+	# 搜索方向：
+#
+	#     UP
 	#
-	# 只有生成默认目标时，
-	# X 方向才使用角色 facing。
+	# facing：
 	#
-	# 例如：
+	#     RIGHT
 	#
-	# 搜索方向：UP
-	# facing：RIGHT
-	#
-	# 最终默认偏移：
+	# 默认目标偏移：
 	#
 	#     (67, -67)
 	if is_zero_approx(search_direction.x):
@@ -267,6 +269,7 @@ func _calculate_default_target_offset() -> Vector2i:
 	# --------------------------------------------------------------------------
 	#
 	# 包括：
+	#
 	# - 原本就是斜方向
 	# - 纯上 / 纯下根据 facing 补出的斜方向
 	var default_direction := Vector2(
@@ -274,11 +277,9 @@ func _calculate_default_target_offset() -> Vector2i:
 		direction_y
 	).normalized()
 
-	# FC 这里使用截断。
+	# FC 使用截断。
 	#
-	# 例如：
-	#
-	#     96 * 0.707106...
+	# 96 * 0.707106...
 	#     = 67.88...
 	#
 	# int()

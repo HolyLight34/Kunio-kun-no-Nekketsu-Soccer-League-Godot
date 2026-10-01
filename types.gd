@@ -5,13 +5,16 @@ enum HurtType {
 	NORMAL,
 	HEAVY,
 }
-
-enum AttackType {
-	KICK,
+enum HitType {
 	PASS,
+	KICK,
+	STRIKE,
+	TACKLE,
+	BALL_ATTACK,
+}
+enum AttackType {
 	SLIDE,
 	ELBOW,
-	BALL_HIT,
 }
 enum Team {
 	TEAM_1,

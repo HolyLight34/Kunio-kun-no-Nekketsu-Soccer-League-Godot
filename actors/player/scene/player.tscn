@@ -9,7 +9,6 @@
 [ext_resource type="Script" uid="uid://blvvckdk3cqyi" path="res://actors/player/states/player_jump_state.gd" id="10_vwqy1"]
 [ext_resource type="PackedScene" uid="uid://dl8wemvojp0xc" path="res://actors/player/components/input_component/input_component.tscn" id="11_k3ida"]
 [ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://actors/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
-[ext_resource type="Script" uid="uid://cy2h7xysgil0u" path="res://actors/player/states/player_hurt_state.gd" id="13_v0pxu"]
 [ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://actors/player/states/player_kick_state.gd" id="14_ptkv0"]
 [ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_stationary_flick_state.gd" id="15_tg3sl"]
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
@@ -23,12 +22,13 @@
 [ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://actors/player/assets/head.png" id="18_c0821"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://shared/combat/hurt_box.tscn" id="18_v0pxu"]
 [ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://actors/player/assets/body.png" id="19_864cw"]
+[ext_resource type="Script" uid="uid://bis2p6dof0fnc" path="res://actors/player/states/player_rebond_state.gd" id="19_a2yjh"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="20_c0821"]
 [ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
+[ext_resource type="Script" uid="uid://cc6oarany78mb" path="res://actors/player/states/player_knockback_state.gd" id="20_t3a7u"]
 [ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
 [ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://shared/timing/tick_component.gd" id="24_c8mko"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="24_h2l6i"]
-[ext_resource type="Script" uid="uid://dvuklebdrx5fo" path="res://actors/player/components/attack_resolver.gd" id="24_pj4mo"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
 [ext_resource type="Script" uid="uid://bi7xhqr67b83e" path="res://actors/player/scripts/ball_receiver_area.gd" id="33_a2yjh"]
@@ -149,22 +149,10 @@ tracks/8/keys = {
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("Colliders/HitBox/CollisionShape2D:disabled")
+tracks/9/path = NodePath("BallAnchor:position")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("BallAnchor:position")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -379,17 +367,19 @@ tracks/4/keys = {
 "update": 0,
 "values": [Vector2(22, 12)]
 }
-tracks/5/type = "value"
+tracks/5/type = "method"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Colliders/HitBox/CollisionShape2D:disabled")
+tracks/5/path = NodePath(".")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_26oqr"]
@@ -525,6 +515,20 @@ tracks/5/keys = {
 "update": 0,
 "values": [Vector2(12, 1)]
 }
+tracks/6/type = "method"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath(".")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"disable_hit"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_0i15t"]
 resource_name = "jump"
@@ -622,26 +626,28 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Colliders/HitBox/CollisionShape2D:disabled")
+tracks/4/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0.19999999),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
 "times": PackedFloat32Array(0.20000002),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(28, 8)]
+}
+tracks/5/type = "method"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_sj8lg"]
@@ -848,38 +854,40 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Colliders/HitBox/CollisionShape2D:disabled")
+tracks/3/path = NodePath("Colliders/HitBox/CollisionShape2D:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0.20000002),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"update": 0,
+"values": [Vector2(4, 0)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Colliders/HitBox/CollisionShape2D:position")
+tracks/4/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0.20000002),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(4, 0)]
+"values": [Vector2(24, 8)]
 }
-tracks/5/type = "value"
+tracks/5/type = "method"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
+tracks/5/path = NodePath(".")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0.20000002),
+"times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(24, 8)]
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_0e48y"]
@@ -1029,17 +1037,19 @@ tracks/4/keys = {
 "update": 0,
 "values": [Vector2(16, 8)]
 }
-tracks/5/type = "value"
+tracks/5/type = "method"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Colliders/HitBox/CollisionShape2D:disabled")
+tracks/5/path = NodePath(".")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_kdubu"]
@@ -1185,11 +1195,6 @@ state = 1
 anim_name = &"walk"
 x_decel_rate = 0.75
 
-[node name="Hurt" type="Node" parent="Components/StateMachine" unique_id=559331258]
-script = ExtResource("13_v0pxu")
-state = 5
-facing_mode = 1
-
 [node name="Land" type="Node" parent="Components/StateMachine" unique_id=760253809]
 script = ExtResource("17_ptkv0")
 state = 6
@@ -1240,6 +1245,14 @@ anim_name = &"moving_flick"
 script = ExtResource("18_6npms")
 state = 14
 
+[node name="Rebond" type="Node" parent="Components/StateMachine" unique_id=178303586]
+script = ExtResource("19_a2yjh")
+state = 15
+
+[node name="Knockback" type="Node" parent="Components/StateMachine" unique_id=1674390075]
+script = ExtResource("20_t3a7u")
+state = 16
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -1266,10 +1279,6 @@ position_target = NodePath("../..")
 visual_pivot = NodePath("../../Visual")
 shadow_sprite = NodePath("../../Shadow")
 
-[node name="AttackResolver" type="Node" parent="Components" unique_id=978016812 node_paths=PackedStringArray("attacker")]
-script = ExtResource("24_pj4mo")
-attacker = NodePath("../..")
-
 [node name="Visual" type="Node2D" parent="." unique_id=1064463610]
 
 [node name="Head" type="Sprite2D" parent="Visual" unique_id=411200426]
@@ -1295,7 +1304,6 @@ metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
 shape = SubResource("RectangleShape2D_6npms")
-disabled = true
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
 collision_layer = 1
@@ -1330,8 +1338,7 @@ script = ExtResource("33_a2yjh")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BallReceiverArea" unique_id=1617378699]
 shape = SubResource("RectangleShape2D_qbh5u")
 
-[connection signal="target_detected" from="Colliders/HitBox" to="." method="_on_hit_box_target_detected"]
-[connection signal="hurt_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hurt_received"]
+[connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
 [connection signal="area_entered" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_entered"]
 [connection signal="area_exited" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_exited"]
 

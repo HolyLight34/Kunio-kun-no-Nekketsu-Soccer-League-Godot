@@ -1,7 +1,7 @@
 extends BallState
 
 func enter(_data) -> void:
-	#ball.ball_interactable_area.enable()
+	ball.set_receivable_detection_enabled(true)
 	anim.play(anim_name)
 	ball.ball_z_movement.resume_z_motion()
 	if ball.stationary_flick_active:
@@ -17,6 +17,6 @@ func physics_tick() -> void:
 func process(_delta: float) -> void:
 	pass
 
-func physics_process(delta: float) -> void:
+func physics_process(_delta: float) -> void:
 	
 	pass

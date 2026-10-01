@@ -17,6 +17,8 @@ enum State {
 	CHEST_TRAP,
 	MOVING_FLICK,
 	BICYCLE_KICK,
+	REBOUND,
+	KNOCKBACK,
 } 
 @export_group("State Info")
 @export var state: State
@@ -45,20 +47,20 @@ var player: Player:
 		return actor as Player
 # 默认所有状态都允许转身
 
-func _prepare_hit_box(
-	attack_type: Types.AttackType,
-	attack_direction: Vector2,
-	damage: float,
-	horizontal_speed: float,
-	z_velocity: float
-) -> void:
-	var hit_info := HitInfo.new()
-
-	hit_info.attack_type = attack_type
-	hit_info.power = player.endurance
-	hit_info.damage = damage
-	hit_info.attack_direction = attack_direction
-	hit_info.horizontal_speed = horizontal_speed
-	hit_info.z_velocity = z_velocity
-
-	player.hit_box.hit_info = hit_info
+#func _prepare_hit_box(
+	#attack_type: Types.AttackType,
+	#attack_direction: Vector2,
+	#damage: float,
+	#horizontal_speed: float,
+	#z_velocity: float
+#) -> void:
+	#var hit_info := HitInfo.new()
+#
+	#hit_info.attack_type = attack_type
+	#hit_info.power = player.endurance
+	#hit_info.damage = damage
+	#hit_info.attack_direction = attack_direction
+	#hit_info.horizontal_speed = horizontal_speed
+	#hit_info.z_velocity = z_velocity
+#
+	#player.hit_box.hit_info = hit_info

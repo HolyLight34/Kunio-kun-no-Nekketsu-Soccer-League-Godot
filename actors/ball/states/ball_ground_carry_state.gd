@@ -27,4 +27,3 @@ func physics_process(_delta: float) -> void:
 	)
 	if ball.carrier.is_in_air():
 		ball.ball_z_movement.set_z_height(ball.carrier.get_z_height())
-	#print("player:",ball.carrier.get_z_height(),"ball:",ball.get_z_height())

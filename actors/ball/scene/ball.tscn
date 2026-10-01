@@ -285,7 +285,7 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BallInteractableArea" unique_id=755554628]
 shape = SubResource("RectangleShape2D_qbh5u")
 
-[connection signal="target_detected" from="HitBox" to="." method="_on_hit_box_target_detected"]
+[connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
 [connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]
 
 [editable path="HitBox"]
