@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="9_m05fq"]
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://shared/combat/hurt_box.tscn" id="10_d7d46"]
 [ext_resource type="Script" uid="uid://ddgryvlc3eucy" path="res://shared/timing/tick_timer_component.gd" id="11_aduox"]
+[ext_resource type="Shader" uid="uid://cmy87af5bto26" path="res://actors/ball/assets/ball_palette.gdshader" id="11_au374"]
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://actors/ball/components/ball_z_movement.gd" id="11_begx4"]
 [ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://shared/timing/tick_component.gd" id="11_d7d46"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
@@ -178,6 +179,11 @@ size = Vector2(16, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ef6ou"]
 size = Vector2(16, 12)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l8wax"]
+shader = ExtResource("11_au374")
+shader_parameter/from_color = Color(0.9255, 0.9333, 0.9255, 1)
+shader_parameter/to_color = Color(0.9255, 0.4157, 0.3922, 1)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 12)
 
@@ -240,9 +246,10 @@ shape = SubResource("RectangleShape2D_ef6ou")
 [node name="Visual" type="Node2D" parent="." unique_id=1616589881]
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual" unique_id=1648899846]
+material = SubResource("ShaderMaterial_l8wax")
 position = Vector2(0, -8)
 texture = ExtResource("8_iwjb2")
-hframes = 4
+hframes = 2
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=260881472]
 

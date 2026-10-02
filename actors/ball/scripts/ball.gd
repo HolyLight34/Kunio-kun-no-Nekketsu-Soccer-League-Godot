@@ -19,6 +19,7 @@ const COLLISION_HEIGHT: int = 16
 # ==============================================================================
 # 3. 节点引用
 # ==============================================================================
+@onready var sprite_2d: Sprite2D = $Visual/Sprite2D
 
 @onready var hit_box: HitBox = $HitBox
 
@@ -71,6 +72,10 @@ var carrier: Player = null:
 # ==============================================================================
 
 func _ready() -> void:
+	#sprite_2d.material.set_shader_parameter(
+		#"to_color",
+		#Color.BLUE
+	#)
 	state_machine.init(self)
 
 	tick_component.tick_triggered.connect(
