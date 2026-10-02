@@ -7,14 +7,14 @@ extends CharacterBody2D
 # ==============================================================================
 
 signal possession_changed(new_carrier: Player)
-
-
+ 
 # ==============================================================================
 # 2. 常量
 # ==============================================================================
 
 const COLLISION_HEIGHT: int = 16
-
+const LEFT_GOAL_TARGET := Vector2(64, 192)
+const RIGHT_GOAL_TARGET := Vector2(832, 192)
 
 # ==============================================================================
 # 3. 节点引用
@@ -111,6 +111,13 @@ func _on_logic_tick() -> void:
 func get_logical_position() -> Vector2:
 	return ball_horizontal_movement.get_horizontal_position()
 
+func get_goal_target_position(
+	flight_direction: Vector2
+) -> Vector2:
+	if flight_direction.x < 0.0:
+		return LEFT_GOAL_TARGET
+
+	return RIGHT_GOAL_TARGET
 
 func get_z_height() -> float:
 	return ball_z_movement.get_z_height()

@@ -4,11 +4,19 @@ func enter(data: KickData) -> void:
 	var attack_direction: Vector2 = data.direction
 	var power: int = data.endurance + 10
 	ball.set_receivable_detection_enabled(false)
+	var goal_target := ball.get_goal_target_position(
+		attack_direction
+)
+
+	var shot_direction := FCDirectionCalculator.calculate(
+		ball.get_logical_position(),
+		goal_target
+)
 	if not ball.is_in_air():
 		ball.ball_z_movement.set_z_height(8)
 
 	ball.ball_horizontal_movement.set_horizontal_velocity(
-		attack_direction * 8
+		shot_direction * 8
 	)
 	
 	ball.prepare_ball_attack_hit(attack_direction,power,5)
