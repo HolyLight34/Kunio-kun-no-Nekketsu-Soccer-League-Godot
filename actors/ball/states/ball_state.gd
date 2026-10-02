@@ -6,6 +6,7 @@ enum State {
 	GROUND_CARRY,
 	SHOT,
 	AIR_CONTROL,
+	JUGGLE,
 } 
 
 @export var state: State # 当前状态设置

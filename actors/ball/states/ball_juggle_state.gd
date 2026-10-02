@@ -1,8 +1,10 @@
 extends BallState
 
 
-const TARGET_X_OFFSET := 10.0
-const X_CORRECTION_SPEED := 0.5
+const TARGET_X_OFFSET := 8.0
+const X_CORRECTION_SPEED := 0.1875
+const INITIAL_Z_VELOCITY := 3.0
+const JUGGLE_DURATION_TICKS := 16
 
 
 var player: Player
@@ -12,12 +14,19 @@ func enter(_data) -> void:
 	player = ball.carrier
 
 	ball.ball_z_movement.launch(
-		player.get_z_velocity() + 0.5
+		INITIAL_Z_VELOCITY
 	)
 
-	await ball.ball_z_movement.landed
+	ball.set_receivable_detection_enabled(false)
 
-	change_state(State.GROUND_CARRY)
+	ball.tick_timer_component.start_timer(
+		"juggle",
+		JUGGLE_DURATION_TICKS
+	)
+
+	await ball.tick_timer_component.timer_finished
+
+	change_state(State.FREE)
 
 
 func physics_tick() -> void:
@@ -28,7 +37,7 @@ func physics_tick() -> void:
 	# --------------------------------------------------------------------------
 	# X 目标位置
 	#
-	# 足球目标位于角色当前面朝方向前方 10 像素。
+	# 颠球时足球目标位于角色面朝方向前方 8 像素。
 	# --------------------------------------------------------------------------
 
 	var target_x := (
@@ -47,16 +56,8 @@ func physics_tick() -> void:
 	# --------------------------------------------------------------------------
 	# X 速度
 	#
-	# 基础速度继承角色当前 X 速度。
-	#
-	# 足球位于目标左侧：
-	#     +0.5
-	#
-	# 足球位于目标右侧：
-	#     -0.5
-	#
-	# 整数 X 已经与目标一致：
-	#     不进行额外修正。
+	# 每个逻辑 Tick 重新读取角色当前 X 速度，
+	# 然后根据足球与目标位置的关系修正 ±0.1875。
 	# --------------------------------------------------------------------------
 
 	var x_velocity := player_velocity.x
@@ -75,11 +76,11 @@ func physics_tick() -> void:
 	)
 
 	# --------------------------------------------------------------------------
-	# Y 位置
+	# Y
 	#
-	# 足球始终同步：
+	# 与其他角色控球状态相同：
 	#
-	#     Player Y + 1
+	#     Ball Y = Player Y + 1
 	# --------------------------------------------------------------------------
 
 	ball.ball_horizontal_movement.set_y_position(

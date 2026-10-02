@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://shared/combat/hurt_box.tscn" id="18_v0pxu"]
 [ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://actors/player/assets/body.png" id="19_864cw"]
 [ext_resource type="Script" uid="uid://bis2p6dof0fnc" path="res://actors/player/states/player_rebond_state.gd" id="19_a2yjh"]
+[ext_resource type="Script" uid="uid://c7egvgnf4b3l3" path="res://actors/player/states/player_juggle_state.gd" id="20_a2yjh"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="20_c0821"]
 [ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
 [ext_resource type="Script" uid="uid://cc6oarany78mb" path="res://actors/player/states/player_knockback_state.gd" id="20_t3a7u"]
@@ -145,18 +146,6 @@ tracks/8/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(22, 12)]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("BallAnchor:position")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(12, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_6npms"]
@@ -503,31 +492,60 @@ tracks/4/keys = {
 "update": 1,
 "values": [true]
 }
-tracks/5/type = "value"
+tracks/5/type = "method"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("BallAnchor:position")
-tracks/5/interp = 0
+tracks/5/path = NodePath(".")
+tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(12, 1)]
-}
-tracks/6/type = "method"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath(".")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
 "method": &"disable_hit"
 }]
+}
+
+[sub_resource type="Animation" id="Animation_a2yjh"]
+resource_name = "juggle"
+length = 0.2000016770975664
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Body:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [22]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Head:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.033333335),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Head:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.06666667),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -32)]
 }
 
 [sub_resource type="Animation" id="Animation_0i15t"]
@@ -768,18 +786,6 @@ tracks/3/keys = {
 "args": [],
 "method": &"on_moving_flick_contact"
 }]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("BallAnchor:position")
-tracks/4/interp = 0
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0.15, 0.35),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(-12, 1), Vector2(12, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_wwmeh"]
@@ -1106,6 +1112,7 @@ _data = {
 &"heavy_hurt_front": SubResource("Animation_26oqr"),
 &"hurt_back": SubResource("Animation_x2bss"),
 &"idle": SubResource("Animation_q6r6c"),
+&"juggle": SubResource("Animation_a2yjh"),
 &"jump": SubResource("Animation_0i15t"),
 &"kick": SubResource("Animation_vbpfx"),
 &"land": SubResource("Animation_sj8lg"),
@@ -1118,11 +1125,11 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6npms"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2yjh"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2yjh"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t3a7u"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1253,6 +1260,11 @@ state = 15
 script = ExtResource("20_t3a7u")
 state = 16
 
+[node name="Juggle" type="Node" parent="Components/StateMachine" unique_id=881898648]
+script = ExtResource("20_a2yjh")
+state = 17
+anim_name = &"juggle"
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -1303,7 +1315,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_6npms")
+shape = SubResource("RectangleShape2D_a2yjh")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
 collision_layer = 1
@@ -1314,7 +1326,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_a2yjh")
+shape = SubResource("RectangleShape2D_t3a7u")
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0
@@ -1325,9 +1337,6 @@ player = NodePath("..")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PassTargetDetector" unique_id=259109016]
 polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
-
-[node name="BallAnchor" type="Marker2D" parent="." unique_id=2053744234]
-position = Vector2(12, 1)
 
 [node name="BallReceiverArea" type="Area2D" parent="." unique_id=979579271]
 collision_layer = 0

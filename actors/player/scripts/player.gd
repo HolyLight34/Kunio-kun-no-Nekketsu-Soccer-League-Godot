@@ -60,7 +60,6 @@ const COLLISION_HEIGHT: int = 32
 @onready var colliders: Node2D = $Colliders
 @onready var hit_box: HitBox = $Colliders/HitBox
 
-@onready var ball_anchor: Marker2D = $BallAnchor
 @onready var endurance_label: Label = $Label
 
 @onready var pass_target_detector: PassTargetDetector = (
@@ -91,12 +90,6 @@ var facing_direction := Vector2.RIGHT:
 		pass_target_detector.set_search_direction(
 			facing_direction
 		)
-
-		if value.x != 0:
-			ball_anchor.position.x = (
-				absf(ball_anchor.position.x)
-				* signf(value.x)
-			)
 
 
 # ==============================================================================
@@ -221,7 +214,8 @@ func set_facing_direction(
 	facing_direction = direction
 	_apply_facing()
 
-
+func get_facing_direction() -> Vector2:
+	return facing_direction
 func _update_facing(
 	move_input_x: float
 ) -> void:
@@ -284,28 +278,6 @@ func _face_ball() -> void:
 		set_facing_direction(
 			Vector2.RIGHT
 		)
-
-
-# ==============================================================================
-# 9. 足球控制锚点
-# ==============================================================================
-
-func get_ball_anchor_position() -> Vector2:
-	return ball_anchor.global_position
-
-
-func set_ball_anchor_offset(
-	offset: Vector2
-) -> void:
-	ball_anchor.position = offset
-
-
-func get_ball_anchor_offset() -> Vector2:
-	var offset := ball_anchor.position
-
-	offset.x *= facing_direction.x
-
-	return offset
 
 
 # ==============================================================================
@@ -380,7 +352,13 @@ func _process_ball_contact() -> void:
 	if is_in_air():
 		ball.receive_air_control(self)
 		return
-
+	if is_running():
+		if ball.is_in_air():
+			ball.receive_juggle(self)
+			state_machine.change_state(
+				PlayerState.State.JUGGLE
+			)
+		return
 	# 地面胸停。
 	state_machine.change_state(
 		PlayerState.State.CHEST_TRAP

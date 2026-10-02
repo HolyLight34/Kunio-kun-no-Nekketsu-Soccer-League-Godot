@@ -15,6 +15,7 @@ signal possession_changed(new_carrier: Player)
 const COLLISION_HEIGHT: int = 16
 const LEFT_GOAL_TARGET := Vector2(64, 192)
 const RIGHT_GOAL_TARGET := Vector2(832, 192)
+const PLAYER_CONTROL_Y_OFFSET := 1.0
 
 # ==============================================================================
 # 3. 节点引用
@@ -157,7 +158,13 @@ func receive_air_control(player: Player) -> void:
 	state_machine.change_state(
 		BallState.State.AIR_CONTROL
 	)
-
+	
+	
+func receive_juggle(player: Player) -> void:
+	carrier = player
+	state_machine.change_state(
+		BallState.State.JUGGLE
+	)
 
 func release_from_carrier() -> void:
 	if carrier == null:

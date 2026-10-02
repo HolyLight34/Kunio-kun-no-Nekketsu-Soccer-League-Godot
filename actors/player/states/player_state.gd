@@ -19,6 +19,7 @@ enum State {
 	BICYCLE_KICK,
 	REBOUND,
 	KNOCKBACK,
+	JUGGLE,
 } 
 @export_group("State Info")
 @export var state: State
