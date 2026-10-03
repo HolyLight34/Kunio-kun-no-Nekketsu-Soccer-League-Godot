@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://3raieqvx5gc4"]
+
+[ext_resource type="Script" uid="uid://pmkdbng71urk" path="res://actors/player/scripts/player_composite_sprite.gd" id="1_ayxlt"]
+[ext_resource type="Script" uid="uid://cwuuta4dibg7n" path="res://actors/player/scripts/player_composite_frame.gd" id="2_ievdw"]
+[ext_resource type="Script" uid="uid://dw8w2spexxorx" path="res://actors/player/scripts/player_composite_sprite_frames.gd" id="3_gy56w"]
+[ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://actors/player/assets/head.png" id="4_gt3h0"]
+[ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://actors/player/assets/body.png" id="5_0lh8o"]
+
+[sub_resource type="Resource" id="Resource_tbfq4"]
+script = ExtResource("2_ievdw")
+head_frame = 1
+head_position = Vector2i(3, -32)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_s3n3v"]
+script = ExtResource("2_ievdw")
+head_frame = 3
+head_position = Vector2i(7, -31)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_7f3w5"]
+script = ExtResource("3_gy56w")
+frames = Array[ExtResource("2_ievdw")]([SubResource("Resource_tbfq4"), SubResource("Resource_s3n3v")])
+metadata/_custom_type_script = "uid://dw8w2spexxorx"
+
+[node name="PlayerCompositeSprite" type="Node2D" unique_id=487019932]
+script = ExtResource("1_ayxlt")
+sprite_frames = SubResource("Resource_7f3w5")
+frame = 1
+
+[node name="Head" type="Sprite2D" parent="." unique_id=817049740]
+position = Vector2(7, -31)
+texture = ExtResource("4_gt3h0")
+hframes = 4
+frame = 3
+
+[node name="Body" type="Sprite2D" parent="." unique_id=1287572829]
+position = Vector2(0, -16)
+texture = ExtResource("5_0lh8o")
+hframes = 4
+vframes = 8
