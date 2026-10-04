@@ -5,23 +5,8 @@ extends Node
 signal timer_finished(timer_name: StringName)
 
 
-@export var tick_component: TickComponent
-
-
 # timer_name -> 剩余 Tick
 var _timers: Dictionary[StringName, int] = {}
-
-
-func _ready() -> void:
-	if tick_component == null:
-		push_error(
-			"TickTimerComponent: tick_component 未设置"
-		)
-		return
-
-	tick_component.tick_triggered.connect(
-		_on_tick_triggered
-	)
 
 
 # ==============================================================================
@@ -72,7 +57,7 @@ func get_remaining_ticks(
 # Tick
 # ==============================================================================
 
-func _on_tick_triggered() -> void:
+func logic_tick() -> void:
 	if _timers.is_empty():
 		return
 

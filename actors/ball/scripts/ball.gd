@@ -26,7 +26,6 @@ const PLAYER_CONTROL_Y_OFFSET := 1.0
 
 @onready var state_machine: StateMachine = $StateMachine
 
-@onready var tick_component: TickComponent = $Components/TickComponent
 @onready var tick_timer_component: TickTimerComponent = $Components/TickTimerComponent
 
 @onready var ball_horizontal_movement: BallHorizontalMovement = (
@@ -79,9 +78,6 @@ func _ready() -> void:
 	#)
 	state_machine.init(self)
 
-	tick_component.tick_triggered.connect(
-		_on_logic_tick
-	)
 
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
@@ -96,12 +92,12 @@ func _ready() -> void:
 # 6. Logic Tick
 # ==============================================================================
 
-func _on_logic_tick() -> void:
+func logic_tick() -> void:
 	state_machine.physics_tick()
 
 	ball_z_movement.process_z_step()
 	ball_horizontal_movement.step_logic_tick()
-
+	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
 
 

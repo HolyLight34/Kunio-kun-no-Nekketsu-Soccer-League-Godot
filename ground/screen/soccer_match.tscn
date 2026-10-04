@@ -1,14 +1,15 @@
 [gd_scene format=4 uid="uid://1kfwe0wq2sfv"]
 
-[ext_resource type="Script" uid="uid://b6makxba3q3yt" path="res://ground/screen/match_stage.gd" id="1_c4uwv"]
-[ext_resource type="Texture2D" uid="uid://ceogm5epnxpyw" path="res://ground/assets/ground_surface.png" id="1_qwjm8"]
-[ext_resource type="Texture2D" uid="uid://ca3h7vuvg2280" path="res://ground/assets/boundary_line.png" id="2_u1350"]
-[ext_resource type="Texture2D" uid="uid://wng7jmh2ojjb" path="res://ground/assets/goal.png" id="3_3sqpy"]
-[ext_resource type="PackedScene" uid="uid://cd56s8raml18p" path="res://actors/player/scene/player.tscn" id="5_73vmh"]
-[ext_resource type="PackedScene" uid="uid://bjiv5srw37o2d" path="res://actors/ball/scene/ball.tscn" id="6_73vmh"]
+[ext_resource type="Script" uid="uid://b6makxba3q3yt" path="res://ground/screen/match_stage.gd" id="1_o3ya4"]
+[ext_resource type="Texture2D" uid="uid://ceogm5epnxpyw" path="res://ground/assets/ground_surface.png" id="2_wgvyc"]
+[ext_resource type="Texture2D" uid="uid://ca3h7vuvg2280" path="res://ground/assets/boundary_line.png" id="3_xnvpj"]
+[ext_resource type="Texture2D" uid="uid://wng7jmh2ojjb" path="res://ground/assets/goal.png" id="4_1j8wh"]
+[ext_resource type="PackedScene" uid="uid://cd56s8raml18p" path="res://actors/player/scene/player.tscn" id="5_mog0p"]
+[ext_resource type="PackedScene" uid="uid://bjiv5srw37o2d" path="res://actors/ball/scene/ball.tscn" id="6_ye5s7"]
+[ext_resource type="Script" uid="uid://ba87opn4waija" path="res://ground/screen/fc_logic_clock.gd" id="7_jk64h"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t5q6m"]
-texture = ExtResource("1_qwjm8")
+texture = ExtResource("2_wgvyc")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -20,7 +21,7 @@ texture = ExtResource("1_qwjm8")
 sources/0 = SubResource("TileSetAtlasSource_t5q6m")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_80nct"]
-texture = ExtResource("2_u1350")
+texture = ExtResource("3_xnvpj")
 0:0/0 = 0
 1:0/0 = 0
 2:0/0 = 0
@@ -158,7 +159,7 @@ texture = ExtResource("2_u1350")
 sources/0 = SubResource("TileSetAtlasSource_80nct")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7fp5k"]
-texture = ExtResource("3_3sqpy")
+texture = ExtResource("4_1j8wh")
 0:0/0 = 0
 1:0/0 = 0
 0:1/0 = 0
@@ -189,8 +190,8 @@ texture = ExtResource("3_3sqpy")
 [sub_resource type="TileSet" id="TileSet_cmi3i"]
 sources/0 = SubResource("TileSetAtlasSource_7fp5k")
 
-[node name="MatchStage" type="Node" unique_id=765779945 node_paths=PackedStringArray("ball")]
-script = ExtResource("1_c4uwv")
+[node name="SoccerMatch" type="Node" unique_id=765779945 node_paths=PackedStringArray("ball")]
+script = ExtResource("1_o3ya4")
 ball = NodePath("Ball")
 
 [node name="GroundSurface" type="TileMapLayer" parent="." unique_id=1583068592]
@@ -208,20 +209,20 @@ tile_map_data = PackedByteArray("AAAzAAYAAAAAAAAAAAAzAAcAAAAAAAEAAAAzAAgAAAAAAAI
 tile_set = SubResource("TileSet_cmi3i")
 metadata/_edit_lock_ = true
 
-[node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_73vmh")]
+[node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_mog0p")]
 position = Vector2(81, 17)
 
-[node name="Player5" parent="." unique_id=337035303 instance=ExtResource("5_73vmh")]
+[node name="Player5" parent="." unique_id=337035303 instance=ExtResource("5_mog0p")]
 position = Vector2(136, 214)
 player_id = 0
 
-[node name="Player2" parent="." unique_id=99073540 instance=ExtResource("5_73vmh")]
+[node name="Player2" parent="." unique_id=99073540 instance=ExtResource("5_mog0p")]
 position = Vector2(128, 112)
 team_id = 1
 player_id = 2
 endurance = 60
 
-[node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_73vmh")]
+[node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_ye5s7")]
 position = Vector2(49, 73)
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=1565397165]
@@ -235,3 +236,6 @@ position = Vector2(832, 192)
 
 [node name="Marker2D4" type="Marker2D" parent="." unique_id=1434873970]
 position = Vector2(960, 192)
+
+[node name="FCLogicClock" type="Node" parent="." unique_id=113677989]
+script = ExtResource("7_jk64h")

@@ -28,7 +28,6 @@
 [ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
 [ext_resource type="Script" uid="uid://cc6oarany78mb" path="res://actors/player/states/player_knockback_state.gd" id="20_t3a7u"]
 [ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
-[ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://shared/timing/tick_component.gd" id="24_c8mko"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
@@ -1209,11 +1208,11 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2yjh"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6npms"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_t3a7u"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2yjh"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1304,12 +1303,6 @@ state = 9
 facing_mode = 1
 anim_name = &"pass"
 
-[node name="ElbowStrike" type="Node" parent="Components/StateMachine" unique_id=850088266]
-script = ExtResource("15_wkl3h")
-state = 8
-facing_mode = 1
-anim_name = &"elbow_strike"
-
 [node name="Tackle" type="Node" parent="Components/StateMachine" unique_id=309175364]
 script = ExtResource("17_sgsyk")
 state = 10
@@ -1344,6 +1337,12 @@ state = 15
 script = ExtResource("20_t3a7u")
 state = 16
 
+[node name="ElbowStrike" type="Node" parent="Components/StateMachine" unique_id=850088266]
+script = ExtResource("15_wkl3h")
+state = 8
+facing_mode = 1
+anim_name = &"elbow_strike"
+
 [node name="Juggle" type="Node" parent="Components/StateMachine" unique_id=881898648]
 script = ExtResource("20_a2yjh")
 state = 17
@@ -1356,9 +1355,6 @@ player = NodePath("../..")
 
 [node name="PlayerZMovement" type="Node" parent="Components" unique_id=1092353589]
 script = ExtResource("20_pw4o6")
-
-[node name="TickComponent" type="Node" parent="Components" unique_id=934578256]
-script = ExtResource("24_c8mko")
 
 [node name="StepAnimationComponent" type="Node" parent="Components" unique_id=603595167 node_paths=PackedStringArray("anim_player")]
 script = ExtResource("25_h2l6i")
@@ -1399,7 +1395,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_a2yjh")
+shape = SubResource("RectangleShape2D_6npms")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
 collision_layer = 1
@@ -1410,7 +1406,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_t3a7u")
+shape = SubResource("RectangleShape2D_a2yjh")
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0

@@ -14,7 +14,6 @@
 [ext_resource type="Script" uid="uid://ddgryvlc3eucy" path="res://shared/timing/tick_timer_component.gd" id="11_aduox"]
 [ext_resource type="Shader" uid="uid://cmy87af5bto26" path="res://actors/ball/assets/ball_palette.gdshader" id="11_au374"]
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://actors/ball/components/ball_z_movement.gd" id="11_begx4"]
-[ext_resource type="Script" uid="uid://4wktwjowjk36" path="res://shared/timing/tick_component.gd" id="11_d7d46"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
 [ext_resource type="Script" uid="uid://djtmyon3il0b5" path="res://actors/ball/components/ball_horizontal_component.gd" id="14_1xsu1"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="14_h8xgc"]
@@ -266,9 +265,8 @@ hframes = 2
 [node name="BallHorizontalMovement" type="Node" parent="Components" unique_id=1995039209]
 script = ExtResource("14_1xsu1")
 
-[node name="TickTimerComponent" type="Node" parent="Components" unique_id=1976622560 node_paths=PackedStringArray("tick_component")]
+[node name="TickTimerComponent" type="Node" parent="Components" unique_id=1976622560]
 script = ExtResource("11_aduox")
-tick_component = NodePath("../TickComponent")
 
 [node name="EntityVisualController" type="Node" parent="Components" unique_id=1813904894 node_paths=PackedStringArray("horizontal_movement", "z_movement", "position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("14_h8xgc")
@@ -285,9 +283,6 @@ anim_player = NodePath("../../AnimationPlayer")
 [node name="BallZMovement" type="Node" parent="Components" unique_id=2046879588 node_paths=PackedStringArray("ball")]
 script = ExtResource("11_begx4")
 ball = NodePath("../..")
-
-[node name="TickComponent" type="Node" parent="Components" unique_id=1146282096]
-script = ExtResource("11_d7d46")
 
 [node name="BallHurtResolver" type="Node" parent="Components" unique_id=988805330]
 script = ExtResource("16_37of1")

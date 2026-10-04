@@ -48,9 +48,9 @@ const COLLISION_HEIGHT: int = 32
 	$Components/StepAnimationComponent
 )
 
-@onready var tick_component: TickComponent = (
-	$Components/TickComponent
-)
+#@onready var tick_component: TickComponent = (
+	#$Components/TickComponent
+#)
 
 @onready var entity_visual_controller: EntityVisualController = (
 	$Components/EntityVisualController
@@ -101,13 +101,13 @@ func _ready() -> void:
 
 	endurance_label.text = str(endurance)
 
-	tick_component.tick_triggered.connect(
-		_on_logic_tick
-	)
+	#tick_component.tick_triggered.connect(
+		#_on_logic_tick
+	#)
 
-	state_machine.tick_reset_requested.connect(
-		tick_component.reset_tick
-	)
+	#state_machine.tick_reset_requested.connect(
+		#tick_component.reset_tick
+	#)
 
 
 func _initialize_components() -> void:
@@ -146,7 +146,7 @@ func _physics_process(delta: float) -> void:
 # 6. Logic Tick
 # ==============================================================================
 
-func _on_logic_tick() -> void:
+func logic_tick() -> void:
 	state_machine.physics_tick()
 
 	step_animation_component.advance_tick()
