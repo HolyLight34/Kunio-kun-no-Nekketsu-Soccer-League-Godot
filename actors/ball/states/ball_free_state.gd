@@ -4,7 +4,6 @@ func enter(_data) -> void:
 	ball.release_from_carrier()
 	ball.set_receivable_detection_enabled(true)
 	anim.play(anim_name)
-	ball.ball_z_movement.resume_z_motion()
 	if ball.stationary_flick_active:
 		await ball.ball_z_movement.bounced
 		ball.stationary_flick_active = false

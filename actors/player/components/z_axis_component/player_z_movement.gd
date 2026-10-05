@@ -13,7 +13,7 @@ class_name PlayerZMovement
 @export var debug_print_every_step: bool = false
 
 var _debug_step_count: int = 0
-
+var GRAVITY = 0.5
 
 # ==============================================================================
 # 公共接口

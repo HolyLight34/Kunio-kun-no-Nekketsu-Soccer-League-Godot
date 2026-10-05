@@ -9,7 +9,7 @@ class_name EntityVisualController
 @export_group("Movement Components")
 
 @export var horizontal_movement: Node
-@export var z_movement: ZMovementBase
+@export var z_movement: Node
 
 
 # ==============================================================================
@@ -95,8 +95,8 @@ func _apply_visual_state(
 		visual_pivot.position.y = -display_z
 
 	# Shadow
-	if shadow_sprite:
-		shadow_sprite.visible = _should_show_shadow()
+	#if shadow_sprite:
+		#shadow_sprite.visible = _should_show_shadow()
 
 
 # ==============================================================================
@@ -143,8 +143,8 @@ func _get_visual_z_height() -> float:
 # Shadow
 # ==============================================================================
 
-func _should_show_shadow() -> bool:
-	if z_movement == null:
-		return false
-
-	return z_movement.should_show_shadow()
+#func _should_show_shadow() -> bool:
+	#if z_movement == null:
+		#return false
+#
+	#return z_movement.should_show_shadow()

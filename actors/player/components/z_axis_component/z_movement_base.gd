@@ -2,7 +2,9 @@ extends Node
 class_name ZMovementBase
 
 const RAW_ONE: int = 256
-const GRAVITY: float = 0.5
+## FC 普通 Z 轴重力。
+## 8.8 定点数：0x0080 raw = 0.5。
+const GRAVITY_RAW: int = 0x0080
 const PHYSICS_FRAMES_PER_LOGIC_TICK: int = 3
 
 signal launched()

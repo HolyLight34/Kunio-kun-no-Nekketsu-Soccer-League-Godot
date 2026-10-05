@@ -1337,16 +1337,16 @@ state = 15
 script = ExtResource("20_t3a7u")
 state = 16
 
+[node name="Juggle" type="Node" parent="Components/StateMachine" unique_id=881898648]
+script = ExtResource("20_a2yjh")
+state = 17
+anim_name = &"juggle"
+
 [node name="ElbowStrike" type="Node" parent="Components/StateMachine" unique_id=850088266]
 script = ExtResource("15_wkl3h")
 state = 8
 facing_mode = 1
 anim_name = &"elbow_strike"
-
-[node name="Juggle" type="Node" parent="Components/StateMachine" unique_id=881898648]
-script = ExtResource("20_a2yjh")
-state = 17
-anim_name = &"juggle"
 
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")

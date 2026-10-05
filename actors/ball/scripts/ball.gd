@@ -18,6 +18,27 @@ const RIGHT_GOAL_TARGET := Vector2(832, 192)
 const PLAYER_CONTROL_Y_OFFSET := 1.0
 
 # ==============================================================================
+# 场地表面类型
+# ==============================================================================
+
+## FC 当前地面物理类型。
+enum GroundType {
+	GRASS,   # $00 草地 / 普通地面
+	PUDDLE,  # $01 积水 / 水坑
+	SWAMP,     # $02 沼地
+	SAND,    # $03 沙地
+}
+
+
+## 足球湿润程度。
+enum Wetness {
+	DRY,        # 干球
+	LIGHT_WET,  # 轻度湿球，目前只影响表现
+	HEAVY_WET,  # 重度湿球，影响 Z 轴反弹
+}
+@export var ground_type: GroundType = GroundType.GRASS
+@export var wetness: Wetness = Wetness.DRY
+# ==============================================================================
 # 3. 节点引用
 # ==============================================================================
 @onready var sprite_2d: Sprite2D = $Visual/Sprite2D
@@ -77,15 +98,13 @@ func _ready() -> void:
 		#Color.BLUE
 	#)
 	state_machine.init(self)
-
-
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
 	)
-
 	ball_z_movement.finished.connect(
 		ball_horizontal_movement.roll
 	)
+	ball_z_movement.launch(8)
 
 
 # ==============================================================================
@@ -94,8 +113,7 @@ func _ready() -> void:
 
 func logic_tick() -> void:
 	state_machine.physics_tick()
-
-	ball_z_movement.process_z_step()
+	ball_z_movement.logic_tick(ground_type,wetness)
 	ball_horizontal_movement.step_logic_tick()
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()

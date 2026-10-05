@@ -2,21 +2,32 @@
 # BallZMovement.gd
 # ==============================================================================
 #
-# FC《热血足球》普通足球 Z 轴物理。
+# FC《热血足球》普通足球 Z 轴物理组件。
+#
+# 职责：
+# - 保存足球 Z 高度与 Z 速度
+# - 执行 FC Z 轴积分
+# - 处理重力
+# - 处理触地与反弹
+# - 提供高度保持能力
+#
+# 不负责：
+# - 足球 XY 运动
+# - 场地类型判定
+# - 足球湿度状态管理
+# - 阴影等视觉表现
+# - Shot / AirControl 等状态规则
 #
 # ------------------------------------------------------------------------------
 # 数据精度
 # ------------------------------------------------------------------------------
 #
-# 内部：
+# Z / VZ 使用 1 / 256 子像素精度：
+#
 # 1 raw = 1 / 256
 #
-# 外部：
-# float
-#
-#
 # ------------------------------------------------------------------------------
-# FC Z 规则
+# FC Z 更新顺序
 # ------------------------------------------------------------------------------
 #
 # 每个 Logic Tick：
@@ -24,361 +35,258 @@
 # Z += VZ
 # VZ -= 0.5
 #
-#
 # ------------------------------------------------------------------------------
-# 落地
-# ------------------------------------------------------------------------------
-#
-# descending && Z < 0
-#
-# 落地以后保留 Z 的低 8 位：
-#
-# Z &= 255
-#
-#
-# ------------------------------------------------------------------------------
-# 反弹
+# 足球落地
 # ------------------------------------------------------------------------------
 #
-# rebound_raw =
+# 足球满足以下条件时触地：
 #
-# max(
-#     ((abs(impact_raw) - 1) >> 1)
-#     - loss_raw,
+# VZ < 0
+# &&
+# Z < 0
+#
+# 注意：
+# 足球 Z == 0 时不判定触地。
+#
+# 触地后保留 Z 的低 8 位：
+#
+# Z &= 0xFF
+#
+# ------------------------------------------------------------------------------
+# FC 反弹
+# ------------------------------------------------------------------------------
+#
+# rebound_raw = max(
+#     ((abs(impact_raw) - 1) >> 1) - loss_raw,
 #     0
 # )
 #
-#
-# ------------------------------------------------------------------------------
-# CLASSIC / SMOOTH
-# ------------------------------------------------------------------------------
-#
-# ZMovementBase 统一负责：
-#
-# CLASSIC：
-# 一个 Logic Tick 一次完成 Z 位移。
-#
-# SMOOTH：
-# 一个 Logic Tick 的 Z 位移拆成 3 个 Physics Frame。
-#
-# BallZMovement 不关心位移如何展开，
-# 只负责足球特有的落地 / 反弹规则。
+# impact_raw 为当前 Logic Tick 应用重力后的触地速度。
 #
 # ==============================================================================
 
-extends ZMovementBase
 class_name BallZMovement
-
-
-# ==============================================================================
-# 类型
-# ==============================================================================
-
-enum GroundType {
-	GRASS,
-	TYPE_1,
-	MUD,
-	SAND,
-}
-
-
-# ==============================================================================
-# FC 反弹损耗
-# ==============================================================================
-
-## ROM $90CA-$90D9
-##
-## 每一行：
-##
-## [干球, 湿球]
-##
-## 0 = GRASS
-## 1 = TYPE_1
-## 2 = MUD
-## 3 = SAND
-const FC_BOUNCE_LOSS: Array = [
-	[1.0, 2.0],
-	[2.0, 4.0],
-	[8.0, 16.0],
-	[8.0, 16.0],
-]
+extends Node
 
 
 # ==============================================================================
 # 信号
 # ==============================================================================
 
-## 足球彻底结束 Z 轴运动以后发送。
-##
-## 注意：
-## landed != finished
-##
-## landed：
-## 每一次碰地都会发送。
-##
-## finished：
-## 最后一次落地，并等待规定的 Logic Tick 后发送。
+## 足球每次触地时发送。
+signal landed
+
+## 足球彻底结束本次 Z 轴运动时发送。
 signal finished
 
-signal bounced
+
 # ==============================================================================
-# 足球参数
-# ==============================================================================
-
-@export_group("FC Ground")
-
-## 当前地面。
-@export var ground_type: GroundType = GroundType.GRASS
-@export var ball: Ball
-## $050D bit7
-##
-## false = 干球
-## true  = 湿球
-@export var wet_ball: bool = false
-
-
-@export_group("FC Physics")
-
-## 是否应用 FC 重力。
-##
-## true：
-## 每个 Logic Tick：
-##
-## VZ -= 0.5
-##
-## false：
-## 暂时不修改 VZ。
-@export var gravity_enabled: bool = true
-
-## 足球是否暂停 Z 轴运动。
-## 用于平飞等特殊状态。
-var z_motion_paused: bool = false
-
-
-## 暂停足球 Z 轴运动。
-## 清除当前垂直速度，之后恢复时从 VZ = 0 开始。
-func pause_z_motion() -> void:
-	z_motion_paused = true
-	z_velocity_raw = 0
-	tick_displacement_raw = 0
-	tick_motion_frame = PHYSICS_FRAMES_PER_LOGIC_TICK
-
-
-## 恢复足球 Z 轴运动。
-## 恢复后从 VZ = 0 开始重新受到重力影响。
-func resume_z_motion() -> void:
-	z_motion_paused = false
-# ==============================================================================
-# 视觉状态
+# FC 常量
 # ==============================================================================
 
-## 足球阴影是否显示。
+## FC 普通 Z 轴重力。
+##
+## 8.8 定点数：
+## 0x0080 raw = 0.5。
+const GRAVITY_RAW: int = 0x0080
+
+
+# ==============================================================================
+# FC 足球触地反弹损耗
+# ==============================================================================
+
+## FC 足球触地时使用的反弹速度损耗表。
+##
+## 数据来源：
+## ROM $90CA-$90D9。
+##
+## 数据格式：
+## 8.8 定点数，1 raw = 1 / 256。
+##
+## 行索引对应 Ball.GroundType：
+##
+##   0 / GRASS  = $013C:$00，草地 / 普通地面
+##   1 / PUDDLE = $013C:$01，积水 / 水坑
+##   2 / SWAMP  = $013C:$02，沼地
+##   3 / SAND   = $013C:$03，沙地
+##
+## 列索引：
+##
+##   0 = 干球物理
+##   1 = 湿球物理
+##
+##                干球              湿球
+## GRASS          $0100 = 1.0       $0200 = 2.0
+## PUDDLE         $0200 = 2.0       $0400 = 4.0
+## SWAMP          $0800 = 8.0       $1000 = 16.0
+## SAND           $0800 = 8.0       $1000 = 16.0
 ##
 ## 注意：
-## 这个值不是简单等于 is_in_air。
-##
-## 足球触地以后即使马上反弹，
-## 当前触地瞬间阴影仍然可以关闭。
-var shadow_visible: bool = false
+## 此值不是反弹倍率，而是 FC 反弹公式中的固定速度损耗。
+const FC_BOUNCE_LOSS_RAW: Array = [
+	[0x0100, 0x0200], # GRASS
+	[0x0200, 0x0400], # PUDDLE
+	[0x0800, 0x1000], # SWAMP
+	[0x0800, 0x1000], # SAND
+]
+
 
 # ==============================================================================
-# Finished 延迟
+# Z 轴状态
 # ==============================================================================
 
-## -1：
-## 当前没有等待 finished。
+## 当前足球 Z 高度。
+var z_height_raw: int = 0
+
+## 当前足球 Z 速度。
+var z_velocity_raw: int = 0
+
+## 足球当前是否处于空中。
+var is_in_air: bool = false
+
+## 当前是否应用普通 FC 重力。
 ##
-## 1：
-## 还需要完整经过 1 个 Logic Tick。
-##
-## 0：
-## 下一次 process_z_step() 发送 finished。
-var _finished_delay_ticks: int = -1
+## false 时不会修改 VZ。
+## 主要用于保持当前高度等特殊 Z 运动。
+var gravity_enabled: bool = true
 
 
 # ==============================================================================
 # 外部接口
 # ==============================================================================
 
-## 起球。
+## 以指定 Z 速度开始一次空中运动。
 func launch(initial_velocity: float) -> void:
-	# 新的一次 Z 运动开始，
-	# 清除上一次可能遗留的 finished 延迟。
-	_finished_delay_ticks = -1
+	z_velocity_raw = FixedPoint.to_raw(initial_velocity)
+	is_in_air = true
 
-	shadow_visible = true
 
-	apply_vertical_velocity(
-		initial_velocity
-	)
+## 直接设置 raw Z 高度。
+##
+## 用于已经确认需要外部修正足球高度的规则。
+func set_height_raw(height_raw: int) -> void:
+	z_height_raw = height_raw
+	
+func get_z_height() -> float:
+	return FixedPoint.from_raw(z_height_raw)
+
+## 从当前高度开始保持 Z 高度。
+##
+## 高度保持期间：
+## - 当前 VZ 清零
+## - 不应用重力
+## - Z 保持当前位置
+func start_height_hold() -> void:
+	z_velocity_raw = 0
+	gravity_enabled = false
+
+
+## 结束高度保持，恢复普通重力。
+func stop_height_hold() -> void:
+	gravity_enabled = true
 
 
 # ==============================================================================
 # Logic Tick
 # ==============================================================================
 
-## Ball 有 finished 延迟规则，
-## 因此这里先处理足球自己的 Tick 状态，
-## 然后再交给 ZMovementBase 执行正常 Z 物理。
-func process_z_step() -> void:
-	# --------------------------------------------------------------------------
-	# Finished 延迟
-	# --------------------------------------------------------------------------
-
-	if _finished_delay_ticks >= 0:
-		if _finished_delay_ticks > 0:
-			_finished_delay_ticks -= 1
-			return
-
-		_finished_delay_ticks = -1
-		finished.emit()
-		return
-
-	# --------------------------------------------------------------------------
-	# 没有 Z 运动
-	# --------------------------------------------------------------------------
-
+## 执行一次 FC 足球 Z 轴逻辑帧。
+##
+## ground_type：
+## 当前足球所在的 FC 地面物理类型。
+##
+## wetness：
+## 当前足球湿润程度。
+##
+## BallZMovement 不负责获取这些外部事实，
+## 只根据它们执行对应的 Z 轴物理规则。
+func logic_tick(
+	ground_type: Ball.GroundType,
+	wetness: Ball.Wetness
+) -> void:
 	if not is_in_air:
 		return
 
-	# --------------------------------------------------------------------------
-	# Z 运动暂停
-	# --------------------------------------------------------------------------
-
-	if z_motion_paused:
-		return
-
-	# --------------------------------------------------------------------------
-	# 反弹后的新 Tick 开始时重新显示阴影
-	# --------------------------------------------------------------------------
-
-	if (
-		z_velocity_raw > 0
-		and
-		not shadow_visible
-	):
-		shadow_visible = true
-
-	# --------------------------------------------------------------------------
-	# 通用 Z 运动
-	# --------------------------------------------------------------------------
-
-	# 当前 VZ 锁定为本 Tick 总位移。
-	tick_displacement_raw = z_velocity_raw
-
 	# FC：
-	# VZ -= 0.5
-	z_velocity_raw -= _to_raw(GRAVITY)
+	# 先使用当前 VZ 更新 Z。
+	z_height_raw += z_velocity_raw
 
-	if GameSettings.is_classic_motion():
-		_process_classic_motion()
-	else:
-		_prepare_smooth_motion()
+	# 然后应用本 Logic Tick 的重力。
+	if gravity_enabled:
+		z_velocity_raw -= GRAVITY_RAW
 
-
-# ==============================================================================
-# 重力规则
-# ==============================================================================
-
-## ZMovementBase 每个 Logic Tick 会询问：
-##
-## 当前是否应该应用重力？
-func _should_apply_gravity() -> bool:
-	return gravity_enabled
-
-
-# ==============================================================================
-# 落地判断
-# ==============================================================================
-
-## FC 普通足球：
-##
-## 必须：
-##
-## 1. Z 已经进入地面以下
-## 2. 当前处于下降阶段
-##
-## Z == 0 不触发落地。
-func _check_landing() -> bool:
-	return (
-		z_height_raw < 0
-		and
-		z_velocity_raw < 0
-	)
+	# 足球只有在下降并且 Z < 0 时才判定触地。
+	if z_height_raw < 0 and z_velocity_raw < 0:
+		_process_landing(ground_type, wetness)
 
 
 # ==============================================================================
 # 落地处理
 # ==============================================================================
 
-func _process_landing() -> void:
-	# --------------------------------------------------------------------------
-	# 触地
-	# --------------------------------------------------------------------------
-
-	shadow_visible = false
-
-	# FC：
-	# 保留 Z 的低 8 位。
+func _process_landing(
+	ground_type: Ball.GroundType,
+	wetness: Ball.Wetness
+) -> void:
 	_apply_landing_height_correction()
-	if not ball.carrier:
-	# 根据触地速度计算新的反弹速度。
-		_calculate_rebound_velocity_raw()
 
-	# 每一次触地都发送。
+	_apply_rebound_velocity_raw(
+		ground_type,
+		wetness
+	)
+
+	# 每次触地都会发送。
 	#
-	# BallHorizontalComponent 可以连接这个信号，
+	# BallHorizontalComponent 可以监听该信号，
 	# 执行 LANDING 水平衰减。
 	landed.emit()
 
 	# --------------------------------------------------------------------------
-	# 可以继续反弹
+	# 继续反弹
 	# --------------------------------------------------------------------------
 
 	if z_velocity_raw > 0:
 		is_in_air = true
-		# 本次触地实际产生了反弹。
-		bounced.emit()
 		return
 
 	# --------------------------------------------------------------------------
-	# Z 运动彻底结束
+	# Z 运动结束
 	# --------------------------------------------------------------------------
 
 	z_velocity_raw = 0
 	is_in_air = false
-
-	# LANDING 产生的水平速度还需要完整运行一个 Logic Tick，
-	# 所以不能现在立刻发送 finished。
-	_finished_delay_ticks = 1
+	finished.emit()
 
 
 # ==============================================================================
 # FC 落地高度修正
 # ==============================================================================
 
+## 应用 FC 足球触地后的高度修正规则。
+##
+## 清除 Z 的整数部分，只保留低 8 位子像素。
 func _apply_landing_height_correction() -> void:
-	# FC：
-	# 只保留低 8 位子像素。
-	z_height_raw &= 255
+	z_height_raw &= 0xFF
 
 
 # ==============================================================================
 # FC 反弹计算
 # ==============================================================================
 
-func _calculate_rebound_velocity_raw() -> void:
-	var impact_velocity_raw: int = abs(
-		z_velocity_raw
-	)
+## 根据当前触地速度计算并应用 FC 反弹速度。
+func _apply_rebound_velocity_raw(
+	ground_type: Ball.GroundType,
+	wetness: Ball.Wetness
+) -> void:
+	var impact_velocity_raw: int = abs(z_velocity_raw)
 
 	var rebound_velocity_raw: int = (
-		(impact_velocity_raw - 1)
-		>> 1
+		(impact_velocity_raw - 1) >> 1
 	)
 
-	rebound_velocity_raw -= (
-		_get_bounce_loss_raw()
+	rebound_velocity_raw -= _get_bounce_loss_raw(
+		ground_type,
+		wetness
 	)
 
 	z_velocity_raw = maxi(
@@ -387,21 +295,14 @@ func _calculate_rebound_velocity_raw() -> void:
 	)
 
 
-# ==============================================================================
-# FC 反弹损耗
-# ==============================================================================
-
-func _get_bounce_loss_raw() -> int:
+## 根据地面类型与足球湿润程度，
+## 获取 FC 反弹公式使用的固定速度损耗。
+func _get_bounce_loss_raw(
+	ground_type: Ball.GroundType,
+	wetness: Ball.Wetness
+) -> int:
 	var wet_index: int = (
-		1 if wet_ball else 0
+		1 if wetness == Ball.Wetness.HEAVY_WET else 0
 	)
 
-	var ground_index: int = (
-		int(ground_type) & 3
-	)
-
-	var loss: float = FC_BOUNCE_LOSS[
-		ground_index
-	][wet_index]
-
-	return _to_raw(loss)
+	return FC_BOUNCE_LOSS_RAW[int(ground_type)][wet_index]

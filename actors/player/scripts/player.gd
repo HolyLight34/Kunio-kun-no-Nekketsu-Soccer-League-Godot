@@ -48,9 +48,6 @@ const COLLISION_HEIGHT: int = 32
 	$Components/StepAnimationComponent
 )
 
-#@onready var tick_component: TickComponent = (
-	#$Components/TickComponent
-#)
 
 @onready var entity_visual_controller: EntityVisualController = (
 	$Components/EntityVisualController
@@ -100,14 +97,6 @@ func _ready() -> void:
 	_initialize_components()
 
 	endurance_label.text = str(endurance)
-
-	#tick_component.tick_triggered.connect(
-		#_on_logic_tick
-	#)
-
-	#state_machine.tick_reset_requested.connect(
-		#tick_component.reset_tick
-	#)
 
 
 func _initialize_components() -> void:
