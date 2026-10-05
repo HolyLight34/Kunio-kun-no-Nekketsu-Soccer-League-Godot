@@ -61,9 +61,8 @@ enum Wetness {
 	$Components/StepAnimationComponent
 )
 
-@onready var entity_visual_controller: EntityVisualController = (
-	$Components/EntityVisualController
-)
+@onready var entity_visual_component: EntityVisualComponent = $Components/EntityVisualComponent
+
 @onready var ball_interactable_area: Area2D = $BallInteractableArea
 
 
@@ -117,6 +116,11 @@ func logic_tick() -> void:
 	ball_horizontal_movement.step_logic_tick()
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
+	entity_visual_component.update_position(
+		get_logical_position(),
+		get_z_height()
+	)
+	entity_visual_component.set_shadow_visible(is_in_air())
 
 
 # ==============================================================================

@@ -30,6 +30,9 @@ extends Node2D
 ##     Head.frame
 ##     Head.position
 ##
+## 当 PlayerCompositeFrame.head_frame == NO_HEAD_FRAME 时，
+## 当前组合帧不显示 Head。
+##
 ## AnimationPlayer 应只控制本节点的 frame，
 ## 不应该直接操作 Body 和 Head。
 ##
@@ -40,6 +43,8 @@ extends Node2D
 ## - 动画时间
 ## - Player 状态
 ## - 物理运动
+@onready var head: Sprite2D = $Head
+@onready var body: Sprite2D = $Body
 
 
 # ==============================================================================
@@ -51,6 +56,9 @@ extends Node2D
 ## 可以理解为本节点使用的“虚拟 SpriteSheet”。
 @export var sprite_frames: PlayerCompositeSpriteFrames:
 	set(value):
+		if sprite_frames == value:
+			return
+
 		sprite_frames = value
 		_update_frame_connection()
 		_apply_frame()
@@ -63,7 +71,11 @@ extends Node2D
 ## 当前显示的组合视觉帧编号。
 ##
 ## AnimationPlayer 应控制此属性。
-@export var frame: int = 0:
+##
+## 当前 FC 角色组合动画共使用 78 个帧槽：
+## 0 ~ 77。
+@export_range(0, 77, 1)
+var frame: int = 0:
 	set(value):
 		if frame == value:
 			return
@@ -150,7 +162,6 @@ func _disconnect_current_frame() -> void:
 			_on_frame_data_changed
 		)
 
-
 ## 当前组合帧数据发生改变。
 ##
 ## 用于 @tool 编辑器实时预览。
@@ -171,6 +182,21 @@ func _apply_frame() -> void:
 	if frame_data == null:
 		return
 
+	# --------------------------------------------------------------------------
+	# Body
+	# --------------------------------------------------------------------------
+
 	_body_sprite.frame = frame_data.body_frame
-	_head_sprite.frame = frame_data.head_frame
+
+	# --------------------------------------------------------------------------
+	# Head
+	# --------------------------------------------------------------------------
+
 	_head_sprite.position = frame_data.head_position
+
+	if frame_data.head_frame == PlayerCompositeFrame.NO_HEAD_FRAME:
+		_head_sprite.visible = false
+		return
+
+	_head_sprite.visible = true
+	_head_sprite.frame = frame_data.head_frame

@@ -15,8 +15,7 @@ func exit() -> void:
 func process(_delta: float) -> void:
 	pass
 
-
-func physics_process(_delta: float) -> void:
+func physics_tick() -> void:
 	# --------------------------------------------------------------------------
 	# 没有持球角色
 	# --------------------------------------------------------------------------
@@ -71,3 +70,5 @@ func physics_process(_delta: float) -> void:
 		ball.ball_z_movement.set_z_height(
 			ball.carrier.get_z_height()
 		)
+	pass
+	

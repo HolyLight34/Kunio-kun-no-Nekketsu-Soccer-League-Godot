@@ -31,8 +31,3 @@ func get_frame(index: int) -> PlayerCompositeFrame:
 		return null
 
 	return frames[index]
-
-
-## 返回组合视觉帧总数。
-func get_frame_count() -> int:
-	return frames.size()

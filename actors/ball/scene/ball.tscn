@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://actors/ball/components/ball_z_movement.gd" id="11_begx4"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
 [ext_resource type="Script" uid="uid://djtmyon3il0b5" path="res://actors/ball/components/ball_horizontal_component.gd" id="14_1xsu1"]
-[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_controller.gd" id="14_h8xgc"]
+[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_component.gd" id="14_h8xgc"]
 [ext_resource type="Script" uid="uid://bp062wkswhp4n" path="res://actors/ball/components/ball_hurt_resolver.gd" id="16_37of1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
@@ -199,6 +199,7 @@ shape = SubResource("RectangleShape2D_iy78e")
 libraries/ = SubResource("AnimationLibrary_ni7dn")
 
 [node name="Shadow" type="Sprite2D" parent="." unique_id=548698980]
+visible = false
 position = Vector2(0, -2)
 texture = ExtResource("9_iwjb2")
 
@@ -268,10 +269,8 @@ script = ExtResource("14_1xsu1")
 [node name="TickTimerComponent" type="Node" parent="Components" unique_id=1976622560]
 script = ExtResource("11_aduox")
 
-[node name="EntityVisualController" type="Node" parent="Components" unique_id=1813904894 node_paths=PackedStringArray("horizontal_movement", "z_movement", "position_target", "visual_pivot", "shadow_sprite")]
+[node name="EntityVisualComponent" type="Node" parent="Components" unique_id=1813904894 node_paths=PackedStringArray("position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("14_h8xgc")
-horizontal_movement = NodePath("../BallHorizontalMovement")
-z_movement = NodePath("../BallZMovement")
 position_target = NodePath("../..")
 visual_pivot = NodePath("../../Visual")
 shadow_sprite = NodePath("../../Shadow")

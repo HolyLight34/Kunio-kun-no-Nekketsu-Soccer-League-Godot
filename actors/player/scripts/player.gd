@@ -48,10 +48,8 @@ const COLLISION_HEIGHT: int = 32
 	$Components/StepAnimationComponent
 )
 
+@onready var entity_visual_component: EntityVisualComponent = $Components/EntityVisualComponent
 
-@onready var entity_visual_controller: EntityVisualController = (
-	$Components/EntityVisualController
-)
 
 @onready var visual: Node2D = $Visual
 @onready var colliders: Node2D = $Colliders
@@ -67,6 +65,7 @@ const COLLISION_HEIGHT: int = 32
 	$BallReceiverArea
 )
 
+@onready var player_composite_sprite: PlayerCompositeSprite = $Visual/PlayerCompositeSprite
 
 # ==============================================================================
 # 4. 运行状态
@@ -77,7 +76,7 @@ var ball: Ball
 var ball_possession: Types.BallPossession
 
 
-var facing_direction := Vector2.RIGHT:
+var facing_direction := Vector2.LEFT:
 	set(value):
 		if facing_direction == value:
 			return
@@ -113,7 +112,6 @@ func _initialize_components() -> void:
 		visual.position.y
 	)
 
-	entity_visual_controller.initialize()
 
 	state_machine.init(self)
 
@@ -122,7 +120,6 @@ func _physics_process(delta: float) -> void:
 	var intent: PlayerIntentResolver.Intent = (
 		player_intent_resolver.get_intent()
 	)
-
 	state_machine.handle_intent(
 		intent,
 		delta
@@ -145,11 +142,14 @@ func logic_tick() -> void:
 	_update_facing(
 		input_component.move_dir.x
 	)
-
 	player_horizontal_movement.step_logic_tick()
-
+	entity_visual_component.set_shadow_visible(is_in_air())
 	_process_ball_contact()
 	_process_ball_control()
+	entity_visual_component.update_position(
+		get_logical_position(),
+		get_z_height()
+	)
 
 
 # ==============================================================================
@@ -197,12 +197,6 @@ func is_running() -> bool:
 # 8. 朝向
 # ==============================================================================
 
-func set_facing_direction(
-	direction: Vector2
-) -> void:
-	facing_direction = direction
-	_apply_facing()
-
 func get_facing_direction() -> Vector2:
 	return facing_direction
 func _update_facing(
@@ -234,19 +228,8 @@ func _update_facing(
 		return
 
 	facing_direction = new_facing
-	_apply_facing()
+	entity_visual_component.set_facing_direction(facing_direction)
 
-
-func _apply_facing() -> void:
-	visual.scale.x = (
-		abs(visual.scale.x)
-		* facing_direction.x
-	)
-
-	colliders.scale.x = (
-		abs(colliders.scale.x)
-		* facing_direction.x
-	)
 
 ## 角色接球自动转向
 func _face_ball() -> void:
@@ -259,12 +242,12 @@ func _face_ball() -> void:
 	)
 
 	if ball_x < player_x:
-		set_facing_direction(
+		entity_visual_component.set_facing_direction(
 			Vector2.LEFT
 		)
 
 	elif ball_x > player_x:
-		set_facing_direction(
+		entity_visual_component.set_facing_direction(
 			Vector2.RIGHT
 		)
 

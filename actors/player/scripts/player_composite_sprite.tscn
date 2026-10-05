@@ -3,39 +3,409 @@
 [ext_resource type="Script" uid="uid://pmkdbng71urk" path="res://actors/player/scripts/player_composite_sprite.gd" id="1_ayxlt"]
 [ext_resource type="Script" uid="uid://cwuuta4dibg7n" path="res://actors/player/scripts/player_composite_frame.gd" id="2_ievdw"]
 [ext_resource type="Script" uid="uid://dw8w2spexxorx" path="res://actors/player/scripts/player_composite_sprite_frames.gd" id="3_gy56w"]
-[ext_resource type="Texture2D" uid="uid://gl6cub54dwfk" path="res://actors/player/assets/head.png" id="4_gt3h0"]
-[ext_resource type="Texture2D" uid="uid://ljrt6icfa68r" path="res://actors/player/assets/body.png" id="5_0lh8o"]
+[ext_resource type="Texture2D" uid="uid://c6ul8fp0yac85" path="res://actors/player/assets/head.png" id="4_gt3h0"]
+[ext_resource type="Texture2D" uid="uid://56hwlui1p1gf" path="res://actors/player/assets/body.png" id="5_0lh8o"]
 
-[sub_resource type="Resource" id="Resource_tbfq4"]
+[sub_resource type="Resource" id="Resource_2fplj"]
 script = ExtResource("2_ievdw")
+head_position = Vector2i(0, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_o7vu1"]
+script = ExtResource("2_ievdw")
+body_frame = 1
 head_frame = 1
-head_position = Vector2i(3, -32)
+head_position = Vector2i(-4, -28)
 metadata/_custom_type_script = "uid://cwuuta4dibg7n"
 
-[sub_resource type="Resource" id="Resource_s3n3v"]
+[sub_resource type="Resource" id="Resource_mcrc7"]
 script = ExtResource("2_ievdw")
-head_frame = 3
-head_position = Vector2i(7, -31)
+body_frame = 3
+head_position = Vector2i(-1, -20)
 metadata/_custom_type_script = "uid://cwuuta4dibg7n"
 
-[sub_resource type="Resource" id="Resource_7f3w5"]
+[sub_resource type="Resource" id="Resource_qnqna"]
+script = ExtResource("2_ievdw")
+body_frame = 4
+head_frame = 3
+head_position = Vector2i(-8, -12)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_atgvx"]
+script = ExtResource("2_ievdw")
+body_frame = 5
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_mb111"]
+script = ExtResource("2_ievdw")
+body_frame = 6
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_b5m0m"]
+script = ExtResource("2_ievdw")
+body_frame = 7
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_2f0hu"]
+script = ExtResource("2_ievdw")
+body_frame = 8
+head_position = Vector2i(5, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_gfsw1"]
+script = ExtResource("2_ievdw")
+body_frame = 9
+head_frame = 1
+head_position = Vector2i(-6, -27)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_hamsh"]
+script = ExtResource("2_ievdw")
+body_frame = 10
+head_position = Vector2i(3, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_7go8x"]
+script = ExtResource("2_ievdw")
+body_frame = 11
+head_frame = 1
+head_position = Vector2i(-7, -26)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_inxqb"]
+script = ExtResource("2_ievdw")
+body_frame = 12
+head_position = Vector2i(2, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_mgqed"]
+script = ExtResource("2_ievdw")
+body_frame = 13
+head_position = Vector2i(-2, -30)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_vv5hh"]
+script = ExtResource("2_ievdw")
+body_frame = 14
+head_frame = 1
+head_position = Vector2i(-6, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_inmkm"]
+script = ExtResource("2_ievdw")
+body_frame = 18
+head_frame = 1
+head_position = Vector2i(-4, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_448f1"]
+script = ExtResource("2_ievdw")
+body_frame = 16
+head_frame = 1
+head_position = Vector2i(-7, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_1jmhl"]
+script = ExtResource("2_ievdw")
+body_frame = 17
+head_position = Vector2i(0, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_h1r20"]
+script = ExtResource("2_ievdw")
+body_frame = 19
+head_position = Vector2i(-1, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_0ltgt"]
+script = ExtResource("2_ievdw")
+body_frame = 22
+head_position = Vector2i(-10, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_h3q16"]
+script = ExtResource("2_ievdw")
+body_frame = 23
+head_position = Vector2i(0, -29)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_skmcx"]
+script = ExtResource("2_ievdw")
+body_frame = 24
+head_position = Vector2i(0, -29)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_cx0m0"]
+script = ExtResource("2_ievdw")
+body_frame = 25
+head_position = Vector2i(-2, -29)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_o045x"]
+script = ExtResource("2_ievdw")
+body_frame = 26
+head_position = Vector2i(-3, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_w2mjq"]
+script = ExtResource("2_ievdw")
+body_frame = 27
+head_position = Vector2i(-2, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_j61ru"]
+script = ExtResource("2_ievdw")
+body_frame = 28
+head_frame = 1
+head_position = Vector2i(-3, -27)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_j1wy0"]
+script = ExtResource("2_ievdw")
+body_frame = 29
+head_frame = 1
+head_position = Vector2i(-3, -27)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_6tt24"]
+script = ExtResource("2_ievdw")
+body_frame = 33
+head_frame = 1
+head_position = Vector2i(8, -20)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_d15lf"]
+script = ExtResource("2_ievdw")
+body_frame = 34
+head_frame = 1
+head_position = Vector2i(-3, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_hahcj"]
+script = ExtResource("2_ievdw")
+body_frame = 35
+head_position = Vector2i(-1, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_jfv7g"]
+script = ExtResource("2_ievdw")
+body_frame = 38
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_hyhu7"]
+script = ExtResource("2_ievdw")
+body_frame = 41
+head_frame = 3
+head_position = Vector2i(-11, -12)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_jpjn7"]
+script = ExtResource("2_ievdw")
+body_frame = 42
+head_frame = 1
+head_position = Vector2i(-6, -27)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_7a68t"]
+script = ExtResource("2_ievdw")
+body_frame = 43
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_fvf2i"]
+script = ExtResource("2_ievdw")
+body_frame = 44
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_n4sik"]
+script = ExtResource("2_ievdw")
+body_frame = 49
+head_frame = 3
+head_position = Vector2i(-8, -12)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_t3a7u"]
+script = ExtResource("2_ievdw")
+body_frame = 50
+head_frame = 2
+head_position = Vector2i(-3, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_jgjso"]
+script = ExtResource("2_ievdw")
+body_frame = 51
+head_frame = 2
+head_position = Vector2i(-4, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_5qpdp"]
+script = ExtResource("2_ievdw")
+body_frame = 52
+head_frame = 1
+head_position = Vector2i(-7, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_xkbcs"]
+script = ExtResource("2_ievdw")
+body_frame = 53
+head_frame = 1
+head_position = Vector2i(-7, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_xxtay"]
+script = ExtResource("2_ievdw")
+body_frame = 55
+head_frame = 3
+head_position = Vector2i(4, -20)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_orhpu"]
+script = ExtResource("2_ievdw")
+body_frame = 58
+head_frame = 1
+head_position = Vector2i(-5, -25)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_b2ujt"]
+script = ExtResource("2_ievdw")
+body_frame = 59
+head_frame = 1
+head_position = Vector2i(-5, -28)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_clns7"]
+script = ExtResource("2_ievdw")
+body_frame = 60
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_qqnd0"]
+script = ExtResource("2_ievdw")
+body_frame = 65
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_hwdca"]
+script = ExtResource("2_ievdw")
+body_frame = 66
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_a0csg"]
+script = ExtResource("2_ievdw")
+body_frame = 67
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_mdh8j"]
+script = ExtResource("2_ievdw")
+body_frame = 68
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_a25c6"]
+script = ExtResource("2_ievdw")
+body_frame = 69
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_2ulds"]
+script = ExtResource("2_ievdw")
+body_frame = 71
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_vrrpc"]
+script = ExtResource("2_ievdw")
+body_frame = 72
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_g4fgc"]
+script = ExtResource("2_ievdw")
+body_frame = 75
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_qssf6"]
+script = ExtResource("2_ievdw")
+body_frame = 76
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_mtiqc"]
+script = ExtResource("2_ievdw")
+body_frame = 77
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_2lw8w"]
+script = ExtResource("2_ievdw")
+body_frame = 37
+head_frame = 5
+head_position = Vector2i(-8, -4)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_yleis"]
+script = ExtResource("2_ievdw")
+body_frame = 46
+head_frame = 6
+head_position = Vector2i(16, -4)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_sc6fi"]
+script = ExtResource("2_ievdw")
+body_frame = 47
+head_frame = 4
+head_position = Vector2i(5, -4)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_2rmq7"]
+script = ExtResource("2_ievdw")
+body_frame = 48
+head_frame = 4
+head_position = Vector2i(6, -4)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_1dn1v"]
+script = ExtResource("2_ievdw")
+body_frame = 56
+head_frame = 6
+head_position = Vector2i(12, -10)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_dlt07"]
+script = ExtResource("2_ievdw")
+body_frame = 57
+head_frame = 4
+head_position = Vector2i(-2, 0)
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
+[sub_resource type="Resource" id="Resource_1vobp"]
 script = ExtResource("3_gy56w")
-frames = Array[ExtResource("2_ievdw")]([SubResource("Resource_tbfq4"), SubResource("Resource_s3n3v")])
+frames = Array[ExtResource("2_ievdw")]([SubResource("Resource_2fplj"), SubResource("Resource_o7vu1"), SubResource("Resource_mcrc7"), SubResource("Resource_qnqna"), SubResource("Resource_atgvx"), SubResource("Resource_mb111"), SubResource("Resource_b5m0m"), SubResource("Resource_2f0hu"), SubResource("Resource_gfsw1"), SubResource("Resource_hamsh"), SubResource("Resource_7go8x"), SubResource("Resource_inxqb"), SubResource("Resource_mgqed"), SubResource("Resource_vv5hh"), SubResource("Resource_inmkm"), SubResource("Resource_448f1"), SubResource("Resource_1jmhl"), SubResource("Resource_h1r20"), SubResource("Resource_0ltgt"), SubResource("Resource_h3q16"), SubResource("Resource_skmcx"), SubResource("Resource_cx0m0"), SubResource("Resource_o045x"), SubResource("Resource_w2mjq"), SubResource("Resource_j61ru"), SubResource("Resource_j1wy0"), SubResource("Resource_6tt24"), SubResource("Resource_d15lf"), SubResource("Resource_hahcj"), SubResource("Resource_jfv7g"), SubResource("Resource_hyhu7"), SubResource("Resource_jpjn7"), SubResource("Resource_7a68t"), SubResource("Resource_fvf2i"), SubResource("Resource_n4sik"), SubResource("Resource_t3a7u"), SubResource("Resource_jgjso"), SubResource("Resource_5qpdp"), SubResource("Resource_xkbcs"), SubResource("Resource_xxtay"), SubResource("Resource_orhpu"), SubResource("Resource_b2ujt"), SubResource("Resource_clns7"), SubResource("Resource_qqnd0"), SubResource("Resource_hwdca"), SubResource("Resource_a0csg"), SubResource("Resource_mdh8j"), SubResource("Resource_a25c6"), SubResource("Resource_2ulds"), SubResource("Resource_vrrpc"), SubResource("Resource_g4fgc"), SubResource("Resource_qssf6"), SubResource("Resource_mtiqc"), SubResource("Resource_2lw8w"), SubResource("Resource_yleis"), SubResource("Resource_sc6fi"), SubResource("Resource_2rmq7"), SubResource("Resource_1dn1v"), SubResource("Resource_dlt07")])
 metadata/_custom_type_script = "uid://dw8w2spexxorx"
 
 [node name="PlayerCompositeSprite" type="Node2D" unique_id=487019932]
 script = ExtResource("1_ayxlt")
-sprite_frames = SubResource("Resource_7f3w5")
-frame = 1
+sprite_frames = SubResource("Resource_1vobp")
+frame = 58
 
 [node name="Head" type="Sprite2D" parent="." unique_id=817049740]
-position = Vector2(7, -31)
+position = Vector2(-2, 0)
 texture = ExtResource("4_gt3h0")
 hframes = 4
-frame = 3
+vframes = 2
+frame = 4
 
 [node name="Body" type="Sprite2D" parent="." unique_id=1287572829]
-position = Vector2(0, -16)
+position = Vector2(0, -19)
 texture = ExtResource("5_0lh8o")
-hframes = 4
-vframes = 8
+hframes = 6
+vframes = 13
+frame = 57
