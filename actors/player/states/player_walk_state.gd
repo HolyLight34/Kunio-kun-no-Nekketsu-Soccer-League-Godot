@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	print(player.player_z_movement._to_raw(player.input_component.last_move_direction.x*2))
+	#print(player.player_z_movement._to_raw(player.input_component.last_move_direction.x*2))
 	anim.play(anim_name)
 	pass
 

@@ -4,7 +4,7 @@ extends PlayerState
 func enter(_data):
 	anim.play(anim_name)
 	if not player.player_z_movement.is_in_air:
-		player.player_z_movement.apply_vertical_velocity(4)
+		player.player_z_movement.jump(4)
 		player.player_horizontal_movement.halve_y_velocity()
 	await player.player_z_movement.landed
 	change_state(State.LAND)

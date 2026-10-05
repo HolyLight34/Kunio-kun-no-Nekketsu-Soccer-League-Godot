@@ -108,11 +108,6 @@ func _initialize_components() -> void:
 		input_component
 	)
 
-	player_z_movement.set_z_height(
-		visual.position.y
-	)
-
-
 	state_machine.init(self)
 
 
@@ -137,7 +132,7 @@ func logic_tick() -> void:
 
 	step_animation_component.advance_tick()
 
-	player_z_movement.process_z_step()
+	player_z_movement.logic_tick()
 
 	_update_facing(
 		input_component.move_dir.x
