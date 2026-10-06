@@ -42,13 +42,26 @@ const MAX_WETNESS_VALUE: int = 0xFF
 ##
 ## 在积水区域中，每个 FC 逻辑步增加 1。
 ## 离开积水区域后不会自动减少。
+const LIGHT_WET_WHITE := Color8(236, 238, 236)
+const LIGHT_WET_BLACK := Color8(0, 102, 120)
+const LIGHT_WET_RED := Color8(56, 180, 204)
+
+const HEAVY_WET_WHITE := Color8(160, 214, 228)
+const HEAVY_WET_BLACK := Color8(0, 102, 120)
+const HEAVY_WET_RED := Color8(56, 180, 204)
 var _wetness_value: int = 0
 
-@export var wetness: Wetness = Wetness.DRY
+var wetness: Wetness = Wetness.DRY:
+	set(value):
+		if wetness == value:
+			return
+
+		wetness = value
+		_apply_wetness_shader()
 # ==============================================================================
 # 3. 节点引用
 # ==============================================================================
-@onready var sprite_2d: Sprite2D = $Visual/Sprite2D
+@onready var ball_sprite: Sprite2D = $Visual/Sprite2D
 
 @onready var hit_box: HitBox = $HitBox
 
@@ -68,7 +81,8 @@ var _wetness_value: int = 0
 	$Components/StepAnimationComponent
 )
 
-@onready var entity_visual_component: EntityVisualComponent = $Components/EntityVisualComponent
+@onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
+
 
 @onready var ball_interactable_area: Area2D = $BallInteractableArea
 
@@ -84,6 +98,7 @@ var stationary_flick_active: bool = false
 var _receiver_candidates: Array[Player] = []
 
 var _base_ground_type: Types.BaseGroundType = Types.BaseGroundType.NORMAL
+
 enum GroundType {
 	NORMAL,
 	PUDDLE,
@@ -105,10 +120,6 @@ var carrier: Player = null:
 # ==============================================================================
 
 func _ready() -> void:
-	#sprite_2d.material.set_shader_parameter(
-		#"to_color",
-		#Color.BLUE
-	#)
 	state_machine.init(self)
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
@@ -117,7 +128,53 @@ func _ready() -> void:
 		ball_horizontal_movement.roll
 	)
 	ball_z_movement.launch(8)
+func _apply_wetness_shader() -> void:
+	var material := ball_sprite.material as ShaderMaterial
 
+	match wetness:
+		Wetness.DRY:
+			material.set_shader_parameter(
+				"palette_enabled",
+				false
+			)
+
+		Wetness.LIGHT_WET:
+			material.set_shader_parameter(
+				"palette_enabled",
+				true
+			)
+
+			material.set_shader_parameter(
+				"white_color",
+				LIGHT_WET_WHITE
+			)
+			material.set_shader_parameter(
+				"black_color",
+				LIGHT_WET_BLACK
+			)
+			material.set_shader_parameter(
+				"red_color",
+				LIGHT_WET_RED
+			)
+
+		Wetness.HEAVY_WET:
+			material.set_shader_parameter(
+				"palette_enabled",
+				true
+			)
+
+			material.set_shader_parameter(
+				"white_color",
+				HEAVY_WET_WHITE
+			)
+			material.set_shader_parameter(
+				"black_color",
+				HEAVY_WET_BLACK
+			)
+			material.set_shader_parameter(
+				"red_color",
+				HEAVY_WET_RED
+			)
 func _resolve_ground_type(
 	ground_effect: Types.GroundEffect
 ) -> GroundType:
@@ -143,7 +200,7 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	ball_horizontal_movement.step_logic_tick()
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
-	entity_visual_component.update_position(
+	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
 	)
@@ -157,14 +214,8 @@ func set_base_ground_type(
 	_base_ground_type = ground_type
 	
 ## 返回足球当前湿度等级。
-func get_wetness() -> Wetness:
-	if _wetness_value >= HEAVY_WET_THRESHOLD:
-		return Wetness.HEAVY_WET
-
-	if _wetness_value >= LIGHT_WET_THRESHOLD:
-		return Wetness.LIGHT_WET
-
-	return Wetness.DRY
+#func get_wetness() -> Wetness:
+	#return wetness
 ## 清除足球累计湿度。
 ##
 ## 仅在已确认会清除湿度的足球规则中调用。
@@ -179,11 +230,18 @@ func _update_wetness(ground_effect: Types.GroundEffect) -> void:
 		_wetness_value + 1,
 		MAX_WETNESS_VALUE
 	)
+
+	if _wetness_value >= HEAVY_WET_THRESHOLD:
+		wetness = Wetness.HEAVY_WET
+	elif _wetness_value >= LIGHT_WET_THRESHOLD:
+		wetness = Wetness.LIGHT_WET
+	else:
+		wetness = Wetness.DRY
 # ==============================================================================
 # 7. 基础状态查询
 # ==============================================================================
 func _update_visual() -> void:
-	entity_visual_component.set_shadow_visible(
+	entity_position_visual_component.set_shadow_visible(
 		is_in_air() and not ball_z_movement.landed_this_tick()
 	)
 func get_logical_position() -> Vector2:

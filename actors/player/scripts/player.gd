@@ -48,8 +48,7 @@ const COLLISION_HEIGHT: int = 32
 	$Components/StepAnimationComponent
 )
 
-@onready var entity_visual_component: EntityVisualComponent = $Components/EntityVisualComponent
-
+@onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
 
 @onready var visual: Node2D = $Visual
 @onready var colliders: Node2D = $Colliders
@@ -138,10 +137,10 @@ func logic_tick() -> void:
 		input_component.move_dir.x
 	)
 	player_horizontal_movement.step_logic_tick()
-	entity_visual_component.set_shadow_visible(is_in_air())
+	entity_position_visual_component.set_shadow_visible(is_in_air())
 	_process_ball_contact()
 	_process_ball_control()
-	entity_visual_component.update_position(
+	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
 	)
@@ -223,7 +222,7 @@ func _update_facing(
 		return
 
 	facing_direction = new_facing
-	entity_visual_component.set_facing_direction(facing_direction)
+	entity_position_visual_component.set_facing_direction(facing_direction)
 
 
 ## 角色接球自动转向
@@ -237,12 +236,12 @@ func _face_ball() -> void:
 	)
 
 	if ball_x < player_x:
-		entity_visual_component.set_facing_direction(
+		entity_position_visual_component.set_facing_direction(
 			Vector2.LEFT
 		)
 
 	elif ball_x > player_x:
-		entity_visual_component.set_facing_direction(
+		entity_position_visual_component.set_facing_direction(
 			Vector2.RIGHT
 		)
 

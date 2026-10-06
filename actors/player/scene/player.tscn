@@ -26,7 +26,7 @@
 [ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
 [ext_resource type="Script" uid="uid://cc6oarany78mb" path="res://actors/player/states/player_knockback_state.gd" id="20_t3a7u"]
 [ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
-[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_component.gd" id="24_h2l6i"]
+[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_position_visual_component.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
 [ext_resource type="Script" uid="uid://c4t30yi2wy44e" path="res://visual_component.gd" id="27_a2yjh"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
@@ -777,7 +777,7 @@ anim_player = NodePath("../../AnimationPlayer")
 [node name="PlayerHorizontalMovement" type="Node" parent="Components" unique_id=769462864]
 script = ExtResource("23_c8mko")
 
-[node name="EntityVisualComponent" type="Node" parent="Components" unique_id=500229569 node_paths=PackedStringArray("position_target", "visual_pivot", "shadow_sprite")]
+[node name="EntityPositionVisualComponent" type="Node" parent="Components" unique_id=500229569 node_paths=PackedStringArray("position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("24_h2l6i")
 position_target = NodePath("../..")
 visual_pivot = NodePath("../../Visual")

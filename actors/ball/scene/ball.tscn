@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://actors/ball/components/ball_z_movement.gd" id="11_begx4"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
 [ext_resource type="Script" uid="uid://djtmyon3il0b5" path="res://actors/ball/components/ball_horizontal_component.gd" id="14_1xsu1"]
-[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_visual_component.gd" id="14_h8xgc"]
+[ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_position_visual_component.gd" id="14_h8xgc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
 size = Vector2(16, 12)
@@ -180,8 +180,10 @@ size = Vector2(16, 12)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l8wax"]
 shader = ExtResource("11_au374")
-shader_parameter/from_color = Color(0.9255, 0.9333, 0.9255, 1)
-shader_parameter/to_color = Color(0.9255, 0.4157, 0.3922, 1)
+shader_parameter/palette_enabled = false
+shader_parameter/white_color = Color(0, 0, 0, 1)
+shader_parameter/black_color = Color(0, 0, 0, 1)
+shader_parameter/red_color = Color(0, 0, 0, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 12)
@@ -269,7 +271,7 @@ script = ExtResource("14_1xsu1")
 [node name="TickTimerComponent" type="Node" parent="Components" unique_id=1976622560]
 script = ExtResource("11_aduox")
 
-[node name="EntityVisualComponent" type="Node" parent="Components" unique_id=1813904894 node_paths=PackedStringArray("position_target", "visual_pivot", "shadow_sprite")]
+[node name="EntityPositionVisualComponent" type="Node" parent="Components" unique_id=1813904894 node_paths=PackedStringArray("position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("14_h8xgc")
 position_target = NodePath("../..")
 visual_pivot = NodePath("../../Visual")
