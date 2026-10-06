@@ -5,6 +5,7 @@ class_name SoccerMatch
 @export var ball: Ball
 @onready var player: Player = $Player
 @onready var fc_logic_clock: FCLogicClock = $FCLogicClock
+@onready var field: Field = $GrassField
 
 var ball_carrier: Player = null
 
@@ -18,7 +19,24 @@ func _on_logic_tick() -> void:
 
 	ball.logic_tick()
 
+## SoccerMatch
+##
+## 一场足球比赛的主场景。
+##
+## 负责组织比赛级对象，并向 Player / Ball 提供整场比赛共享的环境信息。
+
+
+## 比赛主地面类型。
+##
+## NORMAL：
+## 草地和土地。目前两者使用相同的物理规则。
+##
+## SAND：
+## 沙地。使用沙地对应的物理规则。
+
 func _ready() -> void:
+	ball.set_field(field)
+	ball.set_ground_type(field.get_ground_type())
 	fc_logic_clock.logic_tick.connect(_on_logic_tick)
 	_collect_teams()
 	_setup_players()

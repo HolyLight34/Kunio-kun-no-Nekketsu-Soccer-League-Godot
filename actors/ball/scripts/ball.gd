@@ -77,7 +77,7 @@ var stationary_flick_active: bool = false
 ## 角色拾取候选数组
 var _receiver_candidates: Array[Player] = []
 
-
+var _ground_type: Field.GroundType
 var carrier: Player = null:
 	set(value):
 		if carrier == value:
@@ -85,12 +85,19 @@ var carrier: Player = null:
 
 		carrier = value
 		possession_changed.emit(carrier)
+var _field: Field
 
+
+func set_field(field: Field) -> void:
+	_field = field
 
 # ==============================================================================
 # 5. 生命周期
 # ==============================================================================
-
+func get_ground_effect() -> Field.GroundEffect:
+	return _field.get_ground_effect_at(
+		get_logical_position()
+	)
 func _ready() -> void:
 	#sprite_2d.material.set_shader_parameter(
 		#"to_color",
@@ -120,13 +127,17 @@ func logic_tick() -> void:
 		get_logical_position(),
 		get_z_height()
 	)
-	entity_visual_component.set_shadow_visible(is_in_air())
+	_update_visual()
+	print(get_ground_effect())
 
 
 # ==============================================================================
 # 7. 基础状态查询
 # ==============================================================================
-
+func _update_visual() -> void:
+	entity_visual_component.set_shadow_visible(
+		is_in_air() and not ball_z_movement.landed_this_tick()
+	)
 func get_logical_position() -> Vector2:
 	return ball_horizontal_movement.get_horizontal_position()
 
@@ -145,6 +156,10 @@ func get_z_height() -> float:
 func get_collision_height() -> int:
 	return COLLISION_HEIGHT
 
+
+
+func set_ground_type(value: Field.GroundType) -> void:
+	_ground_type = value
 
 func is_in_air() -> bool:
 	return ball_z_movement.is_in_air
@@ -324,7 +339,6 @@ func _prepare_hit(
 	hit_info.payload = payload
 
 	hit_box.set_hit_info(hit_info)
-
 
 # ==============================================================================
 # 13. HurtBox 命中处理

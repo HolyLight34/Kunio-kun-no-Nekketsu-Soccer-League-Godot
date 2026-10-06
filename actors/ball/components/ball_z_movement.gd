@@ -161,11 +161,11 @@ func launch(initial_velocity: float) -> void:
 	is_in_air = true
 
 
-## 直接设置 raw Z 高度。
+## 直接设置 Z 高度。
 ##
 ## 用于已经确认需要外部修正足球高度的规则。
-func set_height_raw(height_raw: int) -> void:
-	z_height_raw = height_raw
+func set_z_height(z_height: float) -> void:
+	z_height_raw = FixedPoint.to_raw(z_height)
 	
 func get_z_height() -> float:
 	return FixedPoint.from_raw(z_height_raw)
@@ -185,7 +185,11 @@ func start_height_hold() -> void:
 func stop_height_hold() -> void:
 	gravity_enabled = true
 
+var _landed_this_tick: bool = false
 
+
+func landed_this_tick() -> bool:
+	return _landed_this_tick
 # ==============================================================================
 # Logic Tick
 # ==============================================================================
@@ -204,6 +208,7 @@ func logic_tick(
 	ground_type: Ball.GroundType,
 	wetness: Ball.Wetness
 ) -> void:
+	_landed_this_tick = false
 	if not is_in_air:
 		return
 
@@ -228,13 +233,13 @@ func _process_landing(
 	ground_type: Ball.GroundType,
 	wetness: Ball.Wetness
 ) -> void:
+	_landed_this_tick = true
 	_apply_landing_height_correction()
 
 	_apply_rebound_velocity_raw(
 		ground_type,
 		wetness
 	)
-
 	# 每次触地都会发送。
 	#
 	# BallHorizontalComponent 可以监听该信号，

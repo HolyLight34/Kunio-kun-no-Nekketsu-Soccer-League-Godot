@@ -63,12 +63,10 @@ func physics_tick() -> void:
 	# --------------------------------------------------------------------------
 	# 带球跳跃
 	#
-	# 角色处于空中时，足球 Z 高度同步角色 Z。
+	# 足球 Z 高度同步角色 Z。
 	# --------------------------------------------------------------------------
-
-	if ball.carrier.is_in_air():
-		ball.ball_z_movement.set_z_height(
-			ball.carrier.get_z_height()
-		)
+	ball.ball_z_movement.set_z_height(
+		ball.carrier.get_z_height()
+	)
 	pass
 	
