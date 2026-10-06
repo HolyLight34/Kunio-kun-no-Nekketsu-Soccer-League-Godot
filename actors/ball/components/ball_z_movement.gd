@@ -303,7 +303,7 @@ func _apply_rebound_velocity_raw(
 ## 根据地面类型与足球湿润程度，
 ## 获取 FC 反弹公式使用的固定速度损耗。
 func _get_bounce_loss_raw(
-	ground_type: Ball.GroundType,
+	ground_type:Ball.GroundType,
 	wetness: Ball.Wetness
 ) -> int:
 	var wet_index: int = (

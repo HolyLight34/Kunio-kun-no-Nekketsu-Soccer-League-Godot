@@ -74,7 +74,6 @@ const COLLISION_HEIGHT: int = 32
 var ball: Ball
 
 var ball_possession: Types.BallPossession
-var _ground_type: Field.GroundType
 
 
 
@@ -151,8 +150,7 @@ func logic_tick() -> void:
 # ==============================================================================
 # 7. 基础查询
 # ==============================================================================
-func set_ground_type(value: Field.GroundType) -> void:
-	_ground_type = value
+
 func get_logical_position() -> Vector2:
 	return player_horizontal_movement.get_horizontal_position()
 

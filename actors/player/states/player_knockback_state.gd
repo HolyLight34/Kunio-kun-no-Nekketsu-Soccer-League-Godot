@@ -1,14 +1,14 @@
 extends PlayerState
-var hurt_type: Types.HurtType
+
 
 func enter(attack_direction: Vector2) -> void:
 	player.ball_receiver_area.disable()
 	if _is_hit_from_front(attack_direction):
-		anim.play("heavy_hurt_front")
+		anim.play(anim_name)
 		
 	else :
 		anim.play("hurt_back")
-	player.player_z_movement.apply_vertical_velocity(4)
+	player.player_z_movement.jump(4)
 	var knockback_direction: Vector2
 	knockback_direction = _calculate_knockback_direction(
 		attack_direction,

@@ -744,10 +744,12 @@ state = 14
 [node name="Rebond" type="Node" parent="Components/StateMachine" unique_id=178303586]
 script = ExtResource("19_a2yjh")
 state = 15
+anim_name = &"hurt_rebound_front"
 
 [node name="Knockback" type="Node" parent="Components/StateMachine" unique_id=1674390075]
 script = ExtResource("20_t3a7u")
 state = 16
+anim_name = &"hurt_knockback_front"
 
 [node name="Juggle" type="Node" parent="Components/StateMachine" unique_id=881898648]
 script = ExtResource("20_a2yjh")

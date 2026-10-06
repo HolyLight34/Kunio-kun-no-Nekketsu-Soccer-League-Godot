@@ -23,38 +23,11 @@ extends Node
 ## - 决定 Player / Ball 如何响应地形。
 
 
-## 球场的基础地面类型。
-##
-## NORMAL：
-## 草地和土地。目前两者使用相同的基础物理规则。
-##
-## SAND：
-## 沙地。使用沙地对应的基础物理规则。
-enum GroundType {
-	NORMAL,
-	SAND,
-}
-
-
-## 球场中的特殊地形效果。
-##
-## NONE：
-## 当前坐标没有特殊地形。
-##
-## PUDDLE：
-## 积水区域。
-##
-## MUD：
-## 泥地区域。
-enum GroundEffect {
-	NONE,
-	PUDDLE,
-	MUD,
-}
-
-
 ## 当前球场的基础地面类型。
-@export var ground_type: GroundType = GroundType.NORMAL
+##
+## GroundType 是比赛系统共享的地面类型，
+## 具体定义位于 Types 中。
+@export var ground_type: Types.BaseGroundType = Types.BaseGroundType.NORMAL
 
 
 ## 当前球场中的所有特殊地形区域。
@@ -69,22 +42,24 @@ func _ready() -> void:
 
 
 ## 返回当前球场的基础地面类型。
-func get_ground_type() -> GroundType:
+func get_ground_type() -> Types.BaseGroundType:
 	return ground_type
 
 
-## 返回指定世界逻辑坐标所在的特殊地形。
+## 返回指定世界逻辑坐标所在的特殊地形效果。
 ##
-## 按 SpecialGroundRegion 在场景树中的顺序进行检查。
-## 返回第一个包含该坐标的特殊地形。
+## 按 SpecialGroundRegion 在场景树中的顺序进行检查，
+## 返回第一个包含该坐标的特殊地形效果。
 ##
 ## 如果当前位置不属于任何特殊区域，则返回 NONE。
-func get_ground_effect_at(world_position: Vector2) -> GroundEffect:
+func get_ground_effect_at(
+	world_position: Vector2
+) -> Types.GroundEffect:
 	for region in _special_ground_regions:
 		if region.contains_point(world_position):
 			return region.effect
 
-	return GroundEffect.NONE
+	return Types.GroundEffect.NONE
 
 
 ## 收集当前 Field 直接持有的所有特殊地形区域。

@@ -21,22 +21,29 @@ const PLAYER_CONTROL_Y_OFFSET := 1.0
 # 场地表面类型
 # ==============================================================================
 
-## FC 当前地面物理类型。
-enum GroundType {
-	GRASS,   # $00 草地 / 普通地面
-	PUDDLE,  # $01 积水 / 水坑
-	SWAMP,     # $02 沼地
-	SAND,    # $03 沙地
-}
 
-
-## 足球湿润程度。
+## 足球湿度等级。
 enum Wetness {
-	DRY,        # 干球
-	LIGHT_WET,  # 轻度湿球，目前只影响表现
-	HEAVY_WET,  # 重度湿球，影响 Z 轴反弹
+	DRY,
+	LIGHT_WET,
+	HEAVY_WET,
 }
-@export var ground_type: GroundType = GroundType.GRASS
+
+
+## 轻度湿润阈值。
+const LIGHT_WET_THRESHOLD: int = 0x40
+
+## 重度湿润阈值。
+const HEAVY_WET_THRESHOLD: int = 0x80
+
+## 湿度累计最大值。
+const MAX_WETNESS_VALUE: int = 0xFF
+## 足球当前累计湿度。
+##
+## 在积水区域中，每个 FC 逻辑步增加 1。
+## 离开积水区域后不会自动减少。
+var _wetness_value: int = 0
+
 @export var wetness: Wetness = Wetness.DRY
 # ==============================================================================
 # 3. 节点引用
@@ -70,14 +77,21 @@ enum Wetness {
 # 4. 运行状态
 # ==============================================================================
 
-#var power: float
 ## 原地挑球标志 
 ## 解决原地挑球会触发自己的胸部停球
 var stationary_flick_active: bool = false
 ## 角色拾取候选数组
 var _receiver_candidates: Array[Player] = []
 
-var _ground_type: Field.GroundType
+var _base_ground_type: Types.BaseGroundType = Types.BaseGroundType.NORMAL
+enum GroundType {
+	NORMAL,
+	PUDDLE,
+	SWAMP,
+	SAND,
+}
+
+	
 var carrier: Player = null:
 	set(value):
 		if carrier == value:
@@ -85,19 +99,11 @@ var carrier: Player = null:
 
 		carrier = value
 		possession_changed.emit(carrier)
-var _field: Field
-
-
-func set_field(field: Field) -> void:
-	_field = field
 
 # ==============================================================================
 # 5. 生命周期
 # ==============================================================================
-func get_ground_effect() -> Field.GroundEffect:
-	return _field.get_ground_effect_at(
-		get_logical_position()
-	)
+
 func _ready() -> void:
 	#sprite_2d.material.set_shader_parameter(
 		#"to_color",
@@ -112,13 +118,27 @@ func _ready() -> void:
 	)
 	ball_z_movement.launch(8)
 
+func _resolve_ground_type(
+	ground_effect: Types.GroundEffect
+) -> GroundType:
+	match ground_effect:
+		Types.GroundEffect.PUDDLE:
+			return GroundType.PUDDLE
 
+		Types.GroundEffect.MUD:
+			return GroundType.SWAMP
+
+	if _base_ground_type == Types.BaseGroundType.SAND:
+		return GroundType.SAND
+
+	return GroundType.NORMAL
 # ==============================================================================
 # 6. Logic Tick
 # ==============================================================================
 
-func logic_tick() -> void:
+func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	state_machine.physics_tick()
+	var ground_type := _resolve_ground_type(ground_effect)
 	ball_z_movement.logic_tick(ground_type,wetness)
 	ball_horizontal_movement.step_logic_tick()
 	tick_timer_component.logic_tick()
@@ -128,9 +148,37 @@ func logic_tick() -> void:
 		get_z_height()
 	)
 	_update_visual()
-	print(get_ground_effect())
+	_update_wetness(ground_effect)
+	print(_wetness_value)
 
+func set_base_ground_type(
+	ground_type: Types.BaseGroundType
+) -> void:
+	_base_ground_type = ground_type
+	
+## 返回足球当前湿度等级。
+func get_wetness() -> Wetness:
+	if _wetness_value >= HEAVY_WET_THRESHOLD:
+		return Wetness.HEAVY_WET
 
+	if _wetness_value >= LIGHT_WET_THRESHOLD:
+		return Wetness.LIGHT_WET
+
+	return Wetness.DRY
+## 清除足球累计湿度。
+##
+## 仅在已确认会清除湿度的足球规则中调用。
+func clear_wetness() -> void:
+	_wetness_value = 0
+## 根据足球当前所在的特殊地形更新湿度。
+func _update_wetness(ground_effect: Types.GroundEffect) -> void:
+	if ground_effect != Types.GroundEffect.PUDDLE:
+		return
+
+	_wetness_value = mini(
+		_wetness_value + 1,
+		MAX_WETNESS_VALUE
+	)
 # ==============================================================================
 # 7. 基础状态查询
 # ==============================================================================
@@ -157,9 +205,6 @@ func get_collision_height() -> int:
 	return COLLISION_HEIGHT
 
 
-
-func set_ground_type(value: Field.GroundType) -> void:
-	_ground_type = value
 
 func is_in_air() -> bool:
 	return ball_z_movement.is_in_air

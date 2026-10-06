@@ -1,10 +1,6 @@
 class_name Types
 extends RefCounted
 
-enum HurtType {
-	NORMAL,
-	HEAVY,
-}
 enum HitType {
 	PASS,
 	KICK,
@@ -25,4 +21,13 @@ enum BallPossession {
 	MYSELF,     # 自己持球
 	TEAMMATE,   # 队友持球
 	OPPONENT,   # 对手持球
+}
+enum BaseGroundType {
+	NORMAL,
+	SAND,
+}
+enum GroundEffect {
+	NONE,
+	PUDDLE,
+	MUD,
 }
