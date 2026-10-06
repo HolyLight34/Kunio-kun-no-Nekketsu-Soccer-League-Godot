@@ -293,6 +293,7 @@ monitoring = false
 shape = SubResource("RectangleShape2D_qbh5u")
 
 [connection signal="hit_received" from="HurtBox" to="." method="_on_hurt_box_hit_received"]
+[connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]
 
 [editable path="HitBox"]
 [editable path="HurtBox"]

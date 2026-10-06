@@ -507,7 +507,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_igwkh"]
 resource_name = "stationary_flick"
-length = 0.2000016770975664
+length = 0.25000167970526965
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -792,7 +792,6 @@ frame = 0
 [node name="Colliders" type="Node2D" parent="." unique_id=1050309182]
 
 [node name="HitBox" parent="Colliders" unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("17_dg4u3")]
-visible = false
 collision_layer = 0
 collision_mask = 1
 monitoring = true
@@ -803,7 +802,6 @@ metadata/_edit_lock_ = true
 shape = SubResource("RectangleShape2D_6npms")
 
 [node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
-visible = false
 collision_layer = 1
 collision_mask = 0
 monitoring = false

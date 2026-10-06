@@ -29,7 +29,6 @@ enum Wetness {
 	HEAVY_WET,
 }
 
-
 ## 轻度湿润阈值。
 const LIGHT_WET_THRESHOLD: int = 0x40
 
@@ -91,14 +90,12 @@ var wetness: Wetness = Wetness.DRY:
 # 4. 运行状态
 # ==============================================================================
 
-## 原地挑球标志 
-## 解决原地挑球会触发自己的胸部停球
-var stationary_flick_active: bool = false
+
 ## 角色拾取候选数组
 var _receiver_candidates: Array[Player] = []
 
 var _base_ground_type: Types.BaseGroundType = Types.BaseGroundType.NORMAL
-
+var stationary_flick_active := false
 enum GroundType {
 	NORMAL,
 	PUDDLE,
@@ -106,7 +103,13 @@ enum GroundType {
 	SAND,
 }
 
-	
+enum ReceiveType {
+	NONE,
+	GROUND_PICKUP,
+	AIR_CONTROL,
+	STATIONARY_FLICK,
+}
+
 var carrier: Player = null:
 	set(value):
 		if carrier == value:
@@ -127,7 +130,7 @@ func _ready() -> void:
 	ball_z_movement.finished.connect(
 		ball_horizontal_movement.roll
 	)
-	ball_z_movement.launch(8)
+	#ball_z_movement.launch(8)
 func _apply_wetness_shader() -> void:
 	var material := ball_sprite.material as ShaderMaterial
 
@@ -182,7 +185,7 @@ func _resolve_ground_type(
 		Types.GroundEffect.PUDDLE:
 			return GroundType.PUDDLE
 
-		Types.GroundEffect.MUD:
+		Types.GroundEffect.SWAMP:
 			return GroundType.SWAMP
 
 	if _base_ground_type == Types.BaseGroundType.SAND:
@@ -196,7 +199,7 @@ func _resolve_ground_type(
 func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	state_machine.physics_tick()
 	var ground_type := _resolve_ground_type(ground_effect)
-	ball_z_movement.logic_tick(ground_type,wetness)
+	ball_z_movement.logic_tick(ground_type,wetness,carrier == null)
 	ball_horizontal_movement.step_logic_tick()
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
@@ -206,21 +209,19 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	)
 	_update_visual()
 	_update_wetness(ground_effect)
-	print(_wetness_value)
 
 func set_base_ground_type(
 	ground_type: Types.BaseGroundType
 ) -> void:
 	_base_ground_type = ground_type
 	
-## 返回足球当前湿度等级。
-#func get_wetness() -> Wetness:
-	#return wetness
 ## 清除足球累计湿度。
 ##
 ## 仅在已确认会清除湿度的足球规则中调用。
 func clear_wetness() -> void:
 	_wetness_value = 0
+	
+
 ## 根据足球当前所在的特殊地形更新湿度。
 func _update_wetness(ground_effect: Types.GroundEffect) -> void:
 	if ground_effect != Types.GroundEffect.PUDDLE:
@@ -237,12 +238,29 @@ func _update_wetness(ground_effect: Types.GroundEffect) -> void:
 		wetness = Wetness.LIGHT_WET
 	else:
 		wetness = Wetness.DRY
+
+func get_receive_type() -> ReceiveType:
+	# 原地挑球第一次落地前的特殊接球规则。
+	if stationary_flick_active:
+		return ReceiveType.STATIONARY_FLICK
+
+	# 有整数高度：空中球。
+	if is_in_air():
+		return ReceiveType.AIR_CONTROL
+
+	# 整数高度虽然还是 0，
+	# 但足球正在向上运动，不能作为地面球拾取。
+	if ball_z_movement.is_rising():
+		return ReceiveType.NONE
+
+	# 普通地面球。
+	return ReceiveType.GROUND_PICKUP
 # ==============================================================================
 # 7. 基础状态查询
 # ==============================================================================
 func _update_visual() -> void:
 	entity_position_visual_component.set_shadow_visible(
-		is_in_air() and not ball_z_movement.landed_this_tick()
+		is_in_air()
 	)
 func get_logical_position() -> Vector2:
 	return ball_horizontal_movement.get_horizontal_position()
@@ -265,11 +283,8 @@ func get_collision_height() -> int:
 
 
 func is_in_air() -> bool:
-	return ball_z_movement.is_in_air
+	return ball_z_movement.is_in_air()
 
-
-func is_stationary_flick_active() -> bool:
-	return stationary_flick_active
 
 
 func can_be_received() -> bool:
@@ -374,16 +389,19 @@ func apply_y_control(direction: int) -> void:
 # ==============================================================================
 func set_receivable_detection_enabled(enabled: bool) -> void:
 	ball_interactable_area.set_deferred("monitorable",enabled)
+	
+
 func receive_stationary_flick() -> void:
 	stationary_flick_active = true
-
+	release_from_carrier()
+	
 	ball_z_movement.launch(8)
 
 	state_machine.change_state(
 		BallState.State.FREE
 	)
-
-	release_from_carrier()
+	
+	
 
 
 func receive_moving_flick(kicker: Player) -> void:
@@ -551,3 +569,8 @@ func _apply_horizontal_launch(
 	ball_horizontal_movement.set_horizontal_velocity(
 		velocity
 	)
+
+
+func _on_ball_z_movement_landed() -> void:
+	if stationary_flick_active:
+		stationary_flick_active = false

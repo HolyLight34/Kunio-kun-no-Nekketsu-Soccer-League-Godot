@@ -1,12 +1,11 @@
 extends BallState
 
 func enter(_data) -> void:
+	ball.ball_z_movement.gravity_enable()
 	ball.release_from_carrier()
 	ball.set_receivable_detection_enabled(true)
 	anim.play(anim_name)
-	if ball.stationary_flick_active:
-		await ball.ball_z_movement.landed
-		ball.stationary_flick_active = false
+	
 
 
 func exit() -> void:

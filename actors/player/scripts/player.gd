@@ -218,14 +218,18 @@ func _update_facing(
 		else Vector2.LEFT
 	)
 
+	set_facing_direction(new_facing)
+
+func set_facing_direction(new_facing: Vector2) -> void:
 	if new_facing == facing_direction:
 		return
 
 	facing_direction = new_facing
-	entity_position_visual_component.set_facing_direction(facing_direction)
 
-
-## 角色接球自动转向
+	entity_position_visual_component.set_facing_direction(
+		facing_direction
+	)
+## 角色接球时面向足球。
 func _face_ball() -> void:
 	var player_x := FixedPoint.to_integer(
 		get_logical_position().x
@@ -236,14 +240,10 @@ func _face_ball() -> void:
 	)
 
 	if ball_x < player_x:
-		entity_position_visual_component.set_facing_direction(
-			Vector2.LEFT
-		)
+		set_facing_direction(Vector2.LEFT)
 
 	elif ball_x > player_x:
-		entity_position_visual_component.set_facing_direction(
-			Vector2.RIGHT
-		)
+		set_facing_direction(Vector2.RIGHT)
 
 
 # ==============================================================================
@@ -298,40 +298,49 @@ func _process_ball_contact() -> void:
 	if ball.get_receiver() != self:
 		return
 
-	# 地面球。
-	if not ball.is_in_air():
-		ball.receive_ground_pickup(self)
-		return
+	match ball.get_receive_type():
+		Ball.ReceiveType.NONE:
+			return
 
-	# 原地挑球特殊限制。
-	if (
-		ball.is_stationary_flick_active()
-		and
-		not is_moving()
-	):
-		return
+		Ball.ReceiveType.GROUND_PICKUP:
+			ball.receive_ground_pickup(self)
+			return
 
-	# 接到空中球时面向足球。
+		Ball.ReceiveType.STATIONARY_FLICK:
+			# 原地挑球特殊阶段：
+			# 角色静止时不能接，
+			# 移动时继续按照空中球处理。
+			if not is_moving():
+				return
+
+		Ball.ReceiveType.AIR_CONTROL:
+			pass
+
+	# 能执行到这里的足球，
+	# 都按照空中接球流程处理。
+
 	_face_ball()
 
-	# 空中接球。
+	# 角色自身在空中：空中控球。
 	if is_in_air():
 		ball.receive_air_control(self)
 		return
+
+	# 跑动中接到空中球：颠球。
 	if is_running():
-		if ball.is_in_air():
-			ball.receive_juggle(self)
-			state_machine.change_state(
-				PlayerState.State.JUGGLE
-			)
+		ball.receive_juggle(self)
+
+		state_machine.change_state(
+			PlayerState.State.JUGGLE
+		)
 		return
-	# 地面胸停。
+
+	# 站在地面接到空中球：胸停。
 	state_machine.change_state(
 		PlayerState.State.CHEST_TRAP
 	)
 
 	ball.receive_air_control(self)
-
 
 # ==============================================================================
 # 12. 足球 Shot 控制

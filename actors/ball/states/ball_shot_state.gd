@@ -21,16 +21,18 @@ func enter(data: KickData) -> void:
 	
 	ball.prepare_ball_attack_hit(attack_direction,power,5)
 	anim.play(anim_name)
-	ball.ball_z_movement.pause_z_motion()
+	ball.ball_z_movement.start_height_hold()
 	ball.tick_timer_component.start_timer(
 		"shot",
 		18
 	)
 	await ball.tick_timer_component.timer_finished
+	
 	change_state(State.FREE)
 func physics_tick() -> void:
 	pass
 func exit() -> void:
+	ball.ball_z_movement.stop_height_hold()
 	pass
 
 

@@ -36,6 +36,25 @@
 # VZ -= 0.5
 #
 # ------------------------------------------------------------------------------
+# 足球空中判定
+# ------------------------------------------------------------------------------
+#
+# 足球是否处于空中由当前 Z 高度决定。
+#
+# FC 在进行该判定时忽略低 8 位子像素部分：
+#
+# integer_z = Z >> 8
+#
+# integer_z > 0 时视为处于空中。
+#
+# 注意：
+# “处于空中”与“是否应用重力”是两个不同概念。
+#
+# 例如：
+# - 被角色携带跳跃时，足球可以 Z > 0，但不执行自身重力。
+# - 高度保持时，足球可以 Z > 0，但暂时关闭重力。
+#
+# ------------------------------------------------------------------------------
 # 足球落地
 # ------------------------------------------------------------------------------
 #
@@ -105,18 +124,18 @@ const GRAVITY_RAW: int = 0x0080
 ##
 ## 行索引对应 Ball.GroundType：
 ##
-##   0 / GRASS  = $013C:$00，草地 / 普通地面
+##   0 / NORMAL = $013C:$00，普通地面
 ##   1 / PUDDLE = $013C:$01，积水 / 水坑
 ##   2 / SWAMP  = $013C:$02，沼地
 ##   3 / SAND   = $013C:$03，沙地
 ##
 ## 列索引：
 ##
-##   0 = 干球物理
-##   1 = 湿球物理
+##   0 = 干球 / 轻湿球物理
+##   1 = 重湿球物理
 ##
-##                干球              湿球
-## GRASS          $0100 = 1.0       $0200 = 2.0
+##                干/轻湿          重湿
+## NORMAL         $0100 = 1.0       $0200 = 2.0
 ## PUDDLE         $0200 = 2.0       $0400 = 4.0
 ## SWAMP          $0800 = 8.0       $1000 = 16.0
 ## SAND           $0800 = 8.0       $1000 = 16.0
@@ -124,7 +143,7 @@ const GRAVITY_RAW: int = 0x0080
 ## 注意：
 ## 此值不是反弹倍率，而是 FC 反弹公式中的固定速度损耗。
 const FC_BOUNCE_LOSS_RAW: Array = [
-	[0x0100, 0x0200], # GRASS
+	[0x0100, 0x0200], # NORMAL
 	[0x0200, 0x0400], # PUDDLE
 	[0x0800, 0x1000], # SWAMP
 	[0x0800, 0x1000], # SAND
@@ -141,35 +160,67 @@ var z_height_raw: int = 0
 ## 当前足球 Z 速度。
 var z_velocity_raw: int = 0
 
-## 足球当前是否处于空中。
-var is_in_air: bool = false
-
 ## 当前是否应用普通 FC 重力。
 ##
-## false 时不会修改 VZ。
-## 主要用于保持当前高度等特殊 Z 运动。
-var gravity_enabled: bool = true
+## true：
+## 足球按照普通 Z 轴规则应用重力。
+##
+## false：
+## 不修改 VZ。
+##
+## 足球即使处于空中，也可以暂时关闭重力。
+## 例如高度保持、由其他对象控制高度等情况。
+var _gravity_enabled: bool = true
 
 
 # ==============================================================================
 # 外部接口
 # ==============================================================================
 
-## 以指定 Z 速度开始一次空中运动。
+## 以指定 Z 速度开始 Z 轴运动。
+##
+## 此方法只设置 Z 速度。
+## 足球是否处于空中由当前 Z 高度决定。
 func launch(initial_velocity: float) -> void:
 	z_velocity_raw = FixedPoint.to_raw(initial_velocity)
-	is_in_air = true
 
 
-## 直接设置 Z 高度。
+## 直接设置足球 Z 高度。
 ##
-## 用于已经确认需要外部修正足球高度的规则。
+## 只修改高度，不修改：
+## - Z 速度
+## - 重力状态
+##
+## 用于已经确认需要外部修正或同步足球高度的规则。
 func set_z_height(z_height: float) -> void:
 	z_height_raw = FixedPoint.to_raw(z_height)
-	
+
+
+## 返回足球当前完整 Z 高度。
+##
+## 保留 1 / 256 子像素精度。
 func get_z_height() -> float:
 	return FixedPoint.from_raw(z_height_raw)
 
+func is_rising() -> bool:
+	return z_velocity_raw > 0
+## 返回足球当前是否处于空中。
+##
+## FC 判定时忽略低 8 位子像素部分。
+## 只有 Z 的整数部分大于 0 时才视为处于空中。
+func is_in_air() -> bool:
+	return (z_height_raw >> 8) > 0
+
+## 启用普通 FC 重力。
+func gravity_enable() -> void:
+	_gravity_enabled = true
+
+
+## 禁用普通 FC 重力。
+##
+## 只停止应用重力，不修改当前 Z 速度。
+func gravity_disable() -> void:
+	_gravity_enabled = false
 ## 从当前高度开始保持 Z 高度。
 ##
 ## 高度保持期间：
@@ -178,18 +229,27 @@ func get_z_height() -> float:
 ## - Z 保持当前位置
 func start_height_hold() -> void:
 	z_velocity_raw = 0
-	gravity_enabled = false
+	gravity_disable()
 
 
 ## 结束高度保持，恢复普通重力。
 func stop_height_hold() -> void:
-	gravity_enabled = true
+	gravity_enable()
+## 将足球 Z 的整数部分同步到指定高度。
+##
+## 只修改 Z 的整数部分，
+## 足球自身低 8 位的子像素部分继续保留。
+##
+## FC 持球状态会使用这种方式同步角色高度。
+func sync_integer_height(z_height: float) -> void:
+	var target_raw: int = FixedPoint.to_raw(z_height)
 
-var _landed_this_tick: bool = false
+	z_height_raw = (
+		(target_raw & ~0xFF)
+		| (z_height_raw & 0xFF)
+	)
 
 
-func landed_this_tick() -> bool:
-	return _landed_this_tick
 # ==============================================================================
 # Logic Tick
 # ==============================================================================
@@ -206,23 +266,33 @@ func landed_this_tick() -> bool:
 ## 只根据它们执行对应的 Z 轴物理规则。
 func logic_tick(
 	ground_type: Ball.GroundType,
-	wetness: Ball.Wetness
+	wetness: Ball.Wetness,
+	can_bounce: bool
 ) -> void:
-	_landed_this_tick = false
-	if not is_in_air:
+
+	# 高度保持期间不执行自身 Z 轴运动。
+	if not _gravity_enabled:
+		return
+
+	# 没有 Z 速度，并且整数高度也已经归零，
+	# 当前没有需要执行的 Z 轴运动。
+	if z_velocity_raw == 0 and not is_in_air():
 		return
 
 	# FC：
 	# 先使用当前 VZ 更新 Z。
 	z_height_raw += z_velocity_raw
 
-	# 然后应用本 Logic Tick 的重力。
-	if gravity_enabled:
-		z_velocity_raw -= GRAVITY_RAW
+	# 然后应用重力。
+	z_velocity_raw -= GRAVITY_RAW
 
-	# 足球只有在下降并且 Z < 0 时才判定触地。
+	# 足球只有下降并且 Z < 0 时才触地。
 	if z_height_raw < 0 and z_velocity_raw < 0:
-		_process_landing(ground_type, wetness)
+		_process_landing(
+			ground_type,
+			wetness,
+			can_bounce
+		)
 
 
 # ==============================================================================
@@ -231,15 +301,20 @@ func logic_tick(
 
 func _process_landing(
 	ground_type: Ball.GroundType,
-	wetness: Ball.Wetness
+	wetness: Ball.Wetness,
+	can_bounce: bool
 ) -> void:
-	_landed_this_tick = true
+
 	_apply_landing_height_correction()
 
-	_apply_rebound_velocity_raw(
-		ground_type,
-		wetness
-	)
+	if can_bounce:
+		_apply_rebound_velocity_raw(
+			ground_type,
+			wetness
+		)
+	else:
+		z_velocity_raw = 0
+
 	# 每次触地都会发送。
 	#
 	# BallHorizontalComponent 可以监听该信号，
@@ -251,7 +326,6 @@ func _process_landing(
 	# --------------------------------------------------------------------------
 
 	if z_velocity_raw > 0:
-		is_in_air = true
 		return
 
 	# --------------------------------------------------------------------------
@@ -259,7 +333,6 @@ func _process_landing(
 	# --------------------------------------------------------------------------
 
 	z_velocity_raw = 0
-	is_in_air = false
 	finished.emit()
 
 
@@ -303,7 +376,7 @@ func _apply_rebound_velocity_raw(
 ## 根据地面类型与足球湿润程度，
 ## 获取 FC 反弹公式使用的固定速度损耗。
 func _get_bounce_loss_raw(
-	ground_type:Ball.GroundType,
+	ground_type: Ball.GroundType,
 	wetness: Ball.Wetness
 ) -> int:
 	var wet_index: int = (

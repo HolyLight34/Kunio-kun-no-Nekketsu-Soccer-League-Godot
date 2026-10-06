@@ -29,5 +29,5 @@ enum BaseGroundType {
 enum GroundEffect {
 	NONE,
 	PUDDLE,
-	MUD,
+	SWAMP,
 }
