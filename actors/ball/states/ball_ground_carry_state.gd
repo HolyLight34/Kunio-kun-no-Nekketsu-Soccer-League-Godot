@@ -31,7 +31,6 @@ func physics_tick() -> void:
 
 	var player_position := ball.carrier.get_logical_position()
 	var facing_direction := ball.carrier.get_facing_direction()
-	print(facing_direction)
 	# --------------------------------------------------------------------------
 	# 计算带球目标位置
 	#

@@ -108,7 +108,7 @@ signal finished
 ## 8.8 定点数：
 ## 0x0080 raw = 0.5。
 const GRAVITY_RAW: int = 0x0080
-
+const MIN_NEGATIVE_Z_MID: int = 0xFC
 
 # ==============================================================================
 # FC 足球触地反弹损耗
@@ -250,6 +250,26 @@ func sync_integer_height(z_height: float) -> void:
 	)
 
 
+## 足球陷入高度 
+func _apply_negative_height_limit() -> void:
+	if z_height_raw >= 0:
+		return
+
+	var low := z_height_raw & 0xFF
+	var mid := (z_height_raw >> 8) & 0xFF
+
+	if mid <= 0xFC:
+		mid = 0xFC
+
+	# 重新组合
+	var raw24 := (
+		(0xFF << 16)
+		| (mid << 8)
+		| low
+	)
+
+	z_height_raw = raw24 - 0x1000000
+
 # ==============================================================================
 # Logic Tick
 # ==============================================================================
@@ -269,7 +289,7 @@ func logic_tick(
 	wetness: Ball.Wetness,
 	can_bounce: bool
 ) -> void:
-
+	
 	# 高度保持期间不执行自身 Z 轴运动。
 	if not _gravity_enabled:
 		return
@@ -305,8 +325,8 @@ func _process_landing(
 	can_bounce: bool
 ) -> void:
 
-	_apply_landing_height_correction()
-
+	_apply_landing_height_correction(ground_type)
+	_apply_negative_height_limit()
 	if can_bounce:
 		_apply_rebound_velocity_raw(
 			ground_type,
@@ -343,7 +363,13 @@ func _process_landing(
 ## 应用 FC 足球触地后的高度修正规则。
 ##
 ## 清除 Z 的整数部分，只保留低 8 位子像素。
-func _apply_landing_height_correction() -> void:
+func _apply_landing_height_correction(ground_type) -> void:
+	if (
+		ground_type == Ball.GroundType.SWAMP
+		or
+		ground_type == Ball.GroundType.SAND
+	):
+		return
 	z_height_raw &= 0xFF
 
 
