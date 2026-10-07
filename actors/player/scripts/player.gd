@@ -47,22 +47,17 @@ const COLLISION_HEIGHT: int = 32
 @onready var step_animation_component: StepAnimationComponent = (
 	$Components/StepAnimationComponent
 )
+@onready var facing_root: Node2D = $FacingRoot
 
 @onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
 
-@onready var visual: Node2D = $Visual
-@onready var colliders: Node2D = $Colliders
-@onready var hit_box: HitBox = $Colliders/HitBox
+@onready var hit_box: HitBox = $FacingRoot/HitBox
 
 @onready var endurance_label: Label = $Label
 
-@onready var pass_target_detector: PassTargetDetector = (
-	$PassTargetDetector
-)
+@onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 
-@onready var ball_receiver_area: BallReceiverArea = (
-	$BallReceiverArea
-)
+@onready var ball_receiver_area: BallReceiverArea = $InteractionRoot/BallReceiverArea
 
 @onready var player_composite_sprite: PlayerCompositeSprite = $Visual/PlayerCompositeSprite
 
@@ -82,10 +77,6 @@ var facing_direction := Vector2.LEFT:
 			return
 
 		facing_direction = value
-
-		pass_target_detector.set_search_direction(
-			facing_direction
-		)
 
 
 # ==============================================================================
@@ -219,16 +210,25 @@ func _update_facing(
 	)
 
 	set_facing_direction(new_facing)
+func _update_facing_root() -> void:
+	if facing_direction.x < 0:
+		facing_root.scale.x = 1.0
 
+	elif facing_direction.x > 0:
+		facing_root.scale.x = -1.0
 func set_facing_direction(new_facing: Vector2) -> void:
 	if new_facing == facing_direction:
 		return
 
 	facing_direction = new_facing
 
+	# 更新视觉朝向
 	entity_position_visual_component.set_facing_direction(
 		facing_direction
 	)
+
+	# 更新方向相关检测区域
+	_update_facing_root()
 ## 角色接球时面向足球。
 func _face_ball() -> void:
 	var player_x := FixedPoint.to_integer(
@@ -367,11 +367,6 @@ func _process_ball_control() -> void:
 # ==============================================================================
 
 func _update_pass_search_direction() -> void:
-	if (
-		ball_possession
-		!= Types.BallPossession.MYSELF
-	):
-		return
 
 	if input_component.move_dir != Vector2.ZERO:
 		pass_target_detector.set_search_direction(
@@ -381,6 +376,7 @@ func _update_pass_search_direction() -> void:
 		pass_target_detector.set_search_direction(
 			facing_direction
 		)
+	
 
 
 # ==============================================================================

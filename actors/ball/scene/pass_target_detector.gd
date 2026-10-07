@@ -108,6 +108,7 @@ const DISTANCE_CORRECTION_LOW: Array[int] = [
 ## 这里只改变真实搜索方向。
 ## 角色 facing 不影响搜索区域方向。
 func set_search_direction(direction: Vector2) -> void:
+
 	if direction == Vector2.ZERO:
 		return
 

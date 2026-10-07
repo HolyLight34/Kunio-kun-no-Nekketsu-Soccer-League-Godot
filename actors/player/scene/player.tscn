@@ -28,7 +28,6 @@
 [ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_position_visual_component.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
-[ext_resource type="Script" uid="uid://c4t30yi2wy44e" path="res://visual_component.gd" id="27_a2yjh"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
 [ext_resource type="PackedScene" uid="uid://3raieqvx5gc4" path="res://actors/player/scripts/player_composite_sprite.tscn" id="28_t3a7u"]
 [ext_resource type="Script" uid="uid://bi7xhqr67b83e" path="res://actors/player/scripts/ball_receiver_area.gd" id="33_a2yjh"]
@@ -53,7 +52,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Colliders/HitBox/CollisionShape2D:position")
+tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -65,7 +64,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
+tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -77,7 +76,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -98,7 +97,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -115,7 +114,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -132,7 +131,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -149,7 +148,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -166,19 +165,19 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Colliders/HitBox/CollisionShape2D:position")
+tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(7, 0)]
+"values": [Vector2(-7, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -204,7 +203,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -221,7 +220,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -237,7 +236,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -254,7 +253,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -285,7 +284,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/1/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/1/interp = 0
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -302,7 +301,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -319,7 +318,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -336,19 +335,19 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Colliders/HitBox/CollisionShape2D:position")
+tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0.20000002),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(2, 0)]
+"values": [Vector2(-2, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -374,7 +373,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -391,7 +390,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -422,7 +421,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/1/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -439,19 +438,19 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Colliders/HitBox/CollisionShape2D:position")
+tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0.20000002),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(4, 0)]
+"values": [Vector2(-4, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -477,7 +476,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -495,7 +494,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -512,7 +511,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -529,19 +528,19 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Colliders/HitBox/CollisionShape2D:position")
+tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(8, 0)]
+"values": [Vector2(-8, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Colliders/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -567,7 +566,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -585,7 +584,7 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visual/PlayerCompositeSprite:frame")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -620,15 +619,15 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6npms"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f2m0f"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2yjh"]
-resource_local_to_scene = true
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6npms"]
+resource_local_to_scene = true
 size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "state_machine")]
@@ -780,28 +779,38 @@ script = ExtResource("23_c8mko")
 [node name="EntityPositionVisualComponent" type="Node" parent="Components" unique_id=500229569 node_paths=PackedStringArray("position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("24_h2l6i")
 position_target = NodePath("../..")
-visual_pivot = NodePath("../../Visual")
+visual_pivot = NodePath("../../VisualRoot")
 shadow_sprite = NodePath("../../Shadow")
 
-[node name="Visual" type="Node2D" parent="." unique_id=1064463610]
-script = ExtResource("27_a2yjh")
+[node name="VisualRoot" type="Node2D" parent="." unique_id=1064463610]
 
-[node name="PlayerCompositeSprite" parent="Visual" unique_id=487019932 instance=ExtResource("28_t3a7u")]
+[node name="PlayerCompositeSprite" parent="VisualRoot" unique_id=487019932 instance=ExtResource("28_t3a7u")]
 frame = 0
 
-[node name="Colliders" type="Node2D" parent="." unique_id=1050309182]
+[node name="FacingRoot" type="Node2D" parent="." unique_id=1050309182]
 
-[node name="HitBox" parent="Colliders" unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("17_dg4u3")]
+[node name="HitBox" parent="FacingRoot" unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("17_dg4u3")]
 collision_layer = 0
 collision_mask = 1
 monitoring = true
 source = NodePath("../..")
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" parent="Colliders/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_6npms")
+[node name="CollisionShape2D" parent="FacingRoot/HitBox" index="0" unique_id=886247332]
+shape = SubResource("RectangleShape2D_f2m0f")
 
-[node name="HurtBox" parent="Colliders" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
+[node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
+
+[node name="BallReceiverArea" type="Area2D" parent="InteractionRoot" unique_id=979579271]
+collision_layer = 0
+collision_mask = 8
+monitorable = false
+script = ExtResource("33_a2yjh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionRoot/BallReceiverArea" unique_id=1617378699]
+shape = SubResource("RectangleShape2D_qbh5u")
+
+[node name="HurtBox" parent="InteractionRoot" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
 collision_layer = 1
 collision_mask = 0
 monitoring = false
@@ -809,8 +818,8 @@ monitorable = true
 target = NodePath("../..")
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" parent="Colliders/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_a2yjh")
+[node name="CollisionShape2D" parent="InteractionRoot/HurtBox" index="0" unique_id=75084209]
+shape = SubResource("RectangleShape2D_6npms")
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0
@@ -820,21 +829,11 @@ script = ExtResource("28_iy78e")
 player = NodePath("..")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PassTargetDetector" unique_id=259109016]
-polygon = PackedVector2Array(0, 0, 896, -896, 896, 896)
+polygon = PackedVector2Array(0, 0, 896, 896, 896, -896)
 
-[node name="BallReceiverArea" type="Area2D" parent="." unique_id=979579271]
-visible = false
-collision_layer = 0
-collision_mask = 8
-monitorable = false
-script = ExtResource("33_a2yjh")
+[connection signal="area_entered" from="InteractionRoot/BallReceiverArea" to="InteractionRoot/BallReceiverArea" method="_on_area_entered"]
+[connection signal="area_exited" from="InteractionRoot/BallReceiverArea" to="InteractionRoot/BallReceiverArea" method="_on_area_exited"]
+[connection signal="hit_received" from="InteractionRoot/HurtBox" to="." method="_on_hurt_box_hit_received"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BallReceiverArea" unique_id=1617378699]
-shape = SubResource("RectangleShape2D_qbh5u")
-
-[connection signal="hit_received" from="Colliders/HurtBox" to="." method="_on_hurt_box_hit_received"]
-[connection signal="area_entered" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_entered"]
-[connection signal="area_exited" from="BallReceiverArea" to="BallReceiverArea" method="_on_area_exited"]
-
-[editable path="Colliders/HitBox"]
-[editable path="Colliders/HurtBox"]
+[editable path="FacingRoot/HitBox"]
+[editable path="InteractionRoot/HurtBox"]
