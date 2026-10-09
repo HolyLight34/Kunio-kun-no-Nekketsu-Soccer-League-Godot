@@ -119,10 +119,11 @@ func _physics_process(delta: float) -> void:
 
 func logic_tick() -> void:
 	state_machine.physics_tick()
-
-	step_animation_component.advance_tick()
-
 	player_z_movement.logic_tick()
+	step_animation_component.advance_tick()
+	
+
+	
 
 	_update_facing(
 		input_component.move_dir.x
@@ -135,6 +136,7 @@ func logic_tick() -> void:
 		get_logical_position(),
 		get_z_height()
 	)
+
 
 
 # ==============================================================================

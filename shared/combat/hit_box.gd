@@ -96,7 +96,6 @@ func set_hit_info(hit_info: HitInfo) -> void:
 
 ## Area2D 检测到其他 Area2D 进入时调用。
 func _on_area_entered(area: Area2D) -> void:
-	print("你好，")
 	if area is not HurtBox:
 		return
 

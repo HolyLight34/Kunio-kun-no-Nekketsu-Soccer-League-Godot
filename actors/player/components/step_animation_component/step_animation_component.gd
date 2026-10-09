@@ -33,7 +33,7 @@ func play(anim_name: String, force_restart: bool = false) -> void:
 	current_tick_count = 0 # 👈 切动画时，整数计数器纯净归 0
 	
 	anim_player.assigned_animation = anim_name
-	anim_player.seek(0.0, true)
+	anim_player.seek(0.0, false)
 
 ## 由 3-Tick 驱动
 func advance_tick() -> void:

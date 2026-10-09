@@ -2,8 +2,28 @@ class_name PlayerIntentResolver
 extends Node
 
 
+## PlayerIntentResolver
+##
+## 负责把玩家输入解析为基础游戏意图。
+##
+## 本组件可以根据球权关系解释 A / B 的基础含义，例如：
+##
+##     自己持球 + B -> KICK
+##     自己持球 + A -> PASS
+##     队友持球 + B -> COMMAND_SHOOT
+##     对手持球 + A -> TACKLE
+##
+## 但不负责解析依赖当前 Player State 的特殊动作，例如：
+##
+##     Jump + 反方向 + KICK -> BICYCLE_KICK
+##     Run + 特定输入        -> ELBOW_DIVE
+##     Run + 反方向          -> BRAKE
+##
+## 这些规则由对应 State 根据基础 Intent 继续解释。
+
+
 # ============================================================
-# 玩家意图
+# 玩家基础意图
 # ============================================================
 
 enum Intent {
@@ -18,30 +38,24 @@ enum Intent {
 	COMMAND_PASS,
 	COMMAND_SHOOT,
 
-	ELBOW_DIVE,
 	ELBOW_STRIKE,
 	TACKLE,
 }
 
 
 # ============================================================
-# 当前球权与自己的关系
-# ============================================================
-
-
-# ============================================================
 # 外部依赖
 # ============================================================
+
 var player: Player
 var input_component: InputComponent
 
 
-
 func init(
-	soure: Player,
+	source: Player,
 	input_node: InputComponent,
 ) -> void:
-	player = soure
+	player = source
 	input_component = input_node
 
 
@@ -189,7 +203,7 @@ func _collect_action_buttons() -> void:
 # ============================================================
 
 func _resolve_buffered_buttons() -> Intent:
-	# 缓冲期间继续检查按钮。
+	# 缓冲期间继续捕捉 A / B。
 	if input_component.btn_a:
 		buffered_a_pressed = true
 
@@ -197,23 +211,32 @@ func _resolve_buffered_buttons() -> Intent:
 		buffered_b_pressed = true
 
 
+	# --------------------------------------------------------
 	# A + B
+	# --------------------------------------------------------
+
 	if buffered_a_pressed and buffered_b_pressed:
 		return _finish_button_buffer(Intent.JUMP)
 
 
+	# --------------------------------------------------------
+	# 等待另一个按钮
+	# --------------------------------------------------------
+
 	button_buffer_frames += 1
 
-
-	# 仍处于等待窗口。
 	if button_buffer_frames < MAX_BUTTON_BUFFER_FRAMES:
+		# 输入缓冲期间仍然允许角色继续移动。
 		if input_component.move_dir != Vector2.ZERO:
 			return Intent.WALK
 
 		return Intent.IDLE
 
 
-	# 缓冲结束，结算单键动作。
+	# --------------------------------------------------------
+	# 缓冲结束，解析单键意图
+	# --------------------------------------------------------
+
 	var intent := _resolve_single_button_intent()
 
 	return _finish_button_buffer(intent)
@@ -221,12 +244,31 @@ func _resolve_buffered_buttons() -> Intent:
 
 # ============================================================
 # 单键动作解析
+#
+# A / B 的基础含义由当前球权关系决定。
+#
+# 注意：
+# 这里只解析所有状态共用的基础意图。
+#
+# 不在这里判断：
+# - 当前是否 Jump
+# - 当前是否 Run
+# - 是否输入反方向
+# - 是否应该倒钩
+# - 是否应该飞肘
+# - 是否应该刹车
+#
+# 这些属于具体 State 的动作规则。
 # ============================================================
 
 func _resolve_single_button_intent() -> Intent:
 	match player.ball_possession:
+
 		# ----------------------------------------------------
 		# 自己持球
+		#
+		# B -> 踢球
+		# A -> 传球
 		# ----------------------------------------------------
 
 		Types.BallPossession.MYSELF:
@@ -239,6 +281,9 @@ func _resolve_single_button_intent() -> Intent:
 
 		# ----------------------------------------------------
 		# 队友持球
+		#
+		# B -> 命令射门
+		# A -> 命令传球
 		# ----------------------------------------------------
 
 		Types.BallPossession.TEAMMATE:
@@ -251,26 +296,29 @@ func _resolve_single_button_intent() -> Intent:
 
 		# ----------------------------------------------------
 		# 对手持球
+		#
+		# B -> 肘击
+		# A -> 铲球
 		# ----------------------------------------------------
 
 		Types.BallPossession.OPPONENT:
-			if buffered_a_pressed:
-				return Intent.TACKLE
-
 			if buffered_b_pressed:
 				return Intent.ELBOW_STRIKE
+
+			if buffered_a_pressed:
+				return Intent.TACKLE
 
 
 		# ----------------------------------------------------
 		# 无人持球
+		#
+		# 目前继续解析为基础 KICK / PASS。
+		#
+		# 是否进一步变成倒钩、飞肘等特殊动作，
+		# 交给当前 State 判断。
 		# ----------------------------------------------------
 
 		Types.BallPossession.NONE:
-			if (
-				buffered_b_pressed
-				and _is_moving_horizontally()
-			):
-				return Intent.ELBOW_DIVE
 			if buffered_b_pressed:
 				return Intent.KICK
 
@@ -282,25 +330,7 @@ func _resolve_single_button_intent() -> Intent:
 
 
 # ============================================================
-# 查询当前球权
-# ============================================================
-
-
-
-
-# ============================================================
-# 是否正在纯横向移动
-# ============================================================
-
-func _is_moving_horizontally() -> bool:
-	return (
-		input_component.move_dir.x != 0.0
-		and input_component.move_dir.y == 0.0
-	)
-
-
-# ============================================================
-# 完成按钮缓冲并返回最终意图
+# 完成按钮缓冲
 # ============================================================
 
 func _finish_button_buffer(result: Intent) -> Intent:

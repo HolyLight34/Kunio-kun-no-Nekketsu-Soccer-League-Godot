@@ -299,11 +299,7 @@ func logic_tick(
 	if z_velocity_raw == 0 and not is_in_air():
 		return
 
-	# FC：
-	# 先使用当前 VZ 更新 Z。
 	z_height_raw += z_velocity_raw
-
-	# 然后应用重力。
 	z_velocity_raw -= GRAVITY_RAW
 
 	# 足球只有下降并且 Z < 0 时才触地。

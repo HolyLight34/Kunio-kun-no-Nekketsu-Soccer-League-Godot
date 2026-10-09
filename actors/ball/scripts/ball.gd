@@ -221,7 +221,6 @@ func set_base_ground_type(
 func clear_wetness() -> void:
 	_wetness_value = 0
 	
-
 ## 根据足球当前所在的特殊地形更新湿度。
 func _update_wetness(ground_effect: Types.GroundEffect) -> void:
 	if ground_effect != Types.GroundEffect.PUDDLE:
@@ -290,7 +289,14 @@ func is_in_air() -> bool:
 func can_be_received() -> bool:
 	return carrier == null
 
+## 开启命中判定窗口。
+func enable_hit() -> void:
+	hit_box.enabled = true
 
+
+## 关闭命中判定窗口。
+func disable_hit() -> void:
+	hit_box.enabled = false
 # ==============================================================================
 # 8. 球权
 # ==============================================================================
@@ -302,7 +308,10 @@ func receive_ground_pickup(player: Player) -> void:
 		BallState.State.GROUND_CARRY
 	)
 
-
+func receive_bicycle_kick_flick() -> void:
+	state_machine.change_state(
+		BallState.State.BICYCLE_KICK_FLICK
+	)
 func receive_air_control(player: Player) -> void:
 	carrier = player
 

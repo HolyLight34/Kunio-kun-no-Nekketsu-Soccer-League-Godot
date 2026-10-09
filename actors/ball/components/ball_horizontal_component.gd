@@ -147,16 +147,7 @@ var horizontal_velocity_raw: Vector2i = Vector2i.ZERO
 ## 这不是空中状态。
 ## 空中状态由 BallZMovement 管理。
 var is_rolling: bool = false
-# ==============================================================================
-# 当前 Logic Tick 运动数据
-# ==============================================================================
-## 当前 Tick 已执行到第几个 Physics Frame。
-var tick_motion_frame: int = 0
-## 当前 Logic Tick 锁定的总位移。
-##
-## Tick 开始以后，即使 velocity 再变化，
-## 当前 Tick 位移也不会变化。
-var tick_displacement_raw: Vector2i = Vector2i.ZERO
+
 # ==============================================================================
 # 对外位置 / 速度接口
 # ==============================================================================
@@ -182,6 +173,14 @@ func get_horizontal_velocity() -> Vector2:
 		_from_raw(horizontal_velocity_raw.x),
 		_from_raw(horizontal_velocity_raw.y)
 	)
+func set_horizontal_position_raw(value: Vector2i) -> void:
+	horizontal_position_raw = value
+func set_horizontal_velocity_raw(value: Vector2i) -> void:
+	horizontal_velocity_raw = value
+func get_horizontal_position_raw() -> Vector2i:
+	return horizontal_position_raw
+func get_horizontal_velocity_raw() -> Vector2i:
+	return horizontal_velocity_raw
 # ==============================================================================
 # 空中水平速度
 # ==============================================================================
@@ -330,9 +329,6 @@ func step_logic_tick() -> void:
 	# --------------------------------------------------------------------------
 	# 锁定本 Tick 位移
 	# --------------------------------------------------------------------------
-	tick_displacement_raw = (
-		horizontal_velocity_raw
-	)
 	# --------------------------------------------------------------------------
 	# 滚动彻底停止
 	# --------------------------------------------------------------------------
@@ -343,92 +339,14 @@ func step_logic_tick() -> void:
 	):
 		is_rolling = false
 		horizontal_stopped.emit()
-	# --------------------------------------------------------------------------
-	# 决定如何执行位置积分
-	# --------------------------------------------------------------------------
-	if GameSettings.is_classic_motion():
-		_process_classic_motion()
-	else:
-		_prepare_smooth_motion()
+	## --------------------------------------------------------------------------
+	## 决定如何执行位置积分
+	## --------------------------------------------------------------------------
+	horizontal_position_raw += horizontal_velocity_raw
 # ==============================================================================
 # CLASSIC
 # ==============================================================================
-## 一个 Logic Tick 一次完成全部水平位移。
-func _process_classic_motion() -> void:
-	horizontal_position_raw += (
-		tick_displacement_raw
-	)
-	tick_motion_frame = (
-		PHYSICS_FRAMES_PER_LOGIC_TICK
-	)
-# ==============================================================================
-# SMOOTH
-# ==============================================================================
-## 准备开始新的三帧运动。
-func _prepare_smooth_motion() -> void:
-	tick_motion_frame = 0
-# ==============================================================================
-# Physics Frame
-# ==============================================================================
-func _physics_process(_delta: float) -> void:
-	# CLASSIC 已经在 Logic Tick 中完成位置积分。
-	if GameSettings.is_classic_motion():
-		return
-	if (
-		tick_motion_frame
-		>= PHYSICS_FRAMES_PER_LOGIC_TICK
-	):
-		return
-	tick_motion_frame += 1
-	horizontal_position_raw += Vector2i(
-		_get_motion_frame_displacement(
-			tick_displacement_raw.x,
-			tick_motion_frame
-		),
-		_get_motion_frame_displacement(
-			tick_displacement_raw.y,
-			tick_motion_frame
-		)
-	)
-# ==============================================================================
-# 三帧位移分配
-# ==============================================================================
-## 计算当前这一 Physics Frame 单独应该移动多少 raw。
-##
-## 例：
-##
-## 总位移 = 608
-##
-## Frame 1 = 203
-## Frame 2 = 202
-## Frame 3 = 203
-##
-## 总计 = 608
-func _get_motion_frame_displacement(
-	total_displacement_raw: int,
-	frame: int
-) -> int:
-	var current_progress := (
-		float(frame)
-		/ float(PHYSICS_FRAMES_PER_LOGIC_TICK)
-	)
-	var previous_progress := (
-		float(frame - 1)
-		/ float(PHYSICS_FRAMES_PER_LOGIC_TICK)
-	)
-	var total_moved_now_raw := roundi(
-		total_displacement_raw
-		* current_progress
-	)
-	var total_moved_before_raw := roundi(
-		total_displacement_raw
-		* previous_progress
-	)
-	return (
-		total_moved_now_raw
-		-
-		total_moved_before_raw
-	)
+		
 # ==============================================================================
 # 强制停止
 # ==============================================================================
@@ -440,9 +358,6 @@ func stop_immediately() -> void:
 		is_rolling
 	)
 	horizontal_velocity_raw = (
-		Vector2i.ZERO
-	)
-	tick_displacement_raw = (
 		Vector2i.ZERO
 	)
 	is_rolling = false

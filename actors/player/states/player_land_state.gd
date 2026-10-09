@@ -3,7 +3,6 @@ extends PlayerState
 func enter(_data) -> void:
 	player.step_animation_component.play(anim_name)
 	await anim.animation_finished
-	print("当前位置",player.position)
 	change_state(State.IDLE)
 	pass
 
