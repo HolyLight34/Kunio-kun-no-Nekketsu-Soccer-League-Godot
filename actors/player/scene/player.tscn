@@ -25,6 +25,7 @@
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="20_c0821"]
 [ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
 [ext_resource type="Script" uid="uid://cc6oarany78mb" path="res://actors/player/states/player_knockback_state.gd" id="20_t3a7u"]
+[ext_resource type="Script" uid="uid://crqd02cg5txao" path="res://actors/player/states/player_air_kick_state.gd" id="21_6npms"]
 [ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_position_visual_component.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
@@ -96,6 +97,61 @@ tracks/4/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_jgjso"]
+resource_name = "air_kick"
+length = 0.7000017031745985
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.20000002, 0.40000004, 0.55),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [2, 39, 13, 28]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.20000002),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(16, 8)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.20000002),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-8, 0)]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_6npms"]
@@ -680,6 +736,7 @@ tracks/0/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tg3sl"]
 _data = {
 &"RESET": SubResource("Animation_0hol4"),
+&"air_kick": SubResource("Animation_jgjso"),
 &"bicycle_kick": SubResource("Animation_6npms"),
 &"bicycle_kick_with_ball": SubResource("Animation_t3a7u"),
 &"brake": SubResource("Animation_3lvlc"),
@@ -846,6 +903,11 @@ script = ExtResource("15_wkl3h")
 state = 8
 facing_mode = 1
 anim_name = &"elbow_strike"
+
+[node name="AirKick" type="Node" parent="Components/StateMachine" unique_id=474948466]
+script = ExtResource("21_6npms")
+state = 18
+anim_name = &"air_kick"
 
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
