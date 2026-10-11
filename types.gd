@@ -17,6 +17,11 @@ enum TeamAttackDirection {
 	LEFT,
 	RIGHT,
 }
+enum ShotMode {
+	NORMAL,    ## FC $80
+	DOWNWARD,  ## FC $81
+	UPWARD,    ## FC $82
+}
 enum Team {
 	TEAM_1,
 	TEAM_2,

@@ -96,6 +96,7 @@ var _receiver_candidates: Array[Player] = []
 
 var _base_ground_type: Types.BaseGroundType = Types.BaseGroundType.NORMAL
 var stationary_flick_active := false
+var action_calculator: BallActionCalculator
 enum GroundType {
 	NORMAL,
 	PUDDLE,
@@ -130,7 +131,7 @@ func _ready() -> void:
 	ball_z_movement.finished.connect(
 		ball_horizontal_movement.roll
 	)
-	#ball_z_movement.launch(8)
+	
 func _apply_wetness_shader() -> void:
 	var material := ball_sprite.material as ShaderMaterial
 

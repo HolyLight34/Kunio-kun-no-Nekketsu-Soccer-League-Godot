@@ -23,7 +23,7 @@ extends Node
 
 @onready var fc_logic_clock: FCLogicClock = $FCLogicClock
 @onready var field: Field = $GrassField
-
+var ball_action_calculator := BallActionCalculator.new()
 var team1: Array[Player] = []
 var team2: Array[Player] = []
 
@@ -31,6 +31,9 @@ var team2: Array[Player] = []
 func _ready() -> void:
 	fc_logic_clock.logic_tick.connect(_on_logic_tick)
 	ball.set_base_ground_type(field.get_ground_type())
+	var field_data := field.create_ball_field_data()
+	ball_action_calculator.setup(field_data)
+	ball.action_calculator = ball_action_calculator
 	_collect_teams()
 	_setup_players()
 

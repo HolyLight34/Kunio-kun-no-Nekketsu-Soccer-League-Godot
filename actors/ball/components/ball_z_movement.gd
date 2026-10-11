@@ -290,9 +290,6 @@ func logic_tick(
 	can_bounce: bool
 ) -> void:
 	
-	# 高度保持期间不执行自身 Z 轴运动。
-	if not _gravity_enabled:
-		return
 
 	# 没有 Z 速度，并且整数高度也已经归零，
 	# 当前没有需要执行的 Z 轴运动。
@@ -300,7 +297,10 @@ func logic_tick(
 		return
 
 	z_height_raw += z_velocity_raw
-	z_velocity_raw -= GRAVITY_RAW
+	# 2. 只有开启重力时才改变 Z 速度。
+	if _gravity_enabled:
+		z_velocity_raw -= GRAVITY_RAW
+
 
 	# 足球只有下降并且 Z < 0 时才触地。
 	if z_height_raw < 0 and z_velocity_raw < 0:
