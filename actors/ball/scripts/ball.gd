@@ -495,6 +495,9 @@ func _resolve_hit(hit_info: HitInfo) -> void:
 # ==============================================================================
 # 14. Kick 处理
 # ==============================================================================
+## 外部接口：足球受到踢球。
+func receive_kick(data: KickData) -> void:
+	_resolve_kick(data)
 
 func _resolve_kick(data: KickData) -> void:
 	release_from_carrier()

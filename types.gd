@@ -12,6 +12,11 @@ enum AttackType {
 	SLIDE,
 	ELBOW,
 }
+## 队伍进攻方向。
+enum TeamAttackDirection {
+	LEFT,
+	RIGHT,
+}
 enum Team {
 	TEAM_1,
 	TEAM_2,

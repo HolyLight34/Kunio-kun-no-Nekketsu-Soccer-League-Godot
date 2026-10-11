@@ -27,7 +27,12 @@ extends CharacterBody2D
 
 const COLLISION_HEIGHT: int = 32
 
+## 当前角色所属队伍的进攻方向。
+@export var team_attack_direction: Types.TeamAttackDirection = Types.TeamAttackDirection.RIGHT
 
+
+func get_team_attack_direction() -> Types.TeamAttackDirection:
+	return team_attack_direction
 # ==============================================================================
 # 3. 节点引用
 # ==============================================================================
@@ -122,9 +127,6 @@ func logic_tick() -> void:
 	player_z_movement.logic_tick()
 	step_animation_component.advance_tick()
 	
-
-	
-
 	_update_facing(
 		input_component.move_dir.x
 	)
@@ -386,12 +388,10 @@ func _update_pass_search_direction() -> void:
 # ==============================================================================
 
 ## 准备踢球命中数据。
-func prepare_kick_hit(
-	kick_type: KickData.KickType
-) -> void:
+func prepare_kick_hit() -> void:
 	_prepare_hit(
 		Types.HitType.KICK,
-		_create_kick_data(kick_type)
+		_create_kick_data()
 	)
 
 
@@ -443,12 +443,8 @@ func _prepare_hit(
 	hit_box.set_hit_info(hit_info)
 
 
-func _create_kick_data(
-	kick_type: KickData.KickType
-) -> KickData:
+func _create_kick_data() -> KickData:
 	var data := KickData.new()
-
-	data.kick_type = kick_type
 	data.direction = facing_direction
 	data.endurance = endurance
 

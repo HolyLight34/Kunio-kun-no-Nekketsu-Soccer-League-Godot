@@ -2,7 +2,7 @@ extends PlayerState
 
 
 func enter(_data):
-	player.prepare_kick_hit(KickData.KickType.NORMAL)
+	player.prepare_kick_hit()
 	player.ball_receiver_area.disable()
 	player.player_horizontal_movement.stop_immediately()
 	anim.play(anim_name)

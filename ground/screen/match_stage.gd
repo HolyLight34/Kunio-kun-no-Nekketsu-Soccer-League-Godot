@@ -24,9 +24,6 @@ extends Node
 @onready var fc_logic_clock: FCLogicClock = $FCLogicClock
 @onready var field: Field = $GrassField
 
-
-var ball_carrier: Player = null
-
 var team1: Array[Player] = []
 var team2: Array[Player] = []
 

@@ -16,6 +16,12 @@ func enter(_data) -> void:
 ## 动画事件：触发倒钩挑球。
 func on_bicycle_kick_flick() -> void:
 	player.ball.receive_bicycle_kick_flick()
+func on_kick_shoot() -> void:
+	var data := KickData.new()
+	data.direction = player.facing_direction
+	data.endurance = player.endurance
+	player.ball.receive_kick(data)
+	pass
 func exit() -> void:
 	
 	pass
