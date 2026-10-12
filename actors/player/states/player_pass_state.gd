@@ -1,6 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
+	player.player_horizontal_movement.stop_immediately()
 	player.ball_receiver_area.disable()
 	player.prepare_pass_hit()
 	anim.play(anim_name)

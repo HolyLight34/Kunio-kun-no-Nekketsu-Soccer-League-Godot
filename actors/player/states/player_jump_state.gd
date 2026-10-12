@@ -36,7 +36,7 @@ func handle_intent(intent: int, _delta: float) -> void:
 		PlayerIntentResolver.Intent.PASS:
 			if player.ball_possession == Types.BallPossession.MYSELF:
 				change_state(State.PASS)
-			else :
+			elif  player.ball_possession == Types.BallPossession.OPPONENT:
 				change_state(State.AIR_KICK)
 
 

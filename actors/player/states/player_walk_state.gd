@@ -1,7 +1,6 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	#print(player.player_z_movement._to_raw(player.input_component.last_move_direction.x*2))
 	anim.play(anim_name)
 	pass
 
@@ -29,6 +28,10 @@ func handle_intent(intent: int, _delta: float) -> void:
 			change_state(State.RUN)
 		PlayerIntentResolver.Intent.PASS:
 			change_state(State.PASS)
+		PlayerIntentResolver.Intent.KICK:
+			if player.input_component.move_dir.x != 0:
+				change_state(State.DIVINGHEADER)
+			change_state(State.KICK)	
 	pass
 func physics_process(_delta: float) -> void:
 	pass
