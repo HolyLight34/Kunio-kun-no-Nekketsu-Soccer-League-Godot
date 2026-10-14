@@ -30,7 +30,9 @@
 [ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
 [ext_resource type="Script" uid="uid://bjsg7teu45xbj" path="res://actors/player/states/player_crawl_state.gd" id="23_t3a7u"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_position_visual_component.gd" id="24_h2l6i"]
+[ext_resource type="Script" uid="uid://cv1ir0w80wf4i" path="res://actors/player/states/player_crawl_horizontal_state.gd" id="24_tabv8"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
+[ext_resource type="Script" uid="uid://wr8ukgpumqce" path="res://actors/player/states/player_crawl_roll_state.gd" id="25_ioyab"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
 [ext_resource type="PackedScene" uid="uid://3raieqvx5gc4" path="res://actors/player/scripts/player_composite_sprite.tscn" id="28_t3a7u"]
 [ext_resource type="Script" uid="uid://bi7xhqr67b83e" path="res://actors/player/scripts/ball_receiver_area.gd" id="33_a2yjh"]
@@ -103,7 +105,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Components/StateMachine/Crawl:is_decelerate")
+tracks/5/path = NodePath("Components/StateMachine/CrawlHorizontal:is_decelerate")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -279,8 +281,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_ioyab"]
 resource_name = "crawl"
-length = 0.4000016875283793
-loop_mode = 1
+length = 0.10000167188216
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -289,10 +290,10 @@ tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.25),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [3, 30]
+"values": [3]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -305,37 +306,168 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
-"method": &"disable_hit"
+"method": &"enable_hit"
 }]
 }
-tracks/2/type = "method"
+tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Components/StateMachine/Crawl")
+tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.1, 0.25),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"on_exit_crawl"
-}, {
-"args": [],
-"method": &"on_set_move_velocity"
-}]
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(32, 8)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Components/StateMachine/Crawl:is_decelerate")
+tracks/3/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.25),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_jwexq"]
+resource_name = "crawl_horizontal"
+length = 0.30000168231297286
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [3, 30]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Components/StateMachine/CrawlHorizontal:is_decelerate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Components/StateMachine/CrawlHorizontal")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.15),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"on_set_move_velocity"
+}]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(8, 8)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-12, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_q7lff"]
+resource_name = "crawl_roll"
+length = 0.30000168231297286
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [3, 53, 29]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(32, 8)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_tabv8"]
@@ -352,6 +484,44 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [18, 3]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(22, 12), Vector2(8, 8)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(-7, 0), Vector2(-12, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_jcqi0"]
@@ -833,6 +1003,8 @@ _data = {
 &"brake": SubResource("Animation_3lvlc"),
 &"chest_trap": SubResource("Animation_pj4mo"),
 &"crawl": SubResource("Animation_ioyab"),
+&"crawl_horizontal": SubResource("Animation_jwexq"),
+&"crawl_roll": SubResource("Animation_q7lff"),
 &"diving_header": SubResource("Animation_tabv8"),
 &"down_back": SubResource("Animation_jcqi0"),
 &"down_front": SubResource("Animation_wwj0w"),
@@ -853,14 +1025,14 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_t3a7u"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tabv8"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jgjso"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ioyab"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1014,6 +1186,18 @@ facing_mode = 1
 anim_name = &"crawl"
 x_decel_rate = 0.625
 
+[node name="CrawlHorizontal" type="Node" parent="Components/StateMachine" unique_id=625593774]
+script = ExtResource("24_tabv8")
+state = 21
+facing_mode = 1
+anim_name = &"crawl_horizontal"
+x_decel_rate = 0.625
+
+[node name="CrawlRoll" type="Node" parent="Components/StateMachine" unique_id=1073156833]
+script = ExtResource("25_ioyab")
+state = 22
+anim_name = &"crawl_roll"
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -1050,7 +1234,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="FacingRoot/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_t3a7u")
+shape = SubResource("RectangleShape2D_tabv8")
 
 [node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
 
@@ -1072,7 +1256,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="InteractionRoot/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_jgjso")
+shape = SubResource("RectangleShape2D_ioyab")
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0

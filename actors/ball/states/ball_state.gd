@@ -18,14 +18,14 @@ var ball: Ball:
 		return actor as Ball
 # PlayerState.gd (状态基类)
 func _prepare_hit_box(
-	attack_type: Types.AttackType,
+	#attack_type: Types.AttackType,
 	attack_direction: Vector2,
 	damage: float,
 	horizontal_speed: float,
 	z_velocity: float
 ) -> void:
 	var hit_info := HitInfo.new()
-	hit_info.attack_type = attack_type
+	#hit_info.attack_type = attack_type
 	hit_info.damage = damage
 	hit_info.attack_direction = attack_direction
 	hit_info.horizontal_speed = horizontal_speed

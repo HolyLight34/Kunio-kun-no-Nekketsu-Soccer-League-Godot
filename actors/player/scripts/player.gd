@@ -393,8 +393,16 @@ func prepare_kick_hit() -> void:
 		Types.HitType.KICK,
 		_create_kick_data()
 	)
+func prepare_ball_hit() -> void:
+	_prepare_hit(
+		Types.HitType.BALL,
+		_create_ball_data()
+	)
+func _create_ball_data() -> BallData:
+	var data := BallData.new()
+	data.attack_direction = input_component.move_dir
 
-
+	return data
 ## 准备传球命中数据。
 func prepare_pass_hit() -> void:
 	_prepare_hit(
@@ -402,16 +410,19 @@ func prepare_pass_hit() -> void:
 		_create_pass_data()
 	)
 
+func prepare_tackle_hit() -> void:
+	_prepare_hit(
+		Types.HitType.TACKLE,
+		_create_tackle_data()
+	)
 
 ## 准备角色攻击命中数据。
 func prepare_strike_hit(
-	attack_type: Types.AttackType,
 	damage: int
 ) -> void:
 	_prepare_hit(
 		Types.HitType.STRIKE,
 		_create_strike_data(
-			attack_type,
 			damage
 		)
 	)
@@ -466,15 +477,18 @@ func _create_pass_data() -> PassData:
 			.get_default_target_offset()
 	)
 
+func _create_tackle_data() -> TackleData:
+	var data := TackleData.new()
+	data.attacker = self
+	data.attack_direction = facing_direction
+	return data
 
 func _create_strike_data(
-	attack_type: Types.AttackType,
 	damage: int
 ) -> StrikeData:
 	var data := StrikeData.new()
 
 	data.attacker = self
-	data.attack_type = attack_type
 	data.attack_direction = facing_direction
 	data.endurance = endurance
 	data.damage = damage
@@ -502,40 +516,29 @@ func _resolve_hit(
 			)
 		Types.HitType.BALL_ATTACK:
 			_resolve_ball_attack(hit_info.payload)
+		Types.HitType.TACKLE:
+			_resolve_tackle(hit_info.payload)
 
 
 # ==============================================================================
 # 17. Strike 处理
 # ==============================================================================
-
+func _resolve_tackle(
+	data: TackleData
+) -> void:
+	## 铲球只有在目标正在跑动时，
+	## 才会对角色产生受伤效果。
+	if not is_running():
+		return
+	release_ball()
+	state_machine.change_state(
+		PlayerState.State.REBOUND,
+		data.attack_direction
+	)
 func _resolve_strike(
 	data: StrikeData
 ) -> void:
-	# 铲球只有在目标正在跑动时，
-	# 才会对角色产生受伤效果。
-	if (
-		data.attack_type
-			== Types.AttackType.SLIDE
-		and
-		not is_running()
-	):
-		return
-
-	# 从这里开始已经确定角色受伤。
-	# 所有受伤都会失去球权。
 	release_ball()
-
-	# 跑动中被铲球：
-	# 直接进入 REBOUND。
-	if (
-		data.attack_type
-		== Types.AttackType.SLIDE
-	):
-		state_machine.change_state(
-			PlayerState.State.REBOUND,
-			data.attack_direction
-		)
-		return
 
 	# 普通角色攻击受伤规则。
 	if data.endurance + 8 >= endurance:

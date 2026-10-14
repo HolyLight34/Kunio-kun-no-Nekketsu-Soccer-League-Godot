@@ -1,16 +1,24 @@
 extends PlayerState
-@export var is_decelerate: bool = true
+
 func enter(_data) -> void:
+	player.ball_receiver_area.disable()
 	anim.play(anim_name)
-	pass
+	await player.step_animation_component.animation_finished
+	if player.input_component.move_dir != Vector2.ZERO:
+		player.prepare_ball_hit()
+		if player.input_component.move_dir.x != 0:
+			change_state(State.CRAWL_HORIZONTAL)
+		else :
+			change_state(State.CRAWL_ROLL)
+	else :
+		change_state(State.LAND)
 
 func exit() -> void:
 	pass
 
 
 func physics_tick() -> void:
-	if is_decelerate:
-		player.player_horizontal_movement.decelerate_x_and_stop_y(x_decel_rate)
+	player.player_horizontal_movement.decelerate_x_and_stop_y(x_decel_rate)
 	#print(player.player_horizontal_movement.get_horizontal_velocity())
 		
 

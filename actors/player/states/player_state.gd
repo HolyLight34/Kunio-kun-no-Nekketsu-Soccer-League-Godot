@@ -23,6 +23,8 @@ enum State {
 	AIR_KICK,
 	DIVINGHEADER,
 	CRAWL,
+	CRAWL_HORIZONTAL,
+	CRAWL_ROLL,
 } 
 @export_group("State Info")
 @export var state: State

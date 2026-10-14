@@ -489,9 +489,10 @@ func _resolve_hit(hit_info: HitInfo) -> void:
 		Types.HitType.KICK:
 			_resolve_kick(hit_info.payload)
 
-		Types.HitType.STRIKE:
-			_resolve_strike(hit_info.payload)
-
+		Types.HitType.TACKLE:
+			_resolve_tackle(hit_info.payload)
+		Types.HitType.BALL:
+			_resolve_ball(hit_info.payload)
 
 # ==============================================================================
 # 14. Kick 处理
@@ -506,6 +507,13 @@ func _resolve_kick(data: KickData) -> void:
 	state_machine.change_state(
 		BallState.State.SHOT,data
 	)
+func _resolve_ball(data: BallData) -> void:
+	if data.attack_direction.x != 0:
+		ball_horizontal_movement.set_horizontal_velocity(Vector2(data.attack_direction.x * 2.25,0))
+		
+	else :
+		ball_horizontal_movement.set_horizontal_velocity(Vector2(0,data.attack_direction.y*1.125))
+	ball_z_movement.launch(1)
 
 
 # ==============================================================================
@@ -561,13 +569,8 @@ func _resolve_pass(data: PassData) -> void:
 # 16. Strike 处理
 # ==============================================================================
 
-func _resolve_strike(data: StrikeData) -> void:
-	match data.attack_type:
-		Types.AttackType.SLIDE:
-			carrier = data.attacker
-
-		_:
-			return
+func _resolve_tackle(data: TackleData) -> void:
+	carrier = data.attacker
 
 
 # ==============================================================================

@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.prepare_strike_hit(Types.AttackType.ELBOW,2)
+	player.prepare_strike_hit(2)
 	anim.play(anim_name)
 	player.player_z_movement.jump(1.5)
 	await player.player_z_movement.landed

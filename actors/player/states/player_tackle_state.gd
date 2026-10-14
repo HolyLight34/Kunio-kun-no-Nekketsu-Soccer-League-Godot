@@ -2,7 +2,7 @@ extends PlayerState
 
 
 func enter(_data) -> void:
-	player.prepare_strike_hit(Types.AttackType.SLIDE,0)
+	player.prepare_tackle_hit()
 	anim.play(anim_name)
 	if player.input_component.move_dir == Vector2.ZERO:
 		player.player_horizontal_movement.set_horizontal_velocity(5*player.facing_direction)

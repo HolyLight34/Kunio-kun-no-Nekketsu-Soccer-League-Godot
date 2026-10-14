@@ -7,11 +7,9 @@ enum HitType {
 	STRIKE,
 	TACKLE,
 	BALL_ATTACK,
+	BALL,
 }
-enum AttackType {
-	SLIDE,
-	ELBOW,
-}
+
 ## 队伍进攻方向。
 enum TeamAttackDirection {
 	LEFT,

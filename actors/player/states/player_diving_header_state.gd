@@ -2,7 +2,9 @@ extends PlayerState
 
 
 func enter(_data):
-	player.prepare_strike_hit(Types.AttackType.ELBOW,2)
+	player.ball_receiver_area.disable()
+	#player.prepare_kick_hit()
+	player.prepare_strike_hit(2)
 	player.player_horizontal_movement.set_horizontal_velocity(4*player.facing_direction)
 	player.player_z_movement.jump(3)
 	anim.play(anim_name)
