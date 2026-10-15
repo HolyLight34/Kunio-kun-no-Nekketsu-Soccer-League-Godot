@@ -33,6 +33,7 @@
 [ext_resource type="Script" uid="uid://cv1ir0w80wf4i" path="res://actors/player/states/player_crawl_horizontal_state.gd" id="24_tabv8"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
 [ext_resource type="Script" uid="uid://wr8ukgpumqce" path="res://actors/player/states/player_crawl_roll_state.gd" id="25_ioyab"]
+[ext_resource type="Script" uid="uid://by50n32ijsyw" path="res://actors/player/states/player_special_dribble_state.gd" id="26_ioyab"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
 [ext_resource type="PackedScene" uid="uid://3raieqvx5gc4" path="res://actors/player/scripts/player_composite_sprite.tscn" id="28_t3a7u"]
 [ext_resource type="Script" uid="uid://bi7xhqr67b83e" path="res://actors/player/scripts/ball_receiver_area.gd" id="33_a2yjh"]
@@ -904,6 +905,74 @@ tracks/0/keys = {
 "values": [21, 0]
 }
 
+[sub_resource type="Animation" id="Animation_00m30"]
+resource_name = "special_dribble1"
+length = 0.4000016875283793
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.050000004, 0.10000001, 0.25, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 27, 18, 28, 59]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Components/StateMachine/SpecialDribble")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"_on_set_little_velocity"
+}, {
+"args": [],
+"method": &"_on_set_velocity"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ay40q"]
+resource_name = "special_dribble2"
+length = 0.4000016875283793
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.050000004, 0.099999994, 0.25, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 27, 59, 28, 18]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Components/StateMachine/SpecialDribble")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"_on_set_little_velocity"
+}, {
+"args": [],
+"method": &"_on_set_velocity"
+}]
+}
+
 [sub_resource type="Animation" id="Animation_igwkh"]
 resource_name = "stationary_flick"
 length = 0.25000167970526965
@@ -1020,19 +1089,21 @@ _data = {
 &"moving_flick": SubResource("Animation_f2m0f"),
 &"pass": SubResource("Animation_j5ji6"),
 &"run": SubResource("Animation_0e48y"),
+&"special_dribble1": SubResource("Animation_00m30"),
+&"special_dribble2": SubResource("Animation_ay40q"),
 &"stationary_flick": SubResource("Animation_igwkh"),
 &"tackle": SubResource("Animation_3lilj"),
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tabv8"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ay40q"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ioyab"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f00pt"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1198,6 +1269,11 @@ script = ExtResource("25_ioyab")
 state = 22
 anim_name = &"crawl_roll"
 
+[node name="SpecialDribble" type="Node" parent="Components/StateMachine" unique_id=300579219]
+script = ExtResource("26_ioyab")
+state = 23
+anim_name = &"special_dribble1"
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -1234,7 +1310,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="FacingRoot/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_tabv8")
+shape = SubResource("RectangleShape2D_ay40q")
 
 [node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
 
@@ -1256,7 +1332,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="InteractionRoot/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_ioyab")
+shape = SubResource("RectangleShape2D_f00pt")
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0

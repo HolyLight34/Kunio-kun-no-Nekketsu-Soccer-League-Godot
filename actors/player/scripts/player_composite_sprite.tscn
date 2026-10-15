@@ -386,26 +386,31 @@ head_frame = 4
 head_position = Vector2i(-2, 0)
 metadata/_custom_type_script = "uid://cwuuta4dibg7n"
 
+[sub_resource type="Resource" id="Resource_q7lff"]
+script = ExtResource("2_ievdw")
+body_frame = 36
+head_frame = -1
+metadata/_custom_type_script = "uid://cwuuta4dibg7n"
+
 [sub_resource type="Resource" id="Resource_1vobp"]
 script = ExtResource("3_gy56w")
-frames = Array[ExtResource("2_ievdw")]([SubResource("Resource_2fplj"), SubResource("Resource_o7vu1"), SubResource("Resource_mcrc7"), SubResource("Resource_qnqna"), SubResource("Resource_atgvx"), SubResource("Resource_mb111"), SubResource("Resource_b5m0m"), SubResource("Resource_2f0hu"), SubResource("Resource_gfsw1"), SubResource("Resource_hamsh"), SubResource("Resource_7go8x"), SubResource("Resource_inxqb"), SubResource("Resource_mgqed"), SubResource("Resource_vv5hh"), SubResource("Resource_inmkm"), SubResource("Resource_448f1"), SubResource("Resource_1jmhl"), SubResource("Resource_h1r20"), SubResource("Resource_0ltgt"), SubResource("Resource_h3q16"), SubResource("Resource_skmcx"), SubResource("Resource_cx0m0"), SubResource("Resource_o045x"), SubResource("Resource_w2mjq"), SubResource("Resource_j61ru"), SubResource("Resource_j1wy0"), SubResource("Resource_6tt24"), SubResource("Resource_d15lf"), SubResource("Resource_hahcj"), SubResource("Resource_jfv7g"), SubResource("Resource_hyhu7"), SubResource("Resource_jpjn7"), SubResource("Resource_7a68t"), SubResource("Resource_fvf2i"), SubResource("Resource_n4sik"), SubResource("Resource_t3a7u"), SubResource("Resource_jgjso"), SubResource("Resource_5qpdp"), SubResource("Resource_xkbcs"), SubResource("Resource_xxtay"), SubResource("Resource_orhpu"), SubResource("Resource_b2ujt"), SubResource("Resource_clns7"), SubResource("Resource_qqnd0"), SubResource("Resource_hwdca"), SubResource("Resource_a0csg"), SubResource("Resource_mdh8j"), SubResource("Resource_a25c6"), SubResource("Resource_2ulds"), SubResource("Resource_vrrpc"), SubResource("Resource_g4fgc"), SubResource("Resource_qssf6"), SubResource("Resource_mtiqc"), SubResource("Resource_2lw8w"), SubResource("Resource_yleis"), SubResource("Resource_sc6fi"), SubResource("Resource_2rmq7"), SubResource("Resource_1dn1v"), SubResource("Resource_dlt07")])
+frames = Array[ExtResource("2_ievdw")]([SubResource("Resource_2fplj"), SubResource("Resource_o7vu1"), SubResource("Resource_mcrc7"), SubResource("Resource_qnqna"), SubResource("Resource_atgvx"), SubResource("Resource_mb111"), SubResource("Resource_b5m0m"), SubResource("Resource_2f0hu"), SubResource("Resource_gfsw1"), SubResource("Resource_hamsh"), SubResource("Resource_7go8x"), SubResource("Resource_inxqb"), SubResource("Resource_mgqed"), SubResource("Resource_vv5hh"), SubResource("Resource_inmkm"), SubResource("Resource_448f1"), SubResource("Resource_1jmhl"), SubResource("Resource_h1r20"), SubResource("Resource_0ltgt"), SubResource("Resource_h3q16"), SubResource("Resource_skmcx"), SubResource("Resource_cx0m0"), SubResource("Resource_o045x"), SubResource("Resource_w2mjq"), SubResource("Resource_j61ru"), SubResource("Resource_j1wy0"), SubResource("Resource_6tt24"), SubResource("Resource_d15lf"), SubResource("Resource_hahcj"), SubResource("Resource_jfv7g"), SubResource("Resource_hyhu7"), SubResource("Resource_jpjn7"), SubResource("Resource_7a68t"), SubResource("Resource_fvf2i"), SubResource("Resource_n4sik"), SubResource("Resource_t3a7u"), SubResource("Resource_jgjso"), SubResource("Resource_5qpdp"), SubResource("Resource_xkbcs"), SubResource("Resource_xxtay"), SubResource("Resource_orhpu"), SubResource("Resource_b2ujt"), SubResource("Resource_clns7"), SubResource("Resource_qqnd0"), SubResource("Resource_hwdca"), SubResource("Resource_a0csg"), SubResource("Resource_mdh8j"), SubResource("Resource_a25c6"), SubResource("Resource_2ulds"), SubResource("Resource_vrrpc"), SubResource("Resource_g4fgc"), SubResource("Resource_qssf6"), SubResource("Resource_mtiqc"), SubResource("Resource_2lw8w"), SubResource("Resource_yleis"), SubResource("Resource_sc6fi"), SubResource("Resource_2rmq7"), SubResource("Resource_1dn1v"), SubResource("Resource_dlt07"), SubResource("Resource_q7lff")])
 metadata/_custom_type_script = "uid://dw8w2spexxorx"
 
 [node name="PlayerCompositeSprite" type="Node2D" unique_id=487019932]
 script = ExtResource("1_ayxlt")
 sprite_frames = SubResource("Resource_1vobp")
-frame = 58
+frame = 59
 
 [node name="Head" type="Sprite2D" parent="." unique_id=817049740]
-position = Vector2(-2, 0)
+visible = false
 texture = ExtResource("4_gt3h0")
 hframes = 4
 vframes = 2
-frame = 4
 
 [node name="Body" type="Sprite2D" parent="." unique_id=1287572829]
 position = Vector2(0, -19)
 texture = ExtResource("5_0lh8o")
 hframes = 6
 vframes = 13
-frame = 57
+frame = 36

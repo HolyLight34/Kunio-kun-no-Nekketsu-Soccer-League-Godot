@@ -29,4 +29,7 @@ func handle_intent(intent: int, _delta: float) -> void:
 				change_state(State.BRAKE)
 		PlayerIntentResolver.Intent.JUMP:
 			change_state(State.JUMP)
+		PlayerIntentResolver.Intent.RUN:
+			if player.input_component.move_dir.y != 0 and player.input_component.move_dir.x == 0:
+				change_state(State.SPECIAL_DRIBBLE)
 	pass
