@@ -34,6 +34,7 @@
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
 [ext_resource type="Script" uid="uid://wr8ukgpumqce" path="res://actors/player/states/player_crawl_roll_state.gd" id="25_ioyab"]
 [ext_resource type="Script" uid="uid://by50n32ijsyw" path="res://actors/player/states/player_special_dribble_state.gd" id="26_ioyab"]
+[ext_resource type="Script" uid="uid://coeeo1ogwg8ju" path="res://actors/player/states/player_burst_attack_state.gd" id="27_jwexq"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
 [ext_resource type="PackedScene" uid="uid://3raieqvx5gc4" path="res://actors/player/scripts/player_composite_sprite.tscn" id="28_t3a7u"]
 [ext_resource type="Script" uid="uid://bi7xhqr67b83e" path="res://actors/player/scripts/ball_receiver_area.gd" id="33_a2yjh"]
@@ -261,6 +262,36 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [13]
+}
+
+[sub_resource type="Animation" id="Animation_f00pt"]
+resource_name = "burst_attack"
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.10000001),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [28, 9]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"enable_hit"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_pj4mo"]
@@ -800,6 +831,20 @@ tracks/0/keys = {
 "update": 1,
 "values": [2]
 }
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"disable_hit"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_f2m0f"]
 resource_name = "moving_flick"
@@ -1070,6 +1115,7 @@ _data = {
 &"bicycle_kick": SubResource("Animation_6npms"),
 &"bicycle_kick_with_ball": SubResource("Animation_t3a7u"),
 &"brake": SubResource("Animation_3lvlc"),
+&"burst_attack": SubResource("Animation_f00pt"),
 &"chest_trap": SubResource("Animation_pj4mo"),
 &"crawl": SubResource("Animation_ioyab"),
 &"crawl_horizontal": SubResource("Animation_jwexq"),
@@ -1096,14 +1142,14 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ay40q"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_f00pt"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_00m30"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1274,6 +1320,11 @@ script = ExtResource("26_ioyab")
 state = 23
 anim_name = &"special_dribble1"
 
+[node name="BurstAttack" type="Node" parent="Components/StateMachine" unique_id=1146405807]
+script = ExtResource("27_jwexq")
+state = 24
+anim_name = &"burst_attack"
+
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
@@ -1310,7 +1361,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="FacingRoot/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_ay40q")
+shape = SubResource("RectangleShape2D_q7lff")
 
 [node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
 
@@ -1332,7 +1383,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="InteractionRoot/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_f00pt")
+shape = SubResource("RectangleShape2D_00m30")
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0
