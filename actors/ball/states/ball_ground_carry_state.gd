@@ -35,13 +35,14 @@ func physics_tick() -> void:
 	# 获取角色数据
 	# --------------------------------------------------------------------------
 
-	var player_position: Vector2 = (
-		ball.carrier.get_logical_position()
+	var player_position: Vector2i = (
+		ball.carrier.get_horizontal_position_integer()
 	)
-
-	var player_velocity: Vector2 = (
-		ball.carrier.get_horizontal_velocity()
-	)
+	# 角色更新后
+	print("Player: ", ball.carrier.get_logical_position())
+	#var player_velocity: Vector2 = (
+		#ball.carrier.get_horizontal_velocity()
+	#)
 
 	var facing_direction: Vector2 = (
 		ball.carrier.get_facing_direction()
@@ -58,7 +59,7 @@ func physics_tick() -> void:
 	#     角色逻辑 Y + 控球偏移
 	# --------------------------------------------------------------------------
 
-	var target_position := Vector2(
+	var target_position := Vector2i(
 		player_position.x
 			+ facing_direction.x * TARGET_X_OFFSET,
 
@@ -73,10 +74,12 @@ func physics_tick() -> void:
 	# 携带期间足球保持在角色对应的控球位置。
 	# --------------------------------------------------------------------------
 
-	ball.ball_horizontal_movement.set_horizontal_position(
+	ball.ball_horizontal_movement.set_horizontal_integer_position(
 		target_position
 	)
 	
+	# 足球同步后
+	print("Ball: ", ball.ball_horizontal_movement.get_horizontal_position())
 
 	# --------------------------------------------------------------------------
 	# 同步足球水平速度
@@ -92,9 +95,9 @@ func physics_tick() -> void:
 	# 后续足球进入其他动作时，可以继续使用携带期间留下的 VX / VY。
 	# --------------------------------------------------------------------------
 
-	ball.ball_horizontal_movement.set_horizontal_velocity(
-		player_velocity
-	)
+	#ball.ball_horizontal_movement.set_horizontal_velocity(
+		#player_velocity
+	#)
 
 	# --------------------------------------------------------------------------
 	# 同步角色 Z 整数高度

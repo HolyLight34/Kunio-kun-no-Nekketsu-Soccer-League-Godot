@@ -63,10 +63,13 @@ func update_position(
 	horizontal_position: Vector2,
 	z_height: float
 ) -> void:
-	position_target.position = horizontal_position.round()
+	position_target.position = Vector2i(
+		int(horizontal_position.x),
+		int(horizontal_position.y)
+	)
+
 	var visual_z: int = floori(z_height)
 	visual_pivot.position.y = -visual_z
-
 
 ## 设置实体的视觉朝向。
 ##

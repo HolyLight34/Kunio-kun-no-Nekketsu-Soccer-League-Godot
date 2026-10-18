@@ -171,7 +171,8 @@ func get_player_position() -> Vector3:
 func get_horizontal_velocity() -> Vector2:
 	return player_horizontal_movement.get_horizontal_velocity()
 
-
+func get_horizontal_position_integer() -> Vector2:
+	return player_horizontal_movement.get_horizontal_position_integer()
 func get_collision_height() -> int:
 	return COLLISION_HEIGHT
 

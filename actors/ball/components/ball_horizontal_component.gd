@@ -156,6 +156,20 @@ func set_horizontal_position(value: Vector2) -> void:
 		_to_raw(value.x),
 		_to_raw(value.y)
 	)
+## 只设置水平位置的整数部分，保留原有子像素部分。
+func set_horizontal_integer_position(value: Vector2i) -> void:
+	var raw_position := horizontal_position_raw
+
+	raw_position.x = (
+		value.x * RAW_ONE
+		+ posmod(raw_position.x, RAW_ONE)
+	)
+	raw_position.y = (
+		value.y * RAW_ONE
+		+ posmod(raw_position.y, RAW_ONE)
+	)
+
+	horizontal_position_raw = raw_position
 func get_horizontal_position() -> Vector2:
 	return Vector2(
 		_from_raw(horizontal_position_raw.x),
@@ -168,6 +182,13 @@ func set_horizontal_velocity(value: Vector2) -> void:
 		_to_raw(value.x),
 		_to_raw(value.y)
 	)
+func set_horizontal_position_integer(value: Vector2i) -> void:
+	horizontal_position_raw = Vector2i(
+		_to_raw(value.x),
+		_to_raw(value.y)
+	)
+func get_horizontal_position_integer() -> Vector2i:
+	return FixedPoint.raw_vector_to_integer(horizontal_position_raw)
 func get_horizontal_velocity() -> Vector2:
 	return Vector2(
 		_from_raw(horizontal_velocity_raw.x),
