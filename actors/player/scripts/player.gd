@@ -155,7 +155,18 @@ func get_z_height() -> float:
 
 func get_z_velocity() -> float:
 	return player_z_movement.get_z_velocity()
-
+func get_player_velocity() -> Vector3:
+	return Vector3(
+		get_horizontal_velocity().x,
+		get_horizontal_velocity().y,
+		get_z_velocity()
+	)
+func get_player_position() -> Vector3:
+	return Vector3(
+		get_logical_position().x,
+		get_logical_position().y,
+		get_z_height()
+	)
 
 func get_horizontal_velocity() -> Vector2:
 	return player_horizontal_movement.get_horizontal_velocity()

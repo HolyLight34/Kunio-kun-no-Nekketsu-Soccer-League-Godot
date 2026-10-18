@@ -26,6 +26,8 @@ extends Node
 var ball_action_calculator := BallActionCalculator.new()
 var team1: Array[Player] = []
 var team2: Array[Player] = []
+@onready var physics_debug_panel: PhysicsDebugPanel = $PhysicsDebugPanel
+@onready var player: Player = $Player
 
 
 func _ready() -> void:
@@ -36,8 +38,15 @@ func _ready() -> void:
 	ball.action_calculator = ball_action_calculator
 	_collect_teams()
 	_setup_players()
+	
 
-
+func _physics_process(delta: float) -> void:
+	physics_debug_panel.set_physics_data(
+		player.get_player_position(),
+		player.get_player_velocity(),
+		ball.get_ball_position(),
+		ball.get_ball_velocity()
+	)
 func _on_logic_tick() -> void:
 	for child in get_children():
 		if child is Player:

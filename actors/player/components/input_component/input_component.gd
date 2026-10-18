@@ -34,6 +34,8 @@ var btn_select_just: bool = false # 瞬按 Select
 func get_move_direction() -> Vector2:
 	return move_dir
 func _ready() -> void:
+	if player.player_id >= 3:
+		return
 	action_up= "p%d_move_up" % player.player_id
 	action_down= "p%d_move_down" % player.player_id
 	action_left= "p%d_move_left" % player.player_id

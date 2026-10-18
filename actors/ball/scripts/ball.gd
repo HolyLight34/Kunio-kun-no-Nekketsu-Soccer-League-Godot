@@ -479,8 +479,22 @@ func _on_hurt_box_hit_received(
 	hit_info: HitInfo
 ) -> void:
 	_resolve_hit(hit_info)
-
-
+func get_ball_velocity() -> Vector3:
+	return Vector3(
+		get_horizontal_velocity().x,
+		get_horizontal_velocity().y,
+		get_z_velocity()
+	)
+func get_ball_position() -> Vector3:
+	return Vector3(
+		get_logical_position().x,
+		get_logical_position().y,
+		get_z_height()
+	)
+func get_horizontal_velocity() -> Vector2:
+	return ball_horizontal_movement.get_horizontal_velocity()
+func get_z_velocity() -> float:
+	return ball_z_movement.get_z_velocity()
 func _resolve_hit(hit_info: HitInfo) -> void:
 	match hit_info.type:
 		Types.HitType.PASS:

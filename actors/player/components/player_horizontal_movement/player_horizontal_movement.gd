@@ -83,6 +83,9 @@ func set_horizontal_position(value: Vector2) -> void:
 		_to_raw(value.x),
 		_to_raw(value.y)
 	)
+## 获取整数水平坐标。
+func get_horizontal_position_integer() -> Vector2i:
+	return FixedPoint.raw_vector_to_integer(horizontal_position_raw)
 func get_horizontal_position() -> Vector2:
 	return Vector2(
 		_from_raw(horizontal_position_raw.x),

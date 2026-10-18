@@ -201,7 +201,8 @@ func set_z_height(z_height: float) -> void:
 ## 保留 1 / 256 子像素精度。
 func get_z_height() -> float:
 	return FixedPoint.from_raw(z_height_raw)
-
+func get_z_velocity() -> float:
+	return FixedPoint.from_raw(z_velocity_raw)
 func is_rising() -> bool:
 	return z_velocity_raw > 0
 ## 返回足球当前是否处于空中。

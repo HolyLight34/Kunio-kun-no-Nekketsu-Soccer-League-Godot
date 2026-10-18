@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://ba87opn4waija" path="res://ground/scripts/fc_logic_clock.gd" id="7_jk64h"]
 [ext_resource type="Script" uid="uid://b1d24p8vf1llx" path="res://ground/scripts/special_ground_region.gd" id="8_wgvyc"]
 [ext_resource type="Script" uid="uid://b0h7gwrquoui3" path="res://ground/scripts/field.gd" id="9_xnvpj"]
+[ext_resource type="PackedScene" uid="uid://cnawkiqtct4tp" path="res://shared/physics_debug_panel.tscn" id="10_1j8wh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t5q6m"]
 texture = ExtResource("2_wgvyc")
@@ -223,11 +224,10 @@ rects = Array[Rect2]([Rect2(50, 50, 50, 50), Rect2(0, 0, 42, 54)])
 position = Vector2(45, 48)
 
 [node name="Player5" parent="." unique_id=337035303 instance=ExtResource("5_mog0p")]
-position = Vector2(481, 300)
-player_id = 0
+position = Vector2(51, 209)
 
 [node name="Player2" parent="." unique_id=99073540 instance=ExtResource("5_mog0p")]
-position = Vector2(127, 101)
+position = Vector2(95, 140)
 team_id = 1
 player_id = 2
 endurance = 60
@@ -237,3 +237,7 @@ position = Vector2(8, 21)
 
 [node name="FCLogicClock" type="Node" parent="." unique_id=113677989]
 script = ExtResource("7_jk64h")
+
+[node name="PhysicsDebugPanel" parent="." unique_id=493609964 instance=ExtResource("10_1j8wh")]
+panel_width = 680.0
+font_size = 4
