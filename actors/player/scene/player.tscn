@@ -1142,14 +1142,14 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jwexq"]
 resource_local_to_scene = true
 size = Vector2(22, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
 size = Vector2(16, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_00m30"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
 resource_local_to_scene = true
 size = Vector2(16, 8)
 
@@ -1361,7 +1361,7 @@ source = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="FacingRoot/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_q7lff")
+shape = SubResource("RectangleShape2D_jwexq")
 
 [node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
 
@@ -1383,7 +1383,7 @@ target = NodePath("../..")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" parent="InteractionRoot/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_00m30")
+shape = SubResource("RectangleShape2D_q7lff")
 
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
 collision_layer = 0

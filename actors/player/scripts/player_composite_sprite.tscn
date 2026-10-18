@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cwuuta4dibg7n" path="res://actors/player/scripts/player_composite_frame.gd" id="2_ievdw"]
 [ext_resource type="Script" uid="uid://dw8w2spexxorx" path="res://actors/player/scripts/player_composite_sprite_frames.gd" id="3_gy56w"]
 [ext_resource type="Texture2D" uid="uid://c6ul8fp0yac85" path="res://actors/player/assets/head.png" id="4_gt3h0"]
-[ext_resource type="Texture2D" uid="uid://56hwlui1p1gf" path="res://actors/player/assets/body.png" id="5_0lh8o"]
+[ext_resource type="Texture2D" uid="uid://dpvv30w4kcbbp" path="res://actors/player/assets/body.png" id="5_0lh8o"]
 
 [sub_resource type="Resource" id="Resource_2fplj"]
 script = ExtResource("2_ievdw")
@@ -18,7 +18,7 @@ head_frame = 1
 head_position = Vector2i(-4, -28)
 metadata/_custom_type_script = "uid://cwuuta4dibg7n"
 
-[sub_resource type="Resource" id="Resource_mcrc7"]
+[sub_resource type="Resource" id="Resource_b14sf"]
 script = ExtResource("2_ievdw")
 body_frame = 3
 head_position = Vector2i(-1, -20)
@@ -49,7 +49,7 @@ body_frame = 7
 head_frame = -1
 metadata/_custom_type_script = "uid://cwuuta4dibg7n"
 
-[sub_resource type="Resource" id="Resource_2f0hu"]
+[sub_resource type="Resource" id="Resource_t4u4c"]
 script = ExtResource("2_ievdw")
 body_frame = 8
 head_position = Vector2i(5, -28)
@@ -389,28 +389,59 @@ metadata/_custom_type_script = "uid://cwuuta4dibg7n"
 [sub_resource type="Resource" id="Resource_q7lff"]
 script = ExtResource("2_ievdw")
 body_frame = 36
-head_frame = -1
+head_frame = 2
+head_position = Vector2i(-2, -28)
 metadata/_custom_type_script = "uid://cwuuta4dibg7n"
 
 [sub_resource type="Resource" id="Resource_1vobp"]
 script = ExtResource("3_gy56w")
-frames = Array[ExtResource("2_ievdw")]([SubResource("Resource_2fplj"), SubResource("Resource_o7vu1"), SubResource("Resource_mcrc7"), SubResource("Resource_qnqna"), SubResource("Resource_atgvx"), SubResource("Resource_mb111"), SubResource("Resource_b5m0m"), SubResource("Resource_2f0hu"), SubResource("Resource_gfsw1"), SubResource("Resource_hamsh"), SubResource("Resource_7go8x"), SubResource("Resource_inxqb"), SubResource("Resource_mgqed"), SubResource("Resource_vv5hh"), SubResource("Resource_inmkm"), SubResource("Resource_448f1"), SubResource("Resource_1jmhl"), SubResource("Resource_h1r20"), SubResource("Resource_0ltgt"), SubResource("Resource_h3q16"), SubResource("Resource_skmcx"), SubResource("Resource_cx0m0"), SubResource("Resource_o045x"), SubResource("Resource_w2mjq"), SubResource("Resource_j61ru"), SubResource("Resource_j1wy0"), SubResource("Resource_6tt24"), SubResource("Resource_d15lf"), SubResource("Resource_hahcj"), SubResource("Resource_jfv7g"), SubResource("Resource_hyhu7"), SubResource("Resource_jpjn7"), SubResource("Resource_7a68t"), SubResource("Resource_fvf2i"), SubResource("Resource_n4sik"), SubResource("Resource_t3a7u"), SubResource("Resource_jgjso"), SubResource("Resource_5qpdp"), SubResource("Resource_xkbcs"), SubResource("Resource_xxtay"), SubResource("Resource_orhpu"), SubResource("Resource_b2ujt"), SubResource("Resource_clns7"), SubResource("Resource_qqnd0"), SubResource("Resource_hwdca"), SubResource("Resource_a0csg"), SubResource("Resource_mdh8j"), SubResource("Resource_a25c6"), SubResource("Resource_2ulds"), SubResource("Resource_vrrpc"), SubResource("Resource_g4fgc"), SubResource("Resource_qssf6"), SubResource("Resource_mtiqc"), SubResource("Resource_2lw8w"), SubResource("Resource_yleis"), SubResource("Resource_sc6fi"), SubResource("Resource_2rmq7"), SubResource("Resource_1dn1v"), SubResource("Resource_dlt07"), SubResource("Resource_q7lff")])
+frames = Array[ExtResource("2_ievdw")]([SubResource("Resource_2fplj"), SubResource("Resource_o7vu1"), SubResource("Resource_b14sf"), SubResource("Resource_qnqna"), SubResource("Resource_atgvx"), SubResource("Resource_mb111"), SubResource("Resource_b5m0m"), SubResource("Resource_t4u4c"), SubResource("Resource_gfsw1"), SubResource("Resource_hamsh"), SubResource("Resource_7go8x"), SubResource("Resource_inxqb"), SubResource("Resource_mgqed"), SubResource("Resource_vv5hh"), SubResource("Resource_inmkm"), SubResource("Resource_448f1"), SubResource("Resource_1jmhl"), SubResource("Resource_h1r20"), SubResource("Resource_0ltgt"), SubResource("Resource_h3q16"), SubResource("Resource_skmcx"), SubResource("Resource_cx0m0"), SubResource("Resource_o045x"), SubResource("Resource_w2mjq"), SubResource("Resource_j61ru"), SubResource("Resource_j1wy0"), SubResource("Resource_6tt24"), SubResource("Resource_d15lf"), SubResource("Resource_hahcj"), SubResource("Resource_jfv7g"), SubResource("Resource_hyhu7"), SubResource("Resource_jpjn7"), SubResource("Resource_7a68t"), SubResource("Resource_fvf2i"), SubResource("Resource_n4sik"), SubResource("Resource_t3a7u"), SubResource("Resource_jgjso"), SubResource("Resource_5qpdp"), SubResource("Resource_xkbcs"), SubResource("Resource_xxtay"), SubResource("Resource_orhpu"), SubResource("Resource_b2ujt"), SubResource("Resource_clns7"), SubResource("Resource_qqnd0"), SubResource("Resource_hwdca"), SubResource("Resource_a0csg"), SubResource("Resource_mdh8j"), SubResource("Resource_a25c6"), SubResource("Resource_2ulds"), SubResource("Resource_vrrpc"), SubResource("Resource_g4fgc"), SubResource("Resource_qssf6"), SubResource("Resource_mtiqc"), SubResource("Resource_2lw8w"), SubResource("Resource_yleis"), SubResource("Resource_sc6fi"), SubResource("Resource_2rmq7"), SubResource("Resource_1dn1v"), SubResource("Resource_dlt07"), SubResource("Resource_q7lff")])
 metadata/_custom_type_script = "uid://dw8w2spexxorx"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
+size = Vector2(43, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4mcf1"]
 
 [node name="PlayerCompositeSprite" type="Node2D" unique_id=487019932]
 script = ExtResource("1_ayxlt")
+edit_collision_profiles = true
+z_info_position = Vector2(28, -70)
 sprite_frames = SubResource("Resource_1vobp")
-frame = 59
+frame = 6
 
 [node name="Head" type="Sprite2D" parent="." unique_id=817049740]
 visible = false
 texture = ExtResource("4_gt3h0")
 hframes = 4
 vframes = 2
+frame = 3
 
 [node name="Body" type="Sprite2D" parent="." unique_id=1287572829]
 position = Vector2(0, -19)
 texture = ExtResource("5_0lh8o")
 hframes = 6
 vframes = 13
-frame = 36
+frame = 7
+
+[node name="HitBoxEditor" type="Area2D" parent="." unique_id=840659321]
+visible = false
+position = Vector2(11.5, 3)
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxEditor" unique_id=1479068781]
+shape = SubResource("RectangleShape2D_qbh5u")
+debug_color = Color(0.93868095, 0.19903433, 0.386652, 0.41960785)
+
+[node name="HurtBoxEditor" type="Area2D" parent="." unique_id=647780288]
+visible = false
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBoxEditor" unique_id=2034000856]
+shape = SubResource("RectangleShape2D_4mcf1")
