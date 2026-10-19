@@ -225,6 +225,7 @@ position = Vector2(45, 48)
 
 [node name="Player5" parent="." unique_id=337035303 instance=ExtResource("5_mog0p")]
 position = Vector2(51, 209)
+player_id = 3
 
 [node name="Player2" parent="." unique_id=99073540 instance=ExtResource("5_mog0p")]
 position = Vector2(95, 140)
