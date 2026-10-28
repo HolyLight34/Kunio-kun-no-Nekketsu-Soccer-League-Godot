@@ -82,29 +82,3 @@ var body_frame: int = 0:
 
 		head_position = value
 		emit_changed()
-# ==============================================================================
-# Collision
-# ==============================================================================
-
-## 当前组合帧的主动攻击框配置。
-##
-## null 表示当前帧不启用 HitBox。
-@export var hit_box_profile: HitBoxProfile:
-	set(value):
-		if hit_box_profile == value:
-			return
-
-		hit_box_profile = value
-		emit_changed()
-
-
-## 当前组合帧的被动受击框配置。
-##
-## null 表示当前帧不启用 HurtBox。
-@export var hurt_box_profile: HurtBoxProfile:
-	set(value):
-		if hurt_box_profile == value:
-			return
-
-		hurt_box_profile = value
-		emit_changed()

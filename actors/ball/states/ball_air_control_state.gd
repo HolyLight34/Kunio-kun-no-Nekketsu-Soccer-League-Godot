@@ -15,16 +15,18 @@ func enter(_data) -> void:
 		player.get_z_velocity() + 0.5
 	)
 
-	await ball.ball_z_movement.landed
 
-	change_state(State.GROUND_CARRY)
+	
 
 
 func physics_tick() -> void:
 	var player_position := player.get_logical_position()
 	var player_velocity := player.get_horizontal_velocity()
 	var facing_direction := player.get_facing_direction()
-
+	var player_z := player.get_z_height_integer()
+	if ball.get_z_height_integer() <= player_z:
+		change_state(State.GROUND_CARRY)
+		return
 	# --------------------------------------------------------------------------
 	# X 目标位置
 	#

@@ -2,8 +2,8 @@ extends PlayerState
 
 
 func enter(_data):
-	player.prepare_kick_hit()
-	player.ball_receiver_area.disable()
+	#player.prepare_kick_hit()
+	#player.ball_receiver_area.disable()
 	player.player_horizontal_movement.stop_immediately()
 	anim.play(anim_name)
 	await anim.animation_finished
@@ -13,6 +13,7 @@ func enter(_data):
 	pass
 
 func exit() -> void:
+	player.close_ball_action_window()
 	pass
 
 func physics_tick() -> void:

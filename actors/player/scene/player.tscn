@@ -14,12 +14,10 @@
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
 [ext_resource type="Script" uid="uid://cxmiy0hlfv1o1" path="res://actors/player/states/player_pass_state.gd" id="16_imh8g"]
 [ext_resource type="Script" uid="uid://brlddk1s0yv6g" path="res://actors/player/states/player_chest_trap_state.gd" id="16_pj4mo"]
-[ext_resource type="PackedScene" uid="uid://dnk184t6uws6s" path="res://shared/combat/hit_box.tscn" id="17_dg4u3"]
 [ext_resource type="Script" uid="uid://cawkdxaliusnj" path="res://actors/player/states/player_moving_flick_state.gd" id="17_f2m0f"]
 [ext_resource type="Script" uid="uid://dd5sf8frv84fy" path="res://actors/player/states/player_land_state.gd" id="17_ptkv0"]
 [ext_resource type="Script" uid="uid://d2v14o8ksrwd1" path="res://actors/player/states/player_tackle_state.gd" id="17_sgsyk"]
 [ext_resource type="Script" uid="uid://c1ovn4hmpr3vy" path="res://actors/player/states/player_bicycle_kick_state.gd" id="18_6npms"]
-[ext_resource type="PackedScene" uid="uid://bss78r24koxgt" path="res://shared/combat/hurt_box.tscn" id="18_v0pxu"]
 [ext_resource type="Script" uid="uid://bis2p6dof0fnc" path="res://actors/player/states/player_rebond_state.gd" id="19_a2yjh"]
 [ext_resource type="Script" uid="uid://c7egvgnf4b3l3" path="res://actors/player/states/player_juggle_state.gd" id="20_a2yjh"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="20_c0821"]
@@ -37,7 +35,10 @@
 [ext_resource type="Script" uid="uid://coeeo1ogwg8ju" path="res://actors/player/states/player_burst_attack_state.gd" id="27_jwexq"]
 [ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
 [ext_resource type="PackedScene" uid="uid://3raieqvx5gc4" path="res://actors/player/scripts/player_composite_sprite.tscn" id="28_t3a7u"]
-[ext_resource type="Script" uid="uid://bi7xhqr67b83e" path="res://actors/player/scripts/ball_receiver_area.gd" id="33_a2yjh"]
+[ext_resource type="Script" uid="uid://k8fsdivda4cg" path="res://actors/player/components/ball_contact_handler.gd" id="34_q7lff"]
+[ext_resource type="Script" uid="uid://ds1ji6g4h6wgo" path="res://actors/player/components/player_contact_handler.gd" id="35_00m30"]
+[ext_resource type="Script" uid="uid://dvxfjxm76qnxw" path="res://shared/combat/player_hit_box.gd" id="35_q7lff"]
+[ext_resource type="Resource" uid="uid://1ubmftao2hyg" path="res://fc_shape_library.tres" id="36_q7lff"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
@@ -59,62 +60,62 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/1/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
+"update": 1,
+"values": [0]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/2/path = NodePath("VisualRoot/PlayerCompositeSprite:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(22, 12)]
+"values": [Vector2(1, 1)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/3/path = NodePath("Components/StateMachine/CrawlHorizontal:is_decelerate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [0]
+"values": [true]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("VisualRoot/PlayerCompositeSprite:scale")
+tracks/4/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
+"update": 1,
+"values": [15]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("Components/StateMachine/CrawlHorizontal:is_decelerate")
+tracks/5/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true]
+"values": [1]
 }
 
 [sub_resource type="Animation" id="Animation_jgjso"]
@@ -136,26 +137,26 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.20000002),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(16, 8)]
+"times": PackedFloat32Array(0, 0.55),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-1, 1]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.20000002),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-8, 0)]
+"times": PackedFloat32Array(0, 0.20000002, 0.4, 0.55),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [-1, 20, -1, 1]
 }
 tracks/3/type = "method"
 tracks/3/imported = false
@@ -167,8 +168,8 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [],
-"method": &"enable_hit"
+"args": [0],
+"method": &"open_player_contact_window"
 }]
 }
 
@@ -224,7 +225,7 @@ tracks/1/path = NodePath("VisualRoot/PlayerCompositeSprite:scale")
 tracks/1/interp = 0
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.7),
+"times": PackedFloat32Array(0, 0.55),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(-1, 1), Vector2(1, 1)]
@@ -246,6 +247,30 @@ tracks/2/keys = {
 "method": &"on_kick_shoot"
 }]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.050000004, 0.25, 0.3, 0.40000004, 0.5, 0.55),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [-1, 10, 11, 12, 13, 14, -1]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
 
 [sub_resource type="Animation" id="Animation_3lvlc"]
 resource_name = "brake"
@@ -263,6 +288,30 @@ tracks/0/keys = {
 "update": 1,
 "values": [13]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [21]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
 
 [sub_resource type="Animation" id="Animation_f00pt"]
 resource_name = "burst_attack"
@@ -279,18 +328,42 @@ tracks/0/keys = {
 "update": 1,
 "values": [28, 9]
 }
-tracks/1/type = "method"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [15]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [],
-"method": &"enable_hit"
+"args": [1],
+"method": &"open_player_contact_window"
 }]
 }
 
@@ -310,10 +383,34 @@ tracks/0/keys = {
 "update": 1,
 "values": [7]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
 
 [sub_resource type="Animation" id="Animation_ioyab"]
 resource_name = "crawl"
-length = 0.10000167188216
+length = 0.1
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -327,43 +424,29 @@ tracks/0/keys = {
 "update": 1,
 "values": [3]
 }
-tracks/1/type = "method"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".")
+tracks/1/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_hit"
-}]
+"update": 1,
+"values": [3]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/2/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(32, 8)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
+"update": 1,
+"values": [3]
 }
 
 [sub_resource type="Animation" id="Animation_jwexq"]
@@ -408,43 +491,29 @@ tracks/2/keys = {
 "method": &"on_set_move_velocity"
 }]
 }
-tracks/3/type = "method"
+tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath(".")
+tracks/3/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_hit"
-}]
+"update": 1,
+"values": [4]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/4/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(8, 8)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-12, 0)]
+"update": 1,
+"values": [4]
 }
 
 [sub_resource type="Animation" id="Animation_q7lff"]
@@ -463,43 +532,29 @@ tracks/0/keys = {
 "update": 1,
 "values": [3, 53, 29]
 }
-tracks/1/type = "method"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_hit"
-}]
+"update": 1,
+"values": [3]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(32, 8)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
+"update": 1,
+"values": [3]
 }
 
 [sub_resource type="Animation" id="Animation_tabv8"]
@@ -517,43 +572,57 @@ tracks/0/keys = {
 "update": 1,
 "values": [18, 3]
 }
-tracks/1/type = "method"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_hit"
-}]
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [15, 4]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(22, 12), Vector2(8, 8)]
+"update": 1,
+"values": [15, 4]
 }
-tracks/3/type = "value"
+tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(-7, 0), Vector2(-12, 0)]
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0],
+"method": &"open_player_contact_window"
+}]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0],
+"method": &"open_ball_action_window"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_jcqi0"]
@@ -572,6 +641,30 @@ tracks/0/keys = {
 "update": 1,
 "values": [5]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
 
 [sub_resource type="Animation" id="Animation_wwj0w"]
 resource_name = "down_front"
@@ -589,6 +682,30 @@ tracks/0/keys = {
 "update": 1,
 "values": [4]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
 
 [sub_resource type="Animation" id="Animation_gb5ua"]
 resource_name = "elbow_strike"
@@ -597,52 +714,52 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
-tracks/0/interp = 1
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-7, 0)]
+"update": 1,
+"values": [18]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(22, 12)]
+"update": 1,
+"values": [15]
 }
-tracks/2/type = "method"
+tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".")
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_hit"
-}]
+"update": 1,
+"values": [15]
 }
-tracks/3/type = "value"
+tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
-tracks/3/interp = 0
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [18]
+"values": [{
+"args": [0],
+"method": &"open_player_contact_window"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_x2bss"]
@@ -661,6 +778,30 @@ tracks/0/keys = {
 "update": 1,
 "values": [33]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
 
 [sub_resource type="Animation" id="Animation_26oqr"]
 resource_name = "hurt_knockback_front"
@@ -676,6 +817,30 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [6]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
 }
 
 [sub_resource type="Animation" id="Animation_wwmeh"]
@@ -694,36 +859,70 @@ tracks/0/keys = {
 "update": 1,
 "values": [32]
 }
-
-[sub_resource type="Animation" id="Animation_q6r6c"]
-resource_name = "idle"
-length = 0.001
-step = 0.016666668
-tracks/0/type = "method"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"disable_hit"
-}]
-}
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
-tracks/1/interp = 0
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+
+[sub_resource type="Animation" id="Animation_q6r6c"]
+resource_name = "idle"
+length = 0.001
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
 "values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
 }
 
 [sub_resource type="Animation" id="Animation_a2yjh"]
@@ -759,6 +958,30 @@ tracks/0/keys = {
 "update": 1,
 "values": [28]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [19]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
 
 [sub_resource type="Animation" id="Animation_vbpfx"]
 resource_name = "kick"
@@ -767,26 +990,26 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.20000002),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.15, 0.20000002),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [Vector2(-2, 0)]
+"values": [35, 36, 37]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0.20000002),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(28, 8)]
+"times": PackedFloat32Array(0, 0.15, 0.20000002),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [5, 6, 7]
 }
 tracks/2/type = "method"
 tracks/2/imported = false
@@ -798,21 +1021,21 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [],
-"method": &"enable_hit"
+"args": [0],
+"method": &"open_ball_action_window"
 }]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
-tracks/3/interp = 0
+tracks/3/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.15, 0.20000002),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [35, 36, 37]
+"values": [1]
 }
 
 [sub_resource type="Animation" id="Animation_sj8lg"]
@@ -831,19 +1054,29 @@ tracks/0/keys = {
 "update": 1,
 "values": [2]
 }
-tracks/1/type = "method"
+tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"disable_hit"
-}]
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
 }
 
 [sub_resource type="Animation" id="Animation_f2m0f"]
@@ -876,6 +1109,30 @@ tracks/1/keys = {
 "update": 1,
 "values": [13, 15, 8]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
 
 [sub_resource type="Animation" id="Animation_j5ji6"]
 resource_name = "pass"
@@ -884,52 +1141,40 @@ step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
-tracks/0/interp = 1
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.20000002),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-4, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.20000002),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(24, 8)]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.2),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_hit"
-}]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
-tracks/3/interp = 0
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.20000002),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [14, 15]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [1],
+"method": &"open_ball_action_window"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.20000002),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [22, 23]
 }
 
 [sub_resource type="Animation" id="Animation_0e48y"]
@@ -948,6 +1193,30 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [21, 0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
 }
 
 [sub_resource type="Animation" id="Animation_00m30"]
@@ -981,6 +1250,44 @@ tracks/1/keys = {
 }, {
 "args": [],
 "method": &"_on_set_velocity"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-1, 1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0],
+"method": &"open_player_contact_window"
 }]
 }
 
@@ -1017,10 +1324,48 @@ tracks/1/keys = {
 "method": &"_on_set_velocity"
 }]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [-1, 1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0],
+"method": &"open_player_contact_window"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_igwkh"]
 resource_name = "stationary_flick"
-length = 0.25000167970526965
+length = 0.25
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1034,60 +1379,98 @@ tracks/0/keys = {
 "update": 1,
 "values": [9]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
 
 [sub_resource type="Animation" id="Animation_3lilj"]
 resource_name = "tackle"
-length = 0.4000016875283793
+length = 0.4
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("FacingRoot/HitBox/CollisionShape2D:position")
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(-8, 0)]
+"values": [26]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("FacingRoot/HitBox/CollisionShape2D:shape:size")
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(16, 8)]
+"update": 1,
+"values": [16]
 }
-tracks/2/type = "method"
+tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath(".")
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_hit"
-}]
+"update": 1,
+"values": [16]
 }
-tracks/3/type = "value"
+tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
-tracks/3/interp = 0
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [26]
+"values": [{
+"args": [2],
+"method": &"open_ball_action_window"
+}]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [3],
+"method": &"open_player_contact_window"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_kdubu"]
@@ -1106,6 +1489,30 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [19, 0, 20, 0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_tg3sl"]
@@ -1142,15 +1549,10 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jwexq"]
-resource_local_to_scene = true
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbh5u"]
-size = Vector2(16, 8)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
-resource_local_to_scene = true
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_00m30"]
 size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "state_machine")]
@@ -1346,6 +1748,12 @@ position_target = NodePath("../..")
 visual_pivot = NodePath("../../VisualRoot")
 shadow_sprite = NodePath("../../Shadow")
 
+[node name="BallContactHandler" type="Node" parent="Components" unique_id=182946618]
+script = ExtResource("34_q7lff")
+
+[node name="PlayerContactHandler" type="Node" parent="Components" unique_id=372940807]
+script = ExtResource("35_00m30")
+
 [node name="VisualRoot" type="Node2D" parent="." unique_id=1064463610]
 
 [node name="PlayerCompositeSprite" parent="VisualRoot" unique_id=487019932 instance=ExtResource("28_t3a7u")]
@@ -1353,39 +1761,37 @@ frame = 0
 
 [node name="FacingRoot" type="Node2D" parent="." unique_id=1050309182]
 
-[node name="HitBox" parent="FacingRoot" unique_id=1107242509 node_paths=PackedStringArray("source") instance=ExtResource("17_dg4u3")]
-collision_layer = 0
-collision_mask = 1
-monitoring = true
+[node name="BallContactDetector" type="Area2D" parent="FacingRoot" unique_id=160553065 node_paths=PackedStringArray("source")]
+collision_layer = 32
+collision_mask = 32
+script = ExtResource("35_q7lff")
 source = NodePath("../..")
-metadata/_edit_lock_ = true
+shape_library = ExtResource("36_q7lff")
+shape_id = 15
+facing_left = true
+label_offset = Vector2(-90, -70)
 
-[node name="CollisionShape2D" parent="FacingRoot/HitBox" index="0" unique_id=886247332]
-shape = SubResource("RectangleShape2D_jwexq")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FacingRoot/BallContactDetector" unique_id=1246057184]
+position = Vector2(-7, 0)
+shape = SubResource("RectangleShape2D_q7lff")
+
+[node name="PlayerContactDetector" type="Area2D" parent="FacingRoot" unique_id=635738517 node_paths=PackedStringArray("source")]
+visible = false
+collision_layer = 16
+collision_mask = 16
+script = ExtResource("35_q7lff")
+source = NodePath("../..")
+shape_library = ExtResource("36_q7lff")
+shape_id = 1
+facing_left = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FacingRoot/PlayerContactDetector" unique_id=229072069]
+shape = SubResource("RectangleShape2D_00m30")
 
 [node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
 
-[node name="BallReceiverArea" type="Area2D" parent="InteractionRoot" unique_id=979579271]
-collision_layer = 0
-collision_mask = 8
-monitorable = false
-script = ExtResource("33_a2yjh")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionRoot/BallReceiverArea" unique_id=1617378699]
-shape = SubResource("RectangleShape2D_qbh5u")
-
-[node name="HurtBox" parent="InteractionRoot" unique_id=1678072093 node_paths=PackedStringArray("target") instance=ExtResource("18_v0pxu")]
-collision_layer = 1
-collision_mask = 0
-monitoring = false
-monitorable = true
-target = NodePath("../..")
-metadata/_edit_lock_ = true
-
-[node name="CollisionShape2D" parent="InteractionRoot/HurtBox" index="0" unique_id=75084209]
-shape = SubResource("RectangleShape2D_q7lff")
-
 [node name="PassTargetDetector" type="Area2D" parent="." unique_id=1141697130 node_paths=PackedStringArray("player")]
+visible = false
 collision_layer = 0
 collision_mask = 4
 monitorable = false
@@ -1393,11 +1799,10 @@ script = ExtResource("28_iy78e")
 player = NodePath("..")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PassTargetDetector" unique_id=259109016]
+position = Vector2(0, -2)
 polygon = PackedVector2Array(0, 0, 896, 896, 896, -896)
 
-[connection signal="area_entered" from="InteractionRoot/BallReceiverArea" to="InteractionRoot/BallReceiverArea" method="_on_area_entered"]
-[connection signal="area_exited" from="InteractionRoot/BallReceiverArea" to="InteractionRoot/BallReceiverArea" method="_on_area_exited"]
-[connection signal="hit_received" from="InteractionRoot/HurtBox" to="." method="_on_hurt_box_hit_received"]
-
-[editable path="FacingRoot/HitBox"]
-[editable path="InteractionRoot/HurtBox"]
+[connection signal="area_entered" from="FacingRoot/BallContactDetector" to="FacingRoot/BallContactDetector" method="_on_area_entered"]
+[connection signal="area_exited" from="FacingRoot/BallContactDetector" to="FacingRoot/BallContactDetector" method="_on_area_exited"]
+[connection signal="area_entered" from="FacingRoot/PlayerContactDetector" to="FacingRoot/PlayerContactDetector" method="_on_area_entered"]
+[connection signal="area_exited" from="FacingRoot/PlayerContactDetector" to="FacingRoot/PlayerContactDetector" method="_on_area_exited"]

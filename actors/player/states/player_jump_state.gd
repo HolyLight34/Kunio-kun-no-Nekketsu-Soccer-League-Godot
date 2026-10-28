@@ -36,8 +36,8 @@ func handle_intent(intent: int, _delta: float) -> void:
 		PlayerIntentResolver.Intent.PASS:
 			if player.ball_possession == Types.BallPossession.MYSELF:
 				change_state(State.PASS)
-			elif  player.ball_possession == Types.BallPossession.OPPONENT:
-				change_state(State.AIR_KICK)
+		PlayerIntentResolver.Intent.TACKLE:
+			change_state(State.AIR_KICK)
 
 
 func _is_reverse_direction_pressed() -> bool:

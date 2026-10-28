@@ -88,8 +88,10 @@ var is_in_air: bool = false
 ## 返回值使用普通浮点单位，而不是 8.8 raw 值。
 func get_z_height() -> float:
 	return FixedPoint.from_raw(z_height_raw)
-
-
+func get_z_height_integer() -> int:
+	return FixedPoint.raw_to_integer(z_height_raw)
+func get_z_velocity_integer() -> int:
+	return FixedPoint.raw_to_integer(z_velocity_raw)
 ## 返回当前角色的 Z 速度。
 ##
 ## 返回值使用普通浮点单位，而不是 8.8 raw 值。

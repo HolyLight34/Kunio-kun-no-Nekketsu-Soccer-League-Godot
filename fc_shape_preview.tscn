@@ -1,9 +1,0 @@
-[gd_scene format=3 uid="uid://mauqrpyj17sd"]
-
-[ext_resource type="Script" uid="uid://vk4lllyxbuhe" path="res://fc_shape_preview.gd" id="1_sq10p"]
-[ext_resource type="Resource" uid="uid://1ubmftao2hyg" path="res://fc_shape_library.tres" id="2_rjseb"]
-
-[node name="FCShapePreview" type="Node2D" unique_id=1599861896]
-script = ExtResource("1_sq10p")
-shape_library = ExtResource("2_rjseb")
-shape_id = 15

@@ -9,7 +9,18 @@ enum HitType {
 	BALL_ATTACK,
 	BALL,
 }
+enum BallContactAction {
+	KICK,
+	PASS,
+	SLIDE_TACKLE,
+}
 
+enum PlayerContactAction {
+	NORMAL_ATTACK,
+	SPECIAL_ATTACK,
+	TEAM_UP,
+	SLIDE_TACKLE,
+}
 ## 队伍进攻方向。
 enum TeamAttackDirection {
 	LEFT,

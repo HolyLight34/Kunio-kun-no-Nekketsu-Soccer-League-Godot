@@ -2,24 +2,15 @@ extends PlayerState
 
 func enter(_data) -> void:
 	player.player_horizontal_movement.stop_immediately()
-	player.ball_receiver_area.disable()
-	player.prepare_pass_hit()
+	#player.ball_receiver_area.disable()
+	#player.prepare_pass_hit()
 	anim.play(anim_name)
 	await anim.animation_finished
 	change_state(State.IDLE)
 	pass
 
 func exit() -> void:
-	pass
-
-
-func process(_delta: float) -> void:
-
-	pass
-
-
-func physics_process(_delta: float) -> void:
-	
+	player.close_ball_action_window()
 	pass
 
 

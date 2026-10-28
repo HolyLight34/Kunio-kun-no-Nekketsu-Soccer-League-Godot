@@ -17,7 +17,7 @@ func enter(_data) -> void:
 		INITIAL_Z_VELOCITY
 	)
 
-	ball.set_receivable_detection_enabled(false)
+	#ball.set_receivable_detection_enabled(false)
 
 	ball.tick_timer_component.start_timer(
 		"juggle",

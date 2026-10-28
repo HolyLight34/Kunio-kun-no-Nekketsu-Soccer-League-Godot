@@ -2,7 +2,7 @@ extends PlayerState
 
 
 func enter(attack_direction: Vector2) -> void:
-	player.ball_receiver_area.disable()
+	#player.ball_receiver_area.disable()
 	player.player_horizontal_movement.set_horizontal_velocity(attack_direction*6)
 
 	if _is_hit_from_front(attack_direction):

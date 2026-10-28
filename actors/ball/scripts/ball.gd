@@ -85,12 +85,6 @@ var wetness: Wetness = Wetness.DRY:
 
 @onready var ball_interactable_area: Area2D = $BallInteractableArea
 
-
-# ==============================================================================
-# 4. 运行状态
-# ==============================================================================
-
-
 ## 角色拾取候选数组
 var _receiver_candidates: Array[Player] = []
 
@@ -109,6 +103,7 @@ enum ReceiveType {
 	GROUND_PICKUP,
 	AIR_CONTROL,
 	STATIONARY_FLICK,
+	BALL_HIT
 }
 
 var carrier: Player = null:
@@ -204,6 +199,7 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	ball_horizontal_movement.step_logic_tick()
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
+	#ball_contact_detector.logic_tick()
 	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
@@ -240,7 +236,9 @@ func _update_wetness(ground_effect: Types.GroundEffect) -> void:
 		wetness = Wetness.DRY
 
 func get_receive_type() -> ReceiveType:
-	# 原地挑球第一次落地前的特殊接球规则。
+	 #原地挑球第一次落地前的特殊接球规则。
+	if  state_machine.current_state.name == "Shot":
+		return ReceiveType.BALL_HIT
 	if stationary_flick_active:
 		return ReceiveType.STATIONARY_FLICK
 
@@ -252,7 +250,7 @@ func get_receive_type() -> ReceiveType:
 	# 但足球正在向上运动，不能作为地面球拾取。
 	if ball_z_movement.is_rising():
 		return ReceiveType.NONE
-
+	
 	# 普通地面球。
 	return ReceiveType.GROUND_PICKUP
 # ==============================================================================
@@ -276,11 +274,10 @@ func get_goal_target_position(
 func get_z_height() -> float:
 	return ball_z_movement.get_z_height()
 
-
-func get_collision_height() -> int:
-	return COLLISION_HEIGHT
-
-
+func get_z_height_integer() -> int:
+	return ball_z_movement.get_z_height_integer()
+#func get_z_velocity_integer() -> int:
+	#return ball_z_movement.get_z_velocity()
 
 func is_in_air() -> bool:
 	return ball_z_movement.is_in_air()
@@ -290,14 +287,7 @@ func is_in_air() -> bool:
 func can_be_received() -> bool:
 	return carrier == null
 
-## 开启命中判定窗口。
-func enable_hit() -> void:
-	hit_box.enabled = true
 
-
-## 关闭命中判定窗口。
-func disable_hit() -> void:
-	hit_box.enabled = false
 # ==============================================================================
 # 8. 球权
 # ==============================================================================
@@ -351,30 +341,13 @@ func unregister_receiver(player: Player) -> void:
 	_receiver_candidates.erase(player)
 
 
-## 返回第一个满足 XYZ 接触条件的角色。
-func get_receiver() -> Player:
-	for player in _receiver_candidates:
-		if _is_z_overlapping(player):
-			return player
-
-	return null
-
-
-## 判断足球与角色的 Z 高度范围是否重叠。
-func _is_z_overlapping(player: Player) -> bool:
-	var player_z := FixedPoint.to_integer(
-		player.get_z_height()
-	)
-
-	var ball_z := FixedPoint.to_integer(
-		get_z_height()
-	)
-
-	return (
-		ball_z < player_z + player.get_collision_height()
-		and
-		player_z < ball_z + get_collision_height()
-	)
+### 返回第一个满足 XYZ 接触条件的角色。
+#func get_receiver() -> Player:
+	#for player in _receiver_candidates:
+		#if _is_z_overlapping(player):
+			#return player
+#
+	#return null
 
 
 # ==============================================================================
@@ -397,9 +370,7 @@ func apply_y_control(direction: int) -> void:
 # ==============================================================================
 # 11. 外部动作接口
 # ==============================================================================
-func set_receivable_detection_enabled(enabled: bool) -> void:
-	ball_interactable_area.set_deferred("monitorable",enabled)
-	
+
 
 func receive_stationary_flick() -> void:
 	stationary_flick_active = true
@@ -425,26 +396,6 @@ func receive_moving_flick(kicker: Player) -> void:
 	ball_z_movement.launch(9)
 
 
-# ==============================================================================
-# 12. HitBox 攻击接口
-# ==============================================================================
-
-func prepare_ball_attack_hit(
-	attack_direction: Vector2,
-	power: int,
-	damage: int
-) -> void:
-	var data := _create_ball_attack_data(
-		attack_direction,
-		power,
-		damage
-	)
-
-	_prepare_hit(
-		Types.HitType.BALL_ATTACK,
-		data
-	)
-
 
 func _create_ball_attack_data(
 	attack_direction: Vector2,
@@ -459,26 +410,6 @@ func _create_ball_attack_data(
 
 	return data
 
-
-func _prepare_hit(
-	type: Types.HitType,
-	payload: Variant
-) -> void:
-	var hit_info := HitInfo.new()
-
-	hit_info.type = type
-	hit_info.payload = payload
-
-	hit_box.set_hit_info(hit_info)
-
-# ==============================================================================
-# 13. HurtBox 命中处理
-# ==============================================================================
-
-func _on_hurt_box_hit_received(
-	hit_info: HitInfo
-) -> void:
-	_resolve_hit(hit_info)
 func get_ball_velocity() -> Vector3:
 	return Vector3(
 		get_horizontal_velocity().x,
@@ -495,27 +426,9 @@ func get_horizontal_velocity() -> Vector2:
 	return ball_horizontal_movement.get_horizontal_velocity()
 func get_z_velocity() -> float:
 	return ball_z_movement.get_z_velocity()
-func _resolve_hit(hit_info: HitInfo) -> void:
-	match hit_info.type:
-		Types.HitType.PASS:
-			_resolve_pass(hit_info.payload)
 
-		Types.HitType.KICK:
-			_resolve_kick(hit_info.payload)
 
-		Types.HitType.TACKLE:
-			_resolve_tackle(hit_info.payload)
-		Types.HitType.BALL:
-			_resolve_ball(hit_info.payload)
-
-# ==============================================================================
-# 14. Kick 处理
-# ==============================================================================
-## 外部接口：足球受到踢球。
-func receive_kick(data: KickData) -> void:
-	_resolve_kick(data)
-
-func _resolve_kick(data: KickData) -> void:
+func resolve_kick(data: KickData) -> void:
 	release_from_carrier()
 
 	state_machine.change_state(
@@ -534,7 +447,7 @@ func _resolve_ball(data: BallData) -> void:
 # 15. Pass 处理
 # ==============================================================================
 
-func _resolve_pass(data: PassData) -> void:
+func resolve_pass(data: PassData) -> void:
 	release_from_carrier()
 
 	var target_position: Vector2
@@ -583,8 +496,8 @@ func _resolve_pass(data: PassData) -> void:
 # 16. Strike 处理
 # ==============================================================================
 
-func _resolve_tackle(data: TackleData) -> void:
-	carrier = data.attacker
+func resolve_tackle(player: Player) -> void:
+	carrier = player
 
 
 # ==============================================================================

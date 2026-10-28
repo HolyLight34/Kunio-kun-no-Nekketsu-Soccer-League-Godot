@@ -177,10 +177,8 @@ func step_logic_tick() -> void:
 	clamp_velocity()
 	# 当前速度就是整个 Logic Tick 需要完成的位移。
 	tick_displacement_raw = horizontal_velocity_raw
-	if GameSettings.is_classic_motion():
-		_process_classic_motion()
-	else:
-		_prepare_smooth_motion()
+	
+	_process_classic_motion()
 # ==============================================================================
 # Classic
 # ==============================================================================
@@ -201,9 +199,6 @@ func _prepare_smooth_motion() -> void:
 # Physics Frame
 # ==============================================================================
 func _physics_process(_delta: float) -> void:
-	# Classic 已经在 Logic Tick 中完成了整个位置积分。
-	if GameSettings.is_classic_motion():
-		return
 	if tick_motion_frame >= PHYSICS_FRAMES_PER_LOGIC_TICK:
 		return
 	tick_motion_frame += 1

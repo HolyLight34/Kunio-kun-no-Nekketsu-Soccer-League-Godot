@@ -2,7 +2,7 @@ extends PlayerState
 
 
 func enter(_data) -> void:
-	player.prepare_tackle_hit()
+	#player.prepare_tackle_hit()
 	anim.play(anim_name)
 	if player.input_component.move_dir == Vector2.ZERO:
 		player.player_horizontal_movement.set_horizontal_velocity(5*player.facing_direction)
@@ -15,6 +15,8 @@ func physics_tick() -> void:
 	player.player_horizontal_movement.decelerate_xy(x_decel_rate)
 	pass
 func exit() -> void:
+	player.close_ball_action_window()
+	player.close_player_contact_window()
 	pass
 
 

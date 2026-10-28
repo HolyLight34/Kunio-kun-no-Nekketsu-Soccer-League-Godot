@@ -2,7 +2,6 @@ extends PlayerState
 
 
 func enter(attack_direction: Vector2) -> void:
-	player.ball_receiver_area.disable()
 	if _is_hit_from_front(attack_direction):
 		anim.play(anim_name)
 		

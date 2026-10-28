@@ -1,11 +1,11 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.ball_receiver_area.disable()
+	#player.ball_receiver_area.disable()
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished
 	if player.input_component.move_dir != Vector2.ZERO:
-		player.prepare_ball_hit()
+		#player.prepare_ball_hit()
 		if player.input_component.move_dir.x != 0:
 			change_state(State.CRAWL_HORIZONTAL)
 		else :

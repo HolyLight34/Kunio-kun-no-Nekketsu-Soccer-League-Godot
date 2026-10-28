@@ -79,13 +79,12 @@ func enter(data: KickData) -> void:
 	if result.height_category == BallShotResult.ShotHeightCategory.HIGH_AIR:
 		anim.play(anim_name)
 
-	ball.enable_hit()
 
-	ball.prepare_ball_attack_hit(
-		attack_direction,
-		result.power,
-		5
-	)
+	#ball.prepare_ball_attack_hit(
+		#attack_direction,
+		#result.power,
+		#5
+	#)
 
 	# ================================================================
 	# 5. 无重力持续阶段
@@ -127,14 +126,12 @@ func enter(data: KickData) -> void:
 
 
 func physics_tick() -> void:
-	#print("Z=", ball.get_z_height()," VZ=", ball.ball_z_movement.z_velocity_raw," gravity=", ball.ball_z_movement._gravity_enabled)
 	pass
 
 
 func exit() -> void:
 	_execution_id += 1
 
-	ball.disable_hit()
 	ball.ball_z_movement.gravity_enable()
 
 

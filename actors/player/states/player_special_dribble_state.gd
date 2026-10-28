@@ -25,6 +25,7 @@ func _on_set_velocity() -> void:
 	print("当前速度：",player.player_horizontal_movement.get_horizontal_velocity())
 	pass
 func exit() -> void:
+	player.close_player_contact_window()
 	pass
 
 

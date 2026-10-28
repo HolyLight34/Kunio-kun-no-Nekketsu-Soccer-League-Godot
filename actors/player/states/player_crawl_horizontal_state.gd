@@ -1,8 +1,8 @@
 extends PlayerState
 @export var is_decelerate: bool = true
 func enter(_data) -> void:
-	player.prepare_ball_hit()
-	player.ball_receiver_area.disable()
+	#player.prepare_ball_hit()
+	#player.ball_receiver_area.disable()
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished
 	change_state(State.CRAWL)

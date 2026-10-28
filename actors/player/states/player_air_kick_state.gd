@@ -1,12 +1,13 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.prepare_strike_hit(2)
+	#player.prepare_strike_hit(2)
 	anim.play(anim_name)
 	player.player_z_movement.jump(1.5)
 	await player.player_z_movement.landed
 	change_state(State.LAND)
 func exit() -> void:
+	player.close_player_contact_window()
 	pass
 
 

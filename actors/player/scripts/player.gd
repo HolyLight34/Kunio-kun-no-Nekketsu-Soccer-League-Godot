@@ -56,15 +56,18 @@ func get_team_attack_direction() -> Types.TeamAttackDirection:
 
 @onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
 
-@onready var hit_box: HitBox = $FacingRoot/HitBox
+@onready var ball_contact_detector: HitBox = $FacingRoot/BallContactDetector
 
 @onready var endurance_label: Label = $Label
 
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 
-@onready var ball_receiver_area: BallReceiverArea = $InteractionRoot/BallReceiverArea
+#@onready var ball_receiver_area: BallReceiverArea = $InteractionRoot/BallReceiverArea
 
 @onready var player_composite_sprite: PlayerCompositeSprite = $Visual/PlayerCompositeSprite
+@onready var ball_contact_handler: BallContactHandler = $Components/BallContactHandler
+@onready var player_contact_handler: PlayerContactHandler = $Components/PlayerContactHandler
+@onready var player_contact_detector: HitBox = $FacingRoot/PlayerContactDetector
 
 # ==============================================================================
 # 4. 运行状态
@@ -103,7 +106,20 @@ func _initialize_components() -> void:
 		self,
 		input_component
 	)
-
+	ball_contact_handler.initialize(self)
+	ball_contact_detector.contact_started.connect(
+		ball_contact_handler._on_contact_started
+	)
+	ball_contact_detector.contact_ended.connect(
+		ball_contact_handler._on_contact_ended
+	)
+	player_contact_handler.initialize(self)
+	player_contact_detector.contact_started.connect(
+		player_contact_handler._on_contact_started
+	)
+	player_contact_detector.contact_ended.connect(
+		player_contact_handler._on_contact_ended
+	)
 	state_machine.init(self)
 
 func _physics_process(delta: float) -> void:
@@ -126,14 +142,16 @@ func logic_tick() -> void:
 	state_machine.physics_tick()
 	player_z_movement.logic_tick()
 	step_animation_component.advance_tick()
-	
 	_update_facing(
 		input_component.move_dir.x
 	)
 	player_horizontal_movement.step_logic_tick()
 	entity_position_visual_component.set_shadow_visible(is_in_air())
-	_process_ball_contact()
-	_process_ball_control()
+	ball_contact_detector.logic_tick()
+	player_contact_detector.logic_tick()
+	ball_contact_handler.logic_tick()
+	player_contact_handler.logic_tick()
+	
 	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
@@ -173,9 +191,10 @@ func get_horizontal_velocity() -> Vector2:
 
 func get_horizontal_position_integer() -> Vector2:
 	return player_horizontal_movement.get_horizontal_position_integer()
-func get_collision_height() -> int:
-	return COLLISION_HEIGHT
-
+func get_z_height_integer() -> int:
+	return player_z_movement.get_z_height_integer()
+func get_z_velocity_integer() -> int:
+	return player_z_movement.get_z_velocity()
 
 func is_in_air() -> bool:
 	return player_z_movement.is_in_air
@@ -304,60 +323,6 @@ func release_ball() -> void:
 # 11. 足球接触
 # ==============================================================================
 
-func _process_ball_contact() -> void:
-	if ball == null:
-		return
-
-	if not ball.can_be_received():
-		return
-
-	if ball.get_receiver() != self:
-		return
-
-	match ball.get_receive_type():
-		Ball.ReceiveType.NONE:
-			return
-
-		Ball.ReceiveType.GROUND_PICKUP:
-			ball.receive_ground_pickup(self)
-			return
-
-		Ball.ReceiveType.STATIONARY_FLICK:
-			# 原地挑球特殊阶段：
-			# 角色静止时不能接，
-			# 移动时继续按照空中球处理。
-			if not is_moving():
-				return
-
-		Ball.ReceiveType.AIR_CONTROL:
-			pass
-
-	# 能执行到这里的足球，
-	# 都按照空中接球流程处理。
-
-	_face_ball()
-
-	# 角色自身在空中：空中控球。
-	if is_in_air():
-		ball.receive_air_control(self)
-		return
-
-	# 跑动中接到空中球：颠球。
-	if is_running():
-		ball.receive_juggle(self)
-
-		state_machine.change_state(
-			PlayerState.State.JUGGLE
-		)
-		return
-
-	# 站在地面接到空中球：胸停。
-	state_machine.change_state(
-		PlayerState.State.CHEST_TRAP
-	)
-
-	ball.receive_air_control(self)
-
 # ==============================================================================
 # 12. 足球 Shot 控制
 # ==============================================================================
@@ -395,147 +360,23 @@ func _update_pass_search_direction() -> void:
 	
 
 
-# ==============================================================================
-# 14. HitBox 公共接口
-# ==============================================================================
+func open_ball_action_window(action: Types.BallContactAction) -> void:
+	ball_contact_handler.open_action_window(action)
 
-## 准备踢球命中数据。
-func prepare_kick_hit() -> void:
-	_prepare_hit(
-		Types.HitType.KICK,
-		_create_kick_data()
-	)
-func prepare_ball_hit() -> void:
-	_prepare_hit(
-		Types.HitType.BALL,
-		_create_ball_data()
-	)
-func _create_ball_data() -> BallData:
-	var data := BallData.new()
-	data.attack_direction = input_component.move_dir
+func close_ball_action_window() -> void:
+	ball_contact_handler.close_action_window()
 
-	return data
-## 准备传球命中数据。
-func prepare_pass_hit() -> void:
-	_prepare_hit(
-		Types.HitType.PASS,
-		_create_pass_data()
-	)
+func open_player_contact_window(action: Types.PlayerContactAction) -> void:
+	player_contact_handler.open_action_window(action)
 
-func prepare_tackle_hit() -> void:
-	_prepare_hit(
-		Types.HitType.TACKLE,
-		_create_tackle_data()
-	)
-
-## 准备角色攻击命中数据。
-func prepare_strike_hit(
-	damage: int
-) -> void:
-	_prepare_hit(
-		Types.HitType.STRIKE,
-		_create_strike_data(
-			damage
-		)
-	)
-
-
-## 开启命中判定窗口。
-func enable_hit() -> void:
-	hit_box.enabled = true
-
-
-## 关闭命中判定窗口。
-func disable_hit() -> void:
-	hit_box.enabled = false
-
-
-# ==============================================================================
-# 15. Hit 数据创建
-# ==============================================================================
-
-func _prepare_hit(
-	type: Types.HitType,
-	payload: Variant
-) -> void:
-	var hit_info := HitInfo.new()
-
-	hit_info.type = type
-	hit_info.payload = payload
-
-	hit_box.set_hit_info(hit_info)
-
-
-func _create_kick_data() -> KickData:
-	var data := KickData.new()
-	data.direction = facing_direction
-	data.endurance = endurance
-
-	return data
-
-
-func _create_pass_data() -> PassData:
-	var target := (
-		pass_target_detector.find_best_target()
-	)
-
-	if target != null:
-		return PassData.from_position(
-			target.get_logical_position()
-		)
-
-	return PassData.from_offset(
-		pass_target_detector
-			.get_default_target_offset()
-	)
-
-func _create_tackle_data() -> TackleData:
-	var data := TackleData.new()
-	data.attacker = self
-	data.attack_direction = facing_direction
-	return data
-
-func _create_strike_data(
-	damage: int
-) -> StrikeData:
-	var data := StrikeData.new()
-
-	data.attacker = self
-	data.attack_direction = facing_direction
-	data.endurance = endurance
-	data.damage = damage
-
-	return data
-
-
-# ==============================================================================
-# 16. HurtBox 受击入口
-# ==============================================================================
-
-func _on_hurt_box_hit_received(
-	hit_info: HitInfo
-) -> void:
-	_resolve_hit(hit_info)
-
-
-func _resolve_hit(
-	hit_info: HitInfo
-) -> void:
-	match hit_info.type:
-		Types.HitType.STRIKE:
-			_resolve_strike(
-				hit_info.payload
-			)
-		Types.HitType.BALL_ATTACK:
-			_resolve_ball_attack(hit_info.payload)
-		Types.HitType.TACKLE:
-			_resolve_tackle(hit_info.payload)
-
+func close_player_contact_window() -> void:
+	player_contact_handler.close_action_window()
+	
 
 # ==============================================================================
 # 17. Strike 处理
 # ==============================================================================
-func _resolve_tackle(
+func resolve_tackle(
 	data: TackleData
 ) -> void:
 	## 铲球只有在目标正在跑动时，
@@ -547,7 +388,7 @@ func _resolve_tackle(
 		PlayerState.State.REBOUND,
 		data.attack_direction
 	)
-func _resolve_strike(
+func resolve_strike(
 	data: StrikeData
 ) -> void:
 	release_ball()

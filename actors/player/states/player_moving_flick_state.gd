@@ -3,7 +3,6 @@ var flick_executed: bool = false
 
 func enter(_data) -> void:
 	flick_executed = false
-	player.ball_receiver_area.disable()
 	player.player_horizontal_movement.stop_immediately()
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished

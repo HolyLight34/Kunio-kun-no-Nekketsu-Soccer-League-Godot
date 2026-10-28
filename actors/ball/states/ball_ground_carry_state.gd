@@ -5,21 +5,17 @@ const TARGET_X_OFFSET := 12.0
 
 
 func enter(_data) -> void:
-	ball.enable_hit()
 
 	# 携带期间足球 Z 不执行自身运动，
 	# Z 高度由持球角色同步。
 	ball.ball_z_movement.gravity_disable()
+	#ball.ball_horizontal_movement.stop_immediately()
+	ball.ball_z_movement.z_velocity_raw = 0
 
 
 func exit() -> void:
 	pass
 
-
-func process(_delta: float) -> void:
-	pass
-func uses_default_horizontal_step() -> bool:
-	return false
 
 func physics_tick() -> void:
 	# --------------------------------------------------------------------------
@@ -38,11 +34,6 @@ func physics_tick() -> void:
 	var player_position: Vector2i = (
 		ball.carrier.get_horizontal_position_integer()
 	)
-	# 角色更新后
-	print("Player: ", ball.carrier.get_logical_position())
-	#var player_velocity: Vector2 = (
-		#ball.carrier.get_horizontal_velocity()
-	#)
 
 	var facing_direction: Vector2 = (
 		ball.carrier.get_facing_direction()
@@ -78,8 +69,6 @@ func physics_tick() -> void:
 		target_position
 	)
 	
-	# 足球同步后
-	print("Ball: ", ball.ball_horizontal_movement.get_horizontal_position())
 
 	# --------------------------------------------------------------------------
 	# 同步足球水平速度
@@ -107,5 +96,5 @@ func physics_tick() -> void:
 	# --------------------------------------------------------------------------
 
 	ball.ball_z_movement.sync_integer_height(
-		ball.carrier.get_z_height()
+		ball.carrier.get_z_height_integer()
 	)

@@ -203,6 +203,8 @@ func get_z_height() -> float:
 	return FixedPoint.from_raw(z_height_raw)
 func get_z_velocity() -> float:
 	return FixedPoint.from_raw(z_velocity_raw)
+func get_z_height_integer() -> int:
+	return FixedPoint.raw_to_integer(z_height_raw)
 func is_rising() -> bool:
 	return z_velocity_raw > 0
 ## 返回足球当前是否处于空中。
