@@ -68,7 +68,6 @@ const GRAVITY_RAW: int = 0x0080
 ## 使用 8.8 定点数保存。
 var z_height_raw: int = 0
 
-
 ## 当前角色的 Z 速度。
 ##
 ## 使用 8.8 定点数保存。
@@ -90,6 +89,10 @@ func get_z_height() -> float:
 	return FixedPoint.from_raw(z_height_raw)
 func get_z_height_integer() -> int:
 	return FixedPoint.raw_to_integer(z_height_raw)
+
+func set_z_height(value: float) -> void:
+	z_height_raw = FixedPoint.to_raw(value)
+	
 func get_z_velocity_integer() -> int:
 	return FixedPoint.raw_to_integer(z_velocity_raw)
 ## 返回当前角色的 Z 速度。
@@ -108,7 +111,13 @@ func get_z_velocity() -> float:
 func jump(initial_velocity: float) -> void:
 	z_velocity_raw = FixedPoint.to_raw(initial_velocity)
 	is_in_air = true
+var _rest_height_raw: int = 0
 
+
+## 设置角色非空中状态下的保持高度。
+func set_rest_height(value: float) -> void:
+	_rest_height_raw = FixedPoint.to_raw(value)
+	
 
 # ==============================================================================
 # 逻辑更新
@@ -117,6 +126,7 @@ func jump(initial_velocity: float) -> void:
 ## 执行一个 FC 逻辑步的角色 Z 轴运动。
 func logic_tick() -> void:
 	if not is_in_air:
+		z_height_raw = _rest_height_raw
 		return
 
 	# 保存本逻辑步开始前的速度。
@@ -136,8 +146,8 @@ func logic_tick() -> void:
 		descending.emit()
 
 	# 角色下降并到达地面。
-	if z_height_raw <= 0 and z_velocity_raw < 0:
-		z_height_raw = 0
+	if z_height_raw <= _rest_height_raw and z_velocity_raw < 0:
+		z_height_raw = _rest_height_raw
 		z_velocity_raw = 0
 		is_in_air = false
 		landed.emit()

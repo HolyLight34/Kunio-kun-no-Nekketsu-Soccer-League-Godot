@@ -3,13 +3,14 @@
 [ext_resource type="Script" uid="uid://6q51n0q12xa7" path="res://actors/ball/scripts/ball.gd" id="1_ncgq8"]
 [ext_resource type="Script" uid="uid://8goknn2xmft" path="res://actors/ball/states/ball_ground_carry_state.gd" id="3_07s1p"]
 [ext_resource type="Script" uid="uid://buc4euir7vwhb" path="res://actors/ball/states/ball_shot_state.gd" id="4_b5n0i"]
-[ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://actors/ball/states/ball_free_state.gd" id="5_r3iha"]
+[ext_resource type="Script" uid="uid://kl8t1tdj1esj" path="res://actors/ball/states/ball_free_state.gd" id="5_r3iha"]
 [ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://actors/player/components/state_machine/state_machine.tscn" id="7_r3iha"]
 [ext_resource type="Texture2D" uid="uid://dq646sh83b2qx" path="res://actors/ball/assets/ball.png" id="8_iwjb2"]
 [ext_resource type="Script" uid="uid://btqnw73bvo5to" path="res://actors/ball/states/ball_air_control_state.gd" id="8_l8wax"]
 [ext_resource type="Script" uid="uid://bp2ilw66sp3oh" path="res://actors/ball/states/ball_bicycle_kick_flick_state.gd" id="9_au374"]
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="9_iwjb2"]
 [ext_resource type="Script" uid="uid://c0ysvbqp6b6gy" path="res://actors/ball/states/ball_juggle_state.gd" id="9_ospjx"]
+[ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://actors/ball/states/ball_stomped_state.gd" id="10_ospjx"]
 [ext_resource type="Script" uid="uid://ddgryvlc3eucy" path="res://shared/timing/tick_timer_component.gd" id="11_aduox"]
 [ext_resource type="Shader" uid="uid://cmy87af5bto26" path="res://actors/ball/assets/ball_palette.gdshader" id="11_au374"]
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://actors/ball/components/ball_z_movement.gd" id="11_begx4"]
@@ -155,6 +156,10 @@ state = 4
 [node name="BallBicycleKickFlick" type="Node" parent="StateMachine" unique_id=1147476308]
 script = ExtResource("9_au374")
 state = 5
+
+[node name="Stomped" type="Node" parent="StateMachine" unique_id=1695823170]
+script = ExtResource("10_ospjx")
+state = 6
 
 [node name="Visual" type="Node2D" parent="." unique_id=1616589881]
 

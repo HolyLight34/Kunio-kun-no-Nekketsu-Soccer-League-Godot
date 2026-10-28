@@ -27,6 +27,7 @@ enum State {
 	CRAWL_ROLL,
 	SPECIAL_DRIBBLE,
 	BURST_ATTACK,
+	STOMP_BALL,
 } 
 @export_group("State Info")
 @export var state: State

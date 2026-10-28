@@ -5,6 +5,7 @@ func enter(_data) -> void:
 	ball.ball_z_movement.gravity_enable()
 	ball.release_from_carrier()
 	anim.play(anim_name)
+	pass
 	
 
 

@@ -8,6 +8,7 @@ enum State {
 	AIR_CONTROL,
 	JUGGLE,
 	BICYCLE_KICK_FLICK,
+	STOMPED,
 } 
 
 @export var state: State # 当前状态设置

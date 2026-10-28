@@ -102,8 +102,13 @@ func _process_ball_contact() -> void:
 			return
 
 		Ball.ReceiveType.GROUND_PICKUP:
-			#_response_handled = true
-			player.ball.receive_ground_pickup(player)
+			if player.get_z_velocity() < 0:
+				player.is_stomping_ball = true
+				player.player_z_movement.set_rest_height(13)
+				player.state_machine.change_state(PlayerState.State.LAND)
+				player.ball.receive_stomped(player)
+			else :
+				player.ball.receive_ground_pickup(player)
 			return
 
 		Ball.ReceiveType.STATIONARY_FLICK:

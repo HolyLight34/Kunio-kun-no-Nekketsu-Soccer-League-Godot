@@ -276,8 +276,7 @@ func get_z_height() -> float:
 
 func get_z_height_integer() -> int:
 	return ball_z_movement.get_z_height_integer()
-#func get_z_velocity_integer() -> int:
-	#return ball_z_movement.get_z_velocity()
+
 
 func is_in_air() -> bool:
 	return ball_z_movement.is_in_air()
@@ -310,7 +309,12 @@ func receive_air_control(player: Player) -> void:
 		BallState.State.AIR_CONTROL
 	)
 	
-	
+func receive_stomped(player: Player) -> void:
+	carrier = player
+	state_machine.change_state(
+		BallState.State.STOMPED
+	)
+	pass
 func receive_juggle(player: Player) -> void:
 	carrier = player
 	state_machine.change_state(

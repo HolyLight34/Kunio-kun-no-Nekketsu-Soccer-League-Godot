@@ -77,7 +77,7 @@ var ball: Ball
 
 var ball_possession: Types.BallPossession
 
-
+var is_stomping_ball: bool = false
 
 var facing_direction := Vector2.LEFT:
 	set(value):
@@ -151,7 +151,6 @@ func logic_tick() -> void:
 	player_contact_detector.logic_tick()
 	ball_contact_handler.logic_tick()
 	player_contact_handler.logic_tick()
-	
 	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
