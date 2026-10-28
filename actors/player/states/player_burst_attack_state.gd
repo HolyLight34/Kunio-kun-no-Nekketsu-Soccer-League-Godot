@@ -1,7 +1,7 @@
 extends PlayerState
 var dir: Vector2
 func enter(_data) -> void:
-	player.prepare_strike_hit(2)
+	#player.prepare_strike_hit(2)
 	dir = player.input_component.move_dir
 	if player.input_component.move_dir != Vector2.ZERO:
 		player.player_horizontal_movement.set_move_velocity(6,dir)
@@ -21,7 +21,7 @@ func enter(_data) -> void:
 
 
 func exit() -> void:
-	
+	player.close_player_contact_window()
 	pass
 
 

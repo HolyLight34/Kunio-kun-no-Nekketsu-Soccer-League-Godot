@@ -81,6 +81,8 @@ func _handle_contact() -> void:
 		PlayerContactAction.NORMAL_ATTACK:
 			_target_player.resolve_strike(_create_strike_data(2))
 		PlayerContactAction.SPECIAL_ATTACK:
+			_target_player.resolve_special_attack(_create_strike_data(2))
+			player.endurance -= 1
 			pass
 		PlayerContactAction.TEAM_UP:
 			pass

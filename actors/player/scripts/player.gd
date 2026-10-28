@@ -192,8 +192,7 @@ func get_horizontal_position_integer() -> Vector2:
 	return player_horizontal_movement.get_horizontal_position_integer()
 func get_z_height_integer() -> int:
 	return player_z_movement.get_z_height_integer()
-func get_z_velocity_integer() -> int:
-	return player_z_movement.get_z_velocity()
+
 
 func is_in_air() -> bool:
 	return player_z_movement.is_in_air
@@ -408,7 +407,26 @@ func resolve_strike(
 		data.attacker.receive_rebound()
 
 	endurance -= data.damage
-	
+func resolve_special_attack(data: StrikeData) -> void:
+	release_ball()
+
+	# 普通角色攻击受伤规则。
+	if data.endurance + 18 >= endurance:
+		state_machine.change_state(
+			PlayerState.State.KNOCKBACK,
+			data.attack_direction
+		)
+
+	else:
+		state_machine.change_state(
+			PlayerState.State.REBOUND,
+			data.attack_direction
+		)
+
+		data.attacker.receive_rebound()
+
+	endurance -= data.damage
+	pass
 # ==============================================================================
 # Ball_Attack 处理
 # ==============================================================================
