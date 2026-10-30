@@ -62,7 +62,9 @@ func calculate_shot(
 	height_threshold: int
 ) -> BallShotResult:
 	var result := BallShotResult.new()
-
+	var z_integer: int = FixedPoint.to_integer(
+		ball_height
+	)
 	if _field_data == null:
 		result.is_valid = false
 		push_error("BallActionCalculator: 场地数据尚未初始化")
@@ -81,7 +83,9 @@ func calculate_shot(
 
 	result.shot_mode = _get_shot_mode(
 		ball_position.x,
-		attack_direction
+		attack_direction,
+		z_integer,
+		height_threshold,
 	)
 
 	# ================================================================
@@ -105,9 +109,7 @@ func calculate_shot(
 	# 3. 根据 Z 整数部分确定高度分类
 	# ================================================================
 
-	var z_integer: int = FixedPoint.to_integer(
-		ball_height
-	)
+	
 
 	result.height_category = _get_height_category(
 		z_integer,
@@ -151,7 +153,7 @@ func calculate_shot(
 		attack_direction,
 		result.shot_mode
 	)
-
+	print("我是",total_ticks)
 	result.duration_ticks = total_ticks - INITIAL_ADVANCE_TICKS
 
 	if result.duration_ticks < 0:
@@ -183,7 +185,7 @@ func calculate_shot(
 
 func _get_height_category(
 	z_integer: int,
-	height_threshold: int
+	height_threshold: int,
 ) -> BallShotResult.ShotHeightCategory:
 	if z_integer < 0:
 		return BallShotResult.ShotHeightCategory.BELOW_GROUND
@@ -216,7 +218,10 @@ func _get_left_attack_x(
 
 func _get_shot_mode(
 	ball_x: float,
-	attack_direction: Vector2
+	attack_direction: Vector2,
+	ball_z: int,
+	height_thresh: int
+	
 ) -> Types.ShotMode:
 	var x: int = _get_left_attack_x(
 		ball_x,
@@ -226,10 +231,10 @@ func _get_shot_mode(
 	if x < SHOT_ZONE_1:
 		return Types.ShotMode.NORMAL
 
-	if x < SHOT_ZONE_2:
+	if x < SHOT_ZONE_2 and ball_z > height_thresh:
 		return Types.ShotMode.DOWNWARD
 
-	if x < SHOT_ZONE_3:
+	if x < SHOT_ZONE_3 and ball_z > height_thresh:
 		return Types.ShotMode.UPWARD
 
 	return Types.ShotMode.NORMAL

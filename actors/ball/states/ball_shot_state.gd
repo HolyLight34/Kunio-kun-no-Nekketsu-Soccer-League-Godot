@@ -79,13 +79,6 @@ func enter(data: KickData) -> void:
 	if result.height_category == BallShotResult.ShotHeightCategory.HIGH_AIR:
 		anim.play(anim_name)
 
-
-	#ball.prepare_ball_attack_hit(
-		#attack_direction,
-		#result.power,
-		#5
-	#)
-
 	# ================================================================
 	# 5. 无重力持续阶段
 	# ================================================================
@@ -95,7 +88,7 @@ func enter(data: KickData) -> void:
 		"shot",
 		result.duration_ticks
 	)
-
+	print(result.duration_ticks)
 	await ball.tick_timer_component.timer_finished
 
 	if not _is_execution_valid(current_execution):

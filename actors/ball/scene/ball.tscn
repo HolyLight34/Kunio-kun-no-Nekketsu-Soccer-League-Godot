@@ -109,7 +109,7 @@ shader_parameter/white_color = Color(0, 0, 0, 1)
 shader_parameter/black_color = Color(0, 0, 0, 1)
 shader_parameter/red_color = Color(0, 0, 0, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_au374"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ospjx"]
 size = Vector2(16, 12)
 
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
@@ -202,6 +202,6 @@ shape_library = ExtResource("18_6t48i")
 shape_id = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=1112721686]
-shape = SubResource("RectangleShape2D_au374")
+shape = SubResource("RectangleShape2D_ospjx")
 
 [connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]
