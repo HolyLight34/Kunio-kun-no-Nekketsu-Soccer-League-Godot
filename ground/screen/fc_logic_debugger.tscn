@@ -1,0 +1,173 @@
+[gd_scene format=3 uid="uid://km3adcts4nxk"]
+
+[ext_resource type="Script" uid="uid://cjiwaonwmbhye" path="res://ground/screen/fc_logic_debugger.gd" id="1_dfdjw"]
+
+[sub_resource type="Theme" id="Theme_dfdjw"]
+default_font_size = 4
+
+[node name="FCLogicDebugger" type="Control" unique_id=257040675]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_dfdjw")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1066099268]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 136.0
+offset_bottom = 73.0
+theme = SubResource("Theme_dfdjw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1763614361]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=997633113]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/VBoxContainer/HeaderContainer" unique_id=1844183082]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "FC Logic Debugger"
+
+[node name="FrameLabel" type="Label" parent="PanelContainer/VBoxContainer/HeaderContainer" unique_id=283045413]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Frame: 0"
+
+[node name="StatusLabel" type="Label" parent="PanelContainer/VBoxContainer/HeaderContainer" unique_id=497610622]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "RUNNING"
+
+[node name="ButtonContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" unique_id=616677294]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PauseButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonContainer" unique_id=831984639]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PAUSE"
+
+[node name="StepButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonContainer" unique_id=417276422]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "STEP"
+
+[node name="ResumeButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonContainer" unique_id=969789611]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "RESUME"
+
+[node name="PhysicsGrid" type="GridContainer" parent="PanelContainer/VBoxContainer" unique_id=595811572]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 1
+columns = 5
+
+[node name="AxisLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=36558094]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AXIS"
+
+[node name="PlayerPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=430989094]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "P.POS"
+
+[node name="PlayerVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=504933516]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "P.VEL"
+
+[node name="BallPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=29080161]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "B.POS"
+
+[node name="BallVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=1540112652]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "B.VEL"
+
+[node name="XAxisLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=11133016]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "X"
+
+[node name="XPlayerPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=55173316]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0.0000"
+
+[node name="XPlayerVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=273083341]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="XBallPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=1107341021]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "0.0000"
+
+[node name="XBallVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=408120557]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="YAxisLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=430073536]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Y"
+
+[node name="YPlayerPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=829240606]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="YPlayerVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=473192844]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="YBallPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=1698566992]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="YBallVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=470809207]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="ZAxisLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=292575792]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Z"
+
+[node name="ZPlayerPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=564766649]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="ZPlayerVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=717731001]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="ZBallPositionLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=727766053]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="ZBallVelocityLabel" type="Label" parent="PanelContainer/VBoxContainer/PhysicsGrid" unique_id=1910377670]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "+0.0000"
+
+[node name="FCLogicDebugger" type="CanvasLayer" parent="." unique_id=2019555446]
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ButtonContainer/PauseButton" to="." method="_on_pause_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ButtonContainer/StepButton" to="." method="_on_step_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ButtonContainer/ResumeButton" to="." method="_on_resume_button_pressed"]

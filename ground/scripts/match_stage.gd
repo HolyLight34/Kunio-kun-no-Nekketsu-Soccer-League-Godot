@@ -28,6 +28,7 @@ var team1: Array[Player] = []
 var team2: Array[Player] = []
 @onready var physics_debug_panel: PhysicsDebugPanel = $PhysicsDebugPanel
 @onready var player: Player = $Player
+@onready var fc_logic_debugger: Control = $CanvasLayer/FCLogicDebugger
 
 
 func _ready() -> void:
@@ -41,12 +42,13 @@ func _ready() -> void:
 	
 
 func _physics_process(delta: float) -> void:
-	physics_debug_panel.set_physics_data(
+	fc_logic_debugger.set_physics_data(
 		player.get_player_position(),
 		player.get_player_velocity(),
 		ball.get_ball_position(),
 		ball.get_ball_velocity()
 	)
+	pass
 func _on_logic_tick() -> void:
 	for child in get_children():
 		if child is Player:

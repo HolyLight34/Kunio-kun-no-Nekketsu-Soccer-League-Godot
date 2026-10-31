@@ -21,7 +21,7 @@ extends RefCounted
 
 
 ## 射门初始化时提前计算的逻辑步数。
-const INITIAL_ADVANCE_TICKS: int = 3
+const INITIAL_ADVANCE_TICKS: int = 2
 
 ## 射门的水平速度大小。
 const SHOT_HORIZONTAL_SPEED: int = 8

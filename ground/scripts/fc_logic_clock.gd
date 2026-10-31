@@ -19,25 +19,37 @@ extends Node
 
 signal logic_tick
 
-
+var is_paused: bool = false
 const TICK_RATE := 20.0
 const TICK_INTERVAL := 1.0 / TICK_RATE
-
+var logic_frame: int = 0
 
 var _accumulator := 0.0
-
-
+func pause() -> void:
+	if is_paused:
+		return
+	is_paused = true
+	_accumulator = 0.0
+func resume() -> void:
+	if not is_paused:
+		return
+	is_paused = false
+	_accumulator = 0.0
 func _physics_process(delta: float) -> void:
+	if is_paused:
+		return
+
 	_accumulator += delta
 
 	while _accumulator >= TICK_INTERVAL:
 		_accumulator -= TICK_INTERVAL
-		step()
+		logic_frame += 1
+		logic_tick.emit()
 
 
 ## 手动推进一个 FC 逻辑步。
-##
-## 除正常比赛外，也可以用于测试、回放等场景。
 func step() -> void:
-	
+	if not is_paused:
+		return
+	logic_frame += 1
 	logic_tick.emit()
