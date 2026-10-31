@@ -63,9 +63,7 @@ enum DecayProfile {
 # ==============================================================================
 ## FC 水平物理使用 1 / 256 精度。
 const RAW_ONE: int = 256
-## SMOOTH 模式：
-## 1 Logic Tick = 3 Physics Frame。
-const PHYSICS_FRAMES_PER_LOGIC_TICK: int = 3
+
 # ==============================================================================
 # 动作 $05 空中操控
 # ==============================================================================
@@ -114,12 +112,12 @@ const LANDING_DECAY_TABLE: Array = [
 # 信号
 # ==============================================================================
 ## 每次触地水平衰减完成后发送。
-signal horizontal_landed(
-	velocity_before: Vector2,
-	velocity_after: Vector2
-)
-## 水平滚动完全停止。
-signal horizontal_stopped
+#signal horizontal_landed(
+	#velocity_before: Vector2,
+	#velocity_after: Vector2
+#)
+### 水平滚动完全停止。
+#signal horizontal_stopped
 # ==============================================================================
 # 地面参数
 # ==============================================================================
@@ -267,6 +265,7 @@ func apply_air_steering(vertical_input: float) -> void:
 ## ✅ 修改水平速度
 ## ❌ 不修改水平位置
 func apply_landing_decay() -> void:
+	
 	var velocity_before_raw := (
 		horizontal_velocity_raw
 	)
@@ -281,12 +280,14 @@ func apply_landing_decay() -> void:
 			coefficient_raw
 		)
 	)
-	horizontal_landed.emit(
-		_vector_raw_to_float(
-			velocity_before_raw
-		),
-		get_horizontal_velocity()
-	)
+	print("我弹",horizontal_velocity_raw)
+	#print(horizontal_velocity_raw)
+	#horizontal_landed.emit(
+		#_vector_raw_to_float(
+			#velocity_before_raw
+		#),
+		#get_horizontal_velocity()
+	#)
 # ==============================================================================
 # ROLLING
 # ==============================================================================
@@ -359,7 +360,7 @@ func step_logic_tick() -> void:
 		horizontal_velocity_raw == Vector2i.ZERO
 	):
 		is_rolling = false
-		horizontal_stopped.emit()
+		#horizontal_stopped.emit()
 	## --------------------------------------------------------------------------
 	## 决定如何执行位置积分
 	## --------------------------------------------------------------------------
@@ -382,8 +383,8 @@ func stop_immediately() -> void:
 		Vector2i.ZERO
 	)
 	is_rolling = false
-	if was_moving:
-		horizontal_stopped.emit()
+	#if was_moving:
+		#horizontal_stopped.emit()
 # ==============================================================================
 # 水平衰减
 # ==============================================================================

@@ -64,7 +64,8 @@ func get_team_attack_direction() -> Types.TeamAttackDirection:
 
 #@onready var ball_receiver_area: BallReceiverArea = $InteractionRoot/BallReceiverArea
 
-@onready var player_composite_sprite: PlayerCompositeSprite = $Visual/PlayerCompositeSprite
+@onready var player_composite_sprite: PlayerCompositeSprite = $VisualRoot/PlayerCompositeSprite
+
 @onready var ball_contact_handler: BallContactHandler = $Components/BallContactHandler
 @onready var player_contact_handler: PlayerContactHandler = $Components/PlayerContactHandler
 @onready var player_contact_detector: HitBox = $FacingRoot/PlayerContactDetector

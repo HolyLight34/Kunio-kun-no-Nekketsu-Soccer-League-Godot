@@ -26,7 +26,6 @@ extends Node
 var ball_action_calculator := BallActionCalculator.new()
 var team1: Array[Player] = []
 var team2: Array[Player] = []
-@onready var physics_debug_panel: PhysicsDebugPanel = $PhysicsDebugPanel
 @onready var player: Player = $Player
 @onready var fc_logic_debugger: Control = $CanvasLayer/FCLogicDebugger
 
