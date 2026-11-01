@@ -93,8 +93,6 @@ func _process_ball_contact() -> void:
 			return
 
 		Ball.ReceiveType.BALL_HIT:
-			#_response_handled = true
-
 			player.state_machine.change_state(
 				PlayerState.State.KNOCKBACK,
 				-player.facing_direction
@@ -128,13 +126,11 @@ func _process_ball_contact() -> void:
 
 	# 角色自身在空中：空中控球。
 	if player.is_in_air():
-		#_response_handled = true
 		_target_ball.receive_air_control(player)
 		return
 
 	# 跑动中接到空中球：颠球。
 	if player.is_running():
-		#_response_handled = true
 
 		_target_ball.receive_juggle(player)
 
@@ -144,13 +140,11 @@ func _process_ball_contact() -> void:
 		return
 
 	# 站在地面接到空中球：胸停。
-	#_response_handled = true
-
+	_target_ball.receive_air_control(player)
 	player.state_machine.change_state(
 		PlayerState.State.CHEST_TRAP
 	)
-
-	_target_ball.receive_air_control(player)
+	
 func _create_ball_data() -> BallData:
 	var data := BallData.new()
 	data.attack_direction = player.input_component.move_dir

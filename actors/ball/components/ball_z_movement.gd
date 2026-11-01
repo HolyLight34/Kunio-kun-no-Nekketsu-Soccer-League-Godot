@@ -339,7 +339,6 @@ func _process_landing(
 	# BallHorizontalComponent 可以监听该信号，
 	# 执行 LANDING 水平衰减。
 	landed.emit()
-	print("我弹落地")
 
 	# --------------------------------------------------------------------------
 	# 继续反弹
@@ -354,7 +353,6 @@ func _process_landing(
 
 	z_velocity_raw = 0
 	finished.emit()
-	print("我弹完成")
 
 
 # ==============================================================================

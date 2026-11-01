@@ -96,11 +96,10 @@ func _perform_actual_switch(
 
 		Log.info(
 			Log.Cat.STATE,
-			"%s 状态退出: %s 物理帧: %d"
+			"%s 状态退出: %s"
 			% [
 				actor.name,
 				current_state.name,
-				Engine.get_physics_frames()
 			]
 		)
 
@@ -112,10 +111,9 @@ func _perform_actual_switch(
 
 	Log.info(
 		Log.Cat.STATE,
-		"%s 状态进入: %s 物理帧: %d"
+		"%s 状态进入: %s"
 			% [
 				actor.name,
 				current_state.name,
-				Engine.get_physics_frames()
 			]
 	)

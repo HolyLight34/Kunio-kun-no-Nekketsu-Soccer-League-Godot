@@ -280,14 +280,7 @@ func apply_landing_decay() -> void:
 			coefficient_raw
 		)
 	)
-	print("我弹",horizontal_velocity_raw)
-	#print(horizontal_velocity_raw)
-	#horizontal_landed.emit(
-		#_vector_raw_to_float(
-			#velocity_before_raw
-		#),
-		#get_horizontal_velocity()
-	#)
+	
 # ==============================================================================
 # ROLLING
 # ==============================================================================

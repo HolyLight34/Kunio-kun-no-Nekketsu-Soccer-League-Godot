@@ -62,7 +62,6 @@ var wetness: Wetness = Wetness.DRY:
 # ==============================================================================
 @onready var ball_sprite: Sprite2D = $Visual/Sprite2D
 
-#@onready var hit_box: HitBox = $HitBox
 
 @onready var state_machine: StateMachine = $StateMachine
 
@@ -82,8 +81,6 @@ var wetness: Wetness = Wetness.DRY:
 
 @onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
 
-
-#@onready var ball_interactable_area: Area2D = $BallInteractableArea
 
 ## 角色拾取候选数组
 var _receiver_candidates: Array[Player] = []
@@ -197,10 +194,8 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	var ground_type := _resolve_ground_type(ground_effect)
 	ball_horizontal_movement.step_logic_tick()
 	ball_z_movement.logic_tick(ground_type,wetness,carrier == null)
-	
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
-	#ball_contact_detector.logic_tick()
 	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()

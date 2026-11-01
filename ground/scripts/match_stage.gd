@@ -49,16 +49,18 @@ func _physics_process(delta: float) -> void:
 	)
 	pass
 func _on_logic_tick() -> void:
+	
 	for child in get_children():
 		if child is Player:
 			var current_player := child as Player
 			current_player.logic_tick()
-
 	var ball_ground_effect := field.get_ground_effect_at(
 		ball.get_logical_position()
 	)
-
 	ball.logic_tick(ball_ground_effect)
+
+	
+
 
 
 func _collect_teams() -> void:
