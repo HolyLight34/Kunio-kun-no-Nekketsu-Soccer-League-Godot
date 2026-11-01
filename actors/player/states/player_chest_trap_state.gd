@@ -14,7 +14,7 @@ func exit() -> void:
 	pass
 
 func physics_tick() -> void:
-	if player.ball.get_z_height_integer() == 0:
+	if player.ball.is_ground_carry():
 		change_state(State.IDLE)
 	pass
 

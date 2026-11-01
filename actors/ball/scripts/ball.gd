@@ -389,7 +389,8 @@ func receive_stationary_flick() -> void:
 		BallState.State.FREE
 	)
 	
-	
+func is_ground_carry() -> bool:
+	return state_machine.current_state.name == "GroundCarry"
 
 
 func receive_moving_flick(kicker: Player) -> void:
