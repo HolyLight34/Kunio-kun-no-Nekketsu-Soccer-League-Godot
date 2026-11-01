@@ -97,8 +97,8 @@ signal landed
 
 ## 足球彻底结束本次 Z 轴运动时发送。
 signal finished
-
-
+## 足球开始下降
+signal started_descending
 # ==============================================================================
 # FC 常量
 # ==============================================================================
@@ -307,6 +307,7 @@ func logic_tick(
 
 	# 足球只有下降并且 Z < 0 时才触地。
 	if z_height_raw < 0 and z_velocity_raw < 0:
+		started_descending.emit()
 		_process_landing(
 			ground_type,
 			wetness,

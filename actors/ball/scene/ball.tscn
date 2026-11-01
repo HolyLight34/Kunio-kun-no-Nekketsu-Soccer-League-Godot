@@ -40,7 +40,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("HurtBox:shape_id")
+tracks/1/path = NodePath("PlayerContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -68,7 +68,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("HurtBox:shape_id")
+tracks/1/path = NodePath("PlayerContactDetector:shape_id")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -193,7 +193,7 @@ anim_player = NodePath("../../AnimationPlayer")
 [node name="BallZMovement" type="Node" parent="Components" unique_id=2046879588]
 script = ExtResource("11_begx4")
 
-[node name="HurtBox" type="Area2D" parent="." unique_id=223851057 node_paths=PackedStringArray("source")]
+[node name="PlayerContactDetector" type="Area2D" parent="." unique_id=223851057 node_paths=PackedStringArray("source")]
 collision_layer = 32
 collision_mask = 32
 script = ExtResource("17_l8wax")
@@ -201,7 +201,7 @@ source = NodePath("..")
 shape_library = ExtResource("18_6t48i")
 shape_id = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=1112721686]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerContactDetector" unique_id=1112721686]
 shape = SubResource("RectangleShape2D_ospjx")
 
 [connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]

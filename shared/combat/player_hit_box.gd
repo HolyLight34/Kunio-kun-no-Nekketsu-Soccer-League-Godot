@@ -168,8 +168,10 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_disconnect_shape()
-
-
+## 关必交互
+func set_interaction_enabled(value):
+	monitorable = value
+	monitoring = value
 # ==============================================================================
 # Shape 资源监听
 # ==============================================================================

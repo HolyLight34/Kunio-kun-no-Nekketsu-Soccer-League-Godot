@@ -7,7 +7,13 @@ extends CharacterBody2D
 # ==============================================================================
 
 signal possession_changed(new_carrier: Player)
- 
+var player_interaction_enabled: bool = true:
+	set(value):
+		player_interaction_enabled = value
+
+		if is_instance_valid(player_contact_detector):
+			player_contact_detector.set_interaction_enabled(value)
+
 # ==============================================================================
 # 2. 常量
 # ==============================================================================
@@ -80,6 +86,7 @@ var wetness: Wetness = Wetness.DRY:
 )
 
 @onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
+@onready var player_contact_detector: HitBox = $PlayerContactDetector
 
 
 ## 角色拾取候选数组
@@ -449,7 +456,7 @@ func _resolve_ball(data: BallData) -> void:
 
 func resolve_pass(data: PassData) -> void:
 	release_from_carrier()
-
+	
 	var target_position: Vector2
 
 	match data.target_type:
@@ -486,7 +493,8 @@ func resolve_pass(data: PassData) -> void:
 	ball_z_movement.launch(
 		pass_velocity.z
 	)
-
+	if pass_velocity.z > 0:
+		player_interaction_enabled = false
 	state_machine.change_state(
 		BallState.State.FREE
 	)
