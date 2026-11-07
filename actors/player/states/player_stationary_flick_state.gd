@@ -5,24 +5,10 @@ func enter(_data) -> void:
 	player.ball.receive_stationary_flick()
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished
-	change_state(State.IDLE)
+	request_state(State.IDLE)
 	pass
 
 
 
 func exit() -> void:
-	#player.
-	pass
-
-
-func process(_delta: float) -> void:
-	pass
-
-
-func handle_intent(_intent: int, _delta: float) -> void:
-	pass
-
-
-func physics_process(_delta: float) -> void:
-
 	pass

@@ -8,33 +8,25 @@ func enter(_data) -> void:
 func exit() -> void:
 	pass
 
-
-func process(_delta: float) -> void:
-	pass
-func physics_tick() -> void:
+func logic_tick() -> void:
 	player.player_horizontal_movement.set_move_velocity(2.375,player.input_component.move_dir)
 	pass
-func handle_intent(intent: int, _delta: float) -> void:
+func handle_intent(intent: int) -> void:
 	match intent:
 		PlayerIntentResolver.Intent.IDLE:
-			change_state(State.IDLE)
+			request_state(State.IDLE)
 		PlayerIntentResolver.Intent.JUMP:
 			if player.ball_possession == Types.BallPossession.MYSELF:
 				if player.input_component.move_dir == Vector2.LEFT or player.input_component.move_dir == Vector2.RIGHT:
-					change_state(State.MOVING_FLICK)
+					request_state(State.MOVING_FLICK)
 					return
-			change_state(State.JUMP)
+			request_state(State.JUMP)
 		PlayerIntentResolver.Intent.RUN:
-			change_state(State.RUN)
+			request_state(State.RUN)
 		PlayerIntentResolver.Intent.PASS:
-			change_state(State.PASS)
+			request_state(State.PASS)
 		PlayerIntentResolver.Intent.KICK:
 			if player.input_component.move_dir.x != 0:
-				change_state(State.DIVINGHEADER)
-			change_state(State.KICK)	
-	pass
-func physics_process(_delta: float) -> void:
-	pass
-
-func _on_init() -> void:
+				request_state(State.DIVINGHEADER)
+			request_state(State.KICK)	
 	pass

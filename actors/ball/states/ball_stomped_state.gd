@@ -9,7 +9,7 @@ func enter(_data) -> void:
 func exit() -> void:
 	pass
 
-func physics_tick() -> void:
+func logic_tick() -> void:
 		# --------------------------------------------------------------------------
 
 	var player_position: Vector2i = (

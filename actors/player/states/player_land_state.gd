@@ -3,10 +3,10 @@ extends PlayerState
 func enter(_data) -> void:
 	player.step_animation_component.play(anim_name)
 	await anim.animation_finished
-	change_state(State.IDLE)
+	request_state(State.IDLE)
 	pass
 
-func physics_tick() -> void:
+func logic_tick() -> void:
 	player.player_horizontal_movement.decelerate_xy(x_decel_rate)
 	pass
 func exit() -> void:
@@ -14,17 +14,8 @@ func exit() -> void:
 	pass
 
 
-func process(_delta: float) -> void:
-
-	pass
-
-
-func physics_process(_delta: float) -> void:
-	pass
-
-
-func handle_intent(intent: int, _delta: float) -> void:
+func handle_intent(intent: int) -> void:
 	match intent:
 		PlayerIntentResolver.Intent.ELBOW_STRIKE:
-			change_state(State.BURST_ATTACK)
+			request_state(State.BURST_ATTACK)
 	pass

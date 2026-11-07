@@ -19,6 +19,7 @@
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_position_visual_component.gd" id="14_h8xgc"]
 [ext_resource type="Script" uid="uid://dvxfjxm76qnxw" path="res://shared/combat/player_hit_box.gd" id="17_l8wax"]
 [ext_resource type="Resource" uid="uid://1ubmftao2hyg" path="res://fc_shape_library.tres" id="18_6t48i"]
+[ext_resource type="Script" uid="uid://cwslqqmlr68uk" path="res://actors/ball/components/ball_player_contact_handler.gd" id="18_br07o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iy78e"]
 size = Vector2(16, 12)
@@ -109,11 +110,11 @@ shader_parameter/white_color = Color(0, 0, 0, 1)
 shader_parameter/black_color = Color(0, 0, 0, 1)
 shader_parameter/red_color = Color(0, 0, 0, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ospjx"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_br07o"]
 size = Vector2(16, 12)
 
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
-collision_layer = 2
+collision_layer = 0
 collision_mask = 0
 script = ExtResource("1_ncgq8")
 
@@ -138,28 +139,28 @@ anim_name = &"free"
 
 [node name="GroundCarry" type="Node" parent="StateMachine" unique_id=1743281351]
 script = ExtResource("3_07s1p")
-state = 1
+ball_state_id = 1
 
 [node name="Shot" type="Node" parent="StateMachine" unique_id=408952036]
 script = ExtResource("4_b5n0i")
-state = 2
+ball_state_id = 2
 anim_name = &"shot"
 
 [node name="AirControl" type="Node" parent="StateMachine" unique_id=79705925]
 script = ExtResource("8_l8wax")
-state = 3
+ball_state_id = 3
 
 [node name="Juggle" type="Node" parent="StateMachine" unique_id=1725952865]
 script = ExtResource("9_ospjx")
-state = 4
+ball_state_id = 4
 
 [node name="BallBicycleKickFlick" type="Node" parent="StateMachine" unique_id=1147476308]
 script = ExtResource("9_au374")
-state = 5
+ball_state_id = 5
 
 [node name="Stomped" type="Node" parent="StateMachine" unique_id=1695823170]
 script = ExtResource("10_ospjx")
-state = 6
+ball_state_id = 6
 
 [node name="Visual" type="Node2D" parent="." unique_id=1616589881]
 
@@ -193,6 +194,9 @@ anim_player = NodePath("../../AnimationPlayer")
 [node name="BallZMovement" type="Node" parent="Components" unique_id=2046879588]
 script = ExtResource("11_begx4")
 
+[node name="BallPlayerContactHandler" type="Node" parent="Components" unique_id=788719230]
+script = ExtResource("18_br07o")
+
 [node name="PlayerContactDetector" type="Area2D" parent="." unique_id=223851057 node_paths=PackedStringArray("source")]
 collision_layer = 32
 collision_mask = 32
@@ -202,6 +206,8 @@ shape_library = ExtResource("18_6t48i")
 shape_id = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerContactDetector" unique_id=1112721686]
-shape = SubResource("RectangleShape2D_ospjx")
+shape = SubResource("RectangleShape2D_br07o")
 
 [connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]
+[connection signal="area_entered" from="PlayerContactDetector" to="PlayerContactDetector" method="_on_area_entered"]
+[connection signal="area_exited" from="PlayerContactDetector" to="PlayerContactDetector" method="_on_area_exited"]

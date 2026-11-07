@@ -51,6 +51,8 @@ func play(anim_name: String, force_restart: bool = false) -> void:
 
 ## 由 FCLogicClock 驱动，每个逻辑帧调用一次。
 func advance_tick() -> void:
+	#print("A：动画推进前",Engine.get_physics_frames())
+	
 	if not anim_player or current_anim.is_empty() or not is_playing:
 		return
 
@@ -92,3 +94,5 @@ func advance_tick() -> void:
 	if has_finished:
 		is_playing = false
 		animation_finished.emit(current_anim)
+	# 原来的动画推进代码
+	#print("B：动画推进后",Engine.get_physics_frames())

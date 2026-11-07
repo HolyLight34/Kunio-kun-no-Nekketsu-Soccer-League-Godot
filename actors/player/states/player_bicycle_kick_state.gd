@@ -10,7 +10,7 @@ func enter(_data) -> void:
 	
 	await anim.animation_finished
 	if player.player_z_movement.is_in_air:
-		change_state(State.JUMP)
+		request_state(State.JUMP)
 	pass
 
 ## 动画事件：触发倒钩挑球。
@@ -25,9 +25,4 @@ func on_kick_shoot() -> void:
 	pass
 func exit() -> void:
 	
-	pass
-
-
-func handle_intent(_intent: int, _delta: float) -> void:
-
 	pass

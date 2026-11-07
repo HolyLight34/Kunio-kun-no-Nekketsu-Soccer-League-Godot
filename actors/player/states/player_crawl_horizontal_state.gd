@@ -1,9 +1,9 @@
 extends PlayerState
-@export var is_decelerate: bool = true
+var is_decelerate: bool = true
 func enter(_data) -> void:
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished
-	change_state(State.CRAWL)
+	request_state(State.CRAWL)
 	pass
 
 func exit() -> void:

@@ -10,9 +10,9 @@ extends Area2D
 # 职责：
 # 1. 根据 FC Shape ID 更新 CollisionShape2D。
 # 2. 根据朝向更新 XY 碰撞区域。
-# 3. 通过 Area2D 检测 HurtBox 的 XY 重叠。
-# 4. 在统一逻辑步中持续检查 Z 轴重叠。
-# 5. 三轴接触开始和结束时分别发出信号，并传递对方所属对象。
+# 3. 在统一逻辑步中主动查询 XY 重叠。
+# 4. 在统一逻辑步中检查 Z 轴重叠。
+# 5. 三轴接触开始和结束时分别发出信号。
 # 6. 在编辑器中显示 HIT Shape 标签和 Z 轴区间。
 #
 # 不负责：
@@ -28,11 +28,9 @@ extends Area2D
 # ==============================================================================
 
 ## XY 与 Z 轴首次同时满足接触条件时发出。
-## target 是对方 HurtBox 所属的对象。
 signal contact_started(target: Node)
 
 ## 已经成立的三轴接触不再成立时发出。
-## target 是本次接触结束的对象。
 signal contact_ended(target: Node)
 
 
@@ -84,7 +82,6 @@ var shape_id: int = -1:
 # 标签显示配置
 # ==============================================================================
 
-## 是否在编辑器中显示标签。
 @export var show_shape_label: bool = true:
 	set(value):
 		if show_shape_label == value:
@@ -94,7 +91,6 @@ var shape_id: int = -1:
 		queue_redraw()
 
 
-## 标签相对于 HitBox 自身原点的偏移。
 @export var label_offset: Vector2 = Vector2(0, -4):
 	set(value):
 		if label_offset == value:
@@ -104,7 +100,6 @@ var shape_id: int = -1:
 		queue_redraw()
 
 
-## 标签字号。
 @export_range(6, 32, 1)
 var label_font_size: int = 10:
 	set(value):
@@ -115,7 +110,6 @@ var label_font_size: int = 10:
 		queue_redraw()
 
 
-## HitBox 标签颜色。
 @export var label_color: Color = Color(1.0, 0.55, 0.15, 1.0):
 	set(value):
 		if label_color == value:
@@ -144,12 +138,11 @@ var _connected_shape: FCShape = null
 var hit_z_bounds: Vector2 = Vector2.ZERO
 
 
-## 当前处于 XY 重叠范围内的 HurtBox。
+## 当前 XY 重叠的 HurtBox。
 var _target_hurt_box: HitBox = null
 
 
 ## 当前已经确认三轴接触的对方对象。
-## 独立保存，确保接触结束时仍能识别原来的目标。
 var _contact_target: Node = null
 
 
@@ -168,10 +161,14 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_disconnect_shape()
-## 关必交互
-func set_interaction_enabled(value):
+
+
+## 开启或关闭交互。
+func set_interaction_enabled(value: bool) -> void:
 	monitorable = value
 	monitoring = value
+
+
 # ==============================================================================
 # Shape 资源监听
 # ==============================================================================
@@ -221,9 +218,6 @@ func _on_shape_changed() -> void:
 # ==============================================================================
 
 ## 判断双方的实际 Z 轴区间是否重叠。
-##
-## a_height、b_height：双方当前的 Z 高度。
-## a_bounds、b_bounds：双方 Shape 相对于自身高度的区间。
 func overlaps_z(
 	a_height: int,
 	a_bounds: Vector2,
@@ -244,46 +238,60 @@ func overlaps_z(
 # ==============================================================================
 
 ## 返回当前是否已经确认三轴接触。
-## 该状态由 logic_tick() 更新。
 func is_contacting() -> bool:
 	return _is_contacting
+
 
 func get_z_bounds() -> Vector2:
 	var shape: FCShape = shape_library.get_shape(shape_id)
 	return FCShapeParser.get_z_bounds(shape)
+
+
 # ==============================================================================
 # 接触检测
 # ==============================================================================
 
-## 由统一逻辑步调度器调用。
+## 每个 FC Logic Tick 调用一次。
 ##
-## XY 重叠期间，每个逻辑步检查 Z 轴。
-## 三轴接触开始时发出 contact_started。
-## 三轴接触结束时发出 contact_ended。
-## 持续接触期间不重复发送开始事件。
+## 1. 主动查询当前 XY 重叠对象。
+## 2. 更新当前 HurtBox。
+## 3. 检查双方 Z 轴是否重叠。
+## 4. 判断接触开始或结束。
 func logic_tick() -> void:
 	if not is_inside_tree():
 		return
 
 	if not monitoring:
-		_end_contact()
+		_clear_target()
 		return
 
+	# 主动获取当前 XY 重叠对象。
+	var next_target := _find_target_hurt_box()
+
+	# 目标发生变化。
+	if next_target != _target_hurt_box:
+		_end_contact()
+		_target_hurt_box = next_target
+
+	# 当前没有 XY 重叠对象。
 	if not is_instance_valid(_target_hurt_box):
+		_target_hurt_box = null
 		_end_contact()
 		return
 
 	var target: Node = _target_hurt_box.source
 
 	if not is_instance_valid(target):
-		_end_contact()
+		_clear_target()
 		return
 
+	# 获取双方当前 Z 高度。
 	var source_height: int = source.get_z_height_integer()
 	var target_height: int = target.get_z_height_integer()
 
 	var hurt_z: Vector2 = _target_hurt_box.get_z_bounds()
 
+	# 检查 Z 轴重叠。
 	var overlapping := overlaps_z(
 		source_height,
 		hit_z_bounds,
@@ -298,6 +306,75 @@ func logic_tick() -> void:
 		_end_contact()
 
 
+# ==============================================================================
+# 主动 XY 查询
+# ==============================================================================
+
+## 查询当前 HitBox 重叠的其他 Area2D。
+##
+## 返回值：
+## 当前物理空间中与本 HitBox 重叠的 Area2D 查询结果。
+func query_overlapping_areas() -> Array[Dictionary]:
+	var results: Array[Dictionary] = []
+
+	if not is_inside_tree():
+		return results
+
+	if collision_shape.shape == null:
+		return results
+
+	var query := PhysicsShapeQueryParameters2D.new()
+
+	query.shape = collision_shape.shape
+	query.transform = collision_shape.global_transform
+	query.collision_mask = collision_mask
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+
+	# 排除自身。
+	query.exclude = [get_rid()]
+
+	var space_state := get_world_2d().direct_space_state
+
+	results = space_state.intersect_shape(
+		query,
+		32
+	)
+
+	return results
+
+
+## 从主动查询结果中寻找一个有效的 HurtBox。
+func _find_target_hurt_box() -> HitBox:
+	var results := query_overlapping_areas()
+
+	for result in results:
+		var area := result.get("collider") as Area2D
+
+		if not is_instance_valid(area):
+			continue
+
+		if area is not HitBox:
+			continue
+
+		var hurt_box := area as HitBox
+
+		# 排除自身对象。
+		if hurt_box.source == source:
+			continue
+
+		if not is_instance_valid(hurt_box.source):
+			continue
+
+		return hurt_box
+
+	return null
+
+
+# ==============================================================================
+# 接触开始与结束
+# ==============================================================================
+
 ## 建立一次新的三轴接触。
 func _begin_contact() -> void:
 	if _is_contacting:
@@ -311,7 +388,6 @@ func _begin_contact() -> void:
 	if not is_instance_valid(target):
 		return
 
-	# 先记录接触状态，再发送通知。
 	_is_contacting = true
 	_contact_target = target
 
@@ -329,39 +405,12 @@ func _end_contact() -> void:
 	_is_contacting = false
 	_contact_target = null
 
-	# 对象已释放时不再发送无效目标。
 	if is_instance_valid(previous_target):
 		contact_ended.emit(previous_target)
 
 
-# ==============================================================================
-# XY 接触检测
-# ==============================================================================
-
-func _on_area_entered(area: Area2D) -> void:
-	print("你好",area)
-	if area is not HitBox:
-		return
-
-	var hurt_box := area as HitBox
-
-	# 排除自身。
-	if hurt_box.source == source:
-		return
-
-	# 当前设计只跟踪一个目标。
-	# 如果已经有有效目标，不覆盖现有目标。
-	if is_instance_valid(_target_hurt_box):
-		return
-
-	_target_hurt_box = hurt_box
-
-
-func _on_area_exited(area: Area2D) -> void:
-	if area != _target_hurt_box:
-		return
-
-	# XY 离开意味着三轴接触也已经结束。
+## 清除当前目标及接触状态。
+func _clear_target() -> void:
 	_end_contact()
 	_target_hurt_box = null
 
@@ -409,13 +458,12 @@ func _apply_shape() -> void:
 	collision_shape.shape = rectangle
 	collision_shape.position = rectangle_position
 
-	# 更新 Shape 后开启检测。
 	monitoring = true
 
 
 ## 关闭检测并清除接触状态。
 func _disable_detection() -> void:
-	_end_contact()
+	_clear_target()
 
 	hit_z_bounds = Vector2.ZERO
 
@@ -424,10 +472,6 @@ func _disable_detection() -> void:
 
 	collision_shape.shape = null
 	monitoring = false
-
-	_target_hurt_box = null
-	_contact_target = null
-	_is_contacting = false
 
 
 # ==============================================================================

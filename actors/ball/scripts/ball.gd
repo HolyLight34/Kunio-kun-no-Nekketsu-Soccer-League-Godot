@@ -87,6 +87,7 @@ var wetness: Wetness = Wetness.DRY:
 
 @onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
 @onready var player_contact_detector: HitBox = $PlayerContactDetector
+@onready var ball_player_contact_handler: BallPlayerContactHandler = $Components/BallPlayerContactHandler
 
 
 ## 角色拾取候选数组
@@ -123,13 +124,21 @@ var carrier: Player = null:
 # ==============================================================================
 
 func _ready() -> void:
-	state_machine.init(self)
+	state_machine.initialize(self)
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
 	)
 	ball_z_movement.finished.connect(
 		ball_horizontal_movement.roll
 	)
+	ball_player_contact_handler.initialize(self)
+	player_contact_detector.contact_started.connect(
+		ball_player_contact_handler._on_contact_started
+	)
+	player_contact_detector.contact_ended.connect(
+		ball_player_contact_handler._on_contact_ended
+	)
+	
 	
 func _apply_wetness_shader() -> void:
 	var material := ball_sprite.material as ShaderMaterial
@@ -195,14 +204,17 @@ func _resolve_ground_type(
 # ==============================================================================
 # 6. Logic Tick
 # ==============================================================================
-
+var intent: PlayerIntentResolver.Intent = PlayerIntentResolver.Intent.NONE
 func logic_tick(ground_effect: Types.GroundEffect) -> void:
-	state_machine.physics_tick()
+	player_contact_detector.logic_tick()
+	state_machine.logic_tick(intent)
 	var ground_type := _resolve_ground_type(ground_effect)
 	ball_horizontal_movement.step_logic_tick()
 	ball_z_movement.logic_tick(ground_type,wetness,carrier == null)
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
+	
+	ball_player_contact_handler.logic_tick()
 	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
@@ -253,7 +265,8 @@ func get_receive_type() -> ReceiveType:
 	# 但足球正在向上运动，不能作为地面球拾取。
 	if ball_z_movement.is_rising():
 		return ReceiveType.NONE
-	
+	#if get_z_height_integer() < 0:
+		#return ReceiveType.AIR_CONTROL
 	# 普通地面球。
 	return ReceiveType.GROUND_PICKUP
 # ==============================================================================
@@ -389,7 +402,10 @@ func receive_stationary_flick() -> void:
 		BallState.State.FREE
 	)
 	
-	
+
+func is_ground_carry() -> bool:
+	return state_machine.is_in_state(BallState.State.GROUND_CARRY)
+
 
 
 func receive_moving_flick(kicker: Player) -> void:
@@ -435,12 +451,10 @@ func get_z_velocity() -> float:
 	return ball_z_movement.get_z_velocity()
 
 
+
 func resolve_kick(data: KickData) -> void:
 	release_from_carrier()
-
-	state_machine.change_state(
-		BallState.State.SHOT,data
-	)
+	state_machine.change_state(BallState.State.SHOT,data)
 func _resolve_ball(data: BallData) -> void:
 	if data.attack_direction.x != 0:
 		ball_horizontal_movement.set_horizontal_velocity(Vector2(data.attack_direction.x * 2.25,0))

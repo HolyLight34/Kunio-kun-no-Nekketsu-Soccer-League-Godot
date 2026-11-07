@@ -40,7 +40,7 @@ func enter(data: KickData) -> void:
 
 	if not result.is_valid:
 		push_warning("BallShotState: 射门计算结果无效")
-		change_state(State.FREE)
+		request_state(State.FREE)
 		return
 
 	# 保存本次射门需要的数据。
@@ -115,10 +115,10 @@ func enter(data: KickData) -> void:
 		# 暂时保留原来的高空射门后续状态行为。
 		return
 
-	change_state(State.FREE)
+	request_state(State.FREE)
 
 
-func physics_tick() -> void:
+func logic_tick() -> void:
 	pass
 
 

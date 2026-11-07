@@ -17,13 +17,13 @@ func exit() -> void:
 	pass
 
 
-func physics_tick() -> void:
+func logic_tick() -> void:
 	# --------------------------------------------------------------------------
 	# 没有持球角色
 	# --------------------------------------------------------------------------
 
 	if ball.carrier == null:
-		change_state(State.FREE)
+		request_state(State.FREE)
 		return
 
 

@@ -4,19 +4,9 @@ extends PlayerState
 func enter(_data):
 	anim.play(anim_name)
 	await anim.animation_finished
-	change_state(State.IDLE)
+	request_state(State.IDLE)
 	pass
-func physics_tick() -> void:
+func logic_tick() -> void:
 	player.player_horizontal_movement.decelerate_x_and_stop_y(x_decel_rate)
 func exit() -> void:
-	pass
-
-
-func process(_delta: float) -> void:
-
-	pass
-
-
-func physics_process(_delta: float) -> void:
-	
 	pass

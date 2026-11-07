@@ -27,6 +27,7 @@ extends Node
 # ============================================================
 
 enum Intent {
+	NONE,
 	IDLE,
 	WALK,
 	RUN,

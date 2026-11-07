@@ -13,11 +13,8 @@ func enter(_data) -> void:
 func exit() -> void:
 	pass
 
-func physics_tick() -> void:
+
+func logic_tick() -> void:
 	if player.ball.get_z_height_integer() == 0:
-		change_state(State.IDLE)
-	pass
-
-
-func handle_intent(_intent: int, _delta: float) -> void:
+		request_state(State.IDLE)
 	pass
