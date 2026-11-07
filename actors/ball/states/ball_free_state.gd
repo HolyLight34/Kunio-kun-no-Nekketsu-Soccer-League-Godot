@@ -6,6 +6,7 @@ func enter(_data) -> void:
 	ball.release_from_carrier()
 	anim.play(anim_name)
 	if not ball.player_interaction_enabled:
+		print("你好")
 		await ball.ball_z_movement.started_descending
 		ball.player_interaction_enabled = true
 	pass
@@ -15,5 +16,5 @@ func enter(_data) -> void:
 func exit() -> void:
 	pass
 
-func physics_tick() -> void:
+func logic_tick() -> void:
 	pass

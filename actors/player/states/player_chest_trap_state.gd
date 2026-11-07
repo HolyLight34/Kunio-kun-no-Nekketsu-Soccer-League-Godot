@@ -13,11 +13,7 @@ func enter(_data) -> void:
 func exit() -> void:
 	pass
 
-func physics_tick() -> void:
-	if player.ball.is_ground_carry():
-		change_state(State.IDLE)
-	pass
-
-
-func handle_intent(_intent: int, _delta: float) -> void:
+func logic_tick() -> void:
+	if player.ball.get_z_height_integer() == 0:
+		request_state(State.IDLE)
 	pass

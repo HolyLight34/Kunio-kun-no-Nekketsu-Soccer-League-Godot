@@ -39,8 +39,10 @@ var current_action: Types.BallContactAction
 
 
 func open_action_window(action: Types.BallContactAction) -> void:
+
 	current_action = action
 	_action_window_active = true
+	
 
 
 func close_action_window() -> void:
@@ -71,8 +73,8 @@ func logic_tick() -> void:
 				_try_pass_ball()
 			Types.BallContactAction.SLIDE_TACKLE:
 				_target_ball.resolve_tackle(player)
-		return
-	_process_ball_contact()
+		#return
+	#_process_ball_contact()
 
 
 # ==============================================================================
@@ -87,15 +89,14 @@ func _try_pass_ball() -> void:
 func _process_ball_contact() -> void:
 	if not _target_ball.can_be_received():
 		return
-
 	match _target_ball.get_receive_type():
 		Ball.ReceiveType.NONE:
 			return
 
 		Ball.ReceiveType.BALL_HIT:
-			player.state_machine.change_state(
+			player.state_machine.request_state(
 				PlayerState.State.KNOCKBACK,
-				-player.facing_direction
+				#-player.facing_direction
 			)
 			return
 
@@ -103,7 +104,7 @@ func _process_ball_contact() -> void:
 			if player.get_z_velocity() < 0:
 				player.is_stomping_ball = true
 				player.player_z_movement.set_rest_height(13)
-				player.state_machine.change_state(PlayerState.State.LAND)
+				player.state_machine.request_state(PlayerState.State.LAND)
 				player.ball.receive_stomped(player)
 			else :
 				player.ball.receive_ground_pickup(player)
@@ -134,16 +135,16 @@ func _process_ball_contact() -> void:
 
 		_target_ball.receive_juggle(player)
 
-		player.state_machine.change_state(
+		player.state_machine.request_state(
 			PlayerState.State.JUGGLE
 		)
 		return
 
 	# 站在地面接到空中球：胸停。
-	_target_ball.receive_air_control(player)
-	player.state_machine.change_state(
+	player.state_machine.request_state(
 		PlayerState.State.CHEST_TRAP
 	)
+	_target_ball.receive_air_control(player)
 	
 func _create_ball_data() -> BallData:
 	var data := BallData.new()

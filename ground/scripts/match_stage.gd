@@ -49,7 +49,6 @@ func _physics_process(delta: float) -> void:
 	)
 	pass
 func _on_logic_tick() -> void:
-	
 	for child in get_children():
 		if child is Player:
 			var current_player := child as Player

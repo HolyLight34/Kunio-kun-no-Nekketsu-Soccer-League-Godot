@@ -966,8 +966,8 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id="Animation_a2yjh"]
-resource_name = "juggle"
-length = 0.30000168231297286
+resource_name = "juggle_a"
+length = 0.10000167188216
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -976,10 +976,75 @@ tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [7, 9]
+"values": [7]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+
+[sub_resource type="Animation" id="Animation_v7hk2"]
+resource_name = "juggle_b"
+length = 0.10000167188216
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [9]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [-1]
 }
 
 [sub_resource type="Animation" id="Animation_0i15t"]
@@ -1059,6 +1124,60 @@ tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0],
+"method": &"open_ball_action_window"
+}]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_qejq4"]
+resource_name = "kick_b"
+step = 0.016666668
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [35, 36, 38]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [5, 6, 7]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [0],
@@ -1405,7 +1524,7 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id="Animation_igwkh"]
 resource_name = "stationary_flick"
-length = 0.20000167709756642
+length = 0.2000016770975664
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1576,9 +1695,11 @@ _data = {
 &"hurt_knockback_front": SubResource("Animation_26oqr"),
 &"hurt_rebound_front": SubResource("Animation_wwmeh"),
 &"idle": SubResource("Animation_q6r6c"),
-&"juggle": SubResource("Animation_a2yjh"),
+&"juggle_a": SubResource("Animation_a2yjh"),
+&"juggle_b": SubResource("Animation_v7hk2"),
 &"jump": SubResource("Animation_0i15t"),
 &"kick": SubResource("Animation_vbpfx"),
+&"kick_b": SubResource("Animation_qejq4"),
 &"land": SubResource("Animation_sj8lg"),
 &"moving_flick": SubResource("Animation_f2m0f"),
 &"pass": SubResource("Animation_j5ji6"),
@@ -1638,134 +1759,133 @@ x_decel_rate = 0.75
 
 [node name="Run" type="Node" parent="Components/StateMachine" unique_id=369123949]
 script = ExtResource("8_llfb5")
-state = 2
+player_state_id = 2
 facing_mode = 1
 anim_name = &"run"
 
 [node name="Brake" type="Node" parent="Components/StateMachine" unique_id=1404277443]
 script = ExtResource("9_fkbio")
-state = 3
+player_state_id = 3
 facing_mode = 1
 anim_name = &"brake"
 x_decel_rate = 1.0
 
 [node name="Jump" type="Node" parent="Components/StateMachine" unique_id=178965631]
 script = ExtResource("10_vwqy1")
-state = 4
+player_state_id = 4
 facing_mode = 1
-windup_ticks = 2
 anim_name = &"jump"
 
 [node name="Walk" type="Node" parent="Components/StateMachine" unique_id=691485942]
 script = ExtResource("5_iykej")
-state = 1
+player_state_id = 1
 anim_name = &"walk"
 x_decel_rate = 0.75
 
 [node name="Land" type="Node" parent="Components/StateMachine" unique_id=760253809]
 script = ExtResource("17_ptkv0")
-state = 6
+player_state_id = 6
 anim_name = &"land"
 x_decel_rate = 1.0
 
 [node name="Kick" type="Node" parent="Components/StateMachine" unique_id=1329134799]
 script = ExtResource("14_ptkv0")
-state = 7
+player_state_id = 7
 facing_mode = 1
 anim_name = &"kick"
 
 [node name="Pass" type="Node" parent="Components/StateMachine" unique_id=2005233895]
 script = ExtResource("16_imh8g")
-state = 9
+player_state_id = 9
 facing_mode = 1
 anim_name = &"pass"
 
 [node name="Tackle" type="Node" parent="Components/StateMachine" unique_id=309175364]
 script = ExtResource("17_sgsyk")
-state = 10
+player_state_id = 10
 facing_mode = 1
 anim_name = &"tackle"
 x_decel_rate = 0.625
 
 [node name="StationaryFlick" type="Node" parent="Components/StateMachine" unique_id=208771649]
 script = ExtResource("15_tg3sl")
-state = 11
+player_state_id = 11
 anim_name = &"stationary_flick"
 
 [node name="ChestTrap" type="Node" parent="Components/StateMachine" unique_id=1281698851]
 script = ExtResource("16_pj4mo")
-state = 12
+player_state_id = 12
 anim_name = &"chest_trap"
 
 [node name="MovingFlick" type="Node" parent="Components/StateMachine" unique_id=79259128]
 script = ExtResource("17_f2m0f")
-state = 13
+player_state_id = 13
 anim_name = &"moving_flick"
 
 [node name="BicycleKick" type="Node" parent="Components/StateMachine" unique_id=1901457681]
 script = ExtResource("18_6npms")
-state = 14
+player_state_id = 14
 facing_mode = 1
 anim_name = &"bicycle_kick"
 
 [node name="Rebond" type="Node" parent="Components/StateMachine" unique_id=178303586]
 script = ExtResource("19_a2yjh")
-state = 15
+player_state_id = 15
 anim_name = &"hurt_rebound_front"
 
 [node name="Knockback" type="Node" parent="Components/StateMachine" unique_id=1674390075]
 script = ExtResource("20_t3a7u")
-state = 16
+player_state_id = 16
 anim_name = &"hurt_knockback_front"
 
 [node name="Juggle" type="Node" parent="Components/StateMachine" unique_id=881898648]
 script = ExtResource("20_a2yjh")
-state = 17
+player_state_id = 17
 anim_name = &"juggle"
 
 [node name="ElbowStrike" type="Node" parent="Components/StateMachine" unique_id=850088266]
 script = ExtResource("15_wkl3h")
-state = 8
+player_state_id = 8
 facing_mode = 1
 anim_name = &"elbow_strike"
 
 [node name="AirKick" type="Node" parent="Components/StateMachine" unique_id=474948466]
 script = ExtResource("21_6npms")
-state = 18
+player_state_id = 18
 anim_name = &"air_kick"
 
 [node name="DivingHeader" type="Node" parent="Components/StateMachine" unique_id=1691839296]
 script = ExtResource("22_a2yjh")
-state = 19
+player_state_id = 19
 anim_name = &"diving_header"
 
 [node name="Crawl" type="Node" parent="Components/StateMachine" unique_id=506194449]
 script = ExtResource("23_t3a7u")
-state = 20
+player_state_id = 20
 facing_mode = 1
 anim_name = &"crawl"
 x_decel_rate = 0.625
 
 [node name="CrawlHorizontal" type="Node" parent="Components/StateMachine" unique_id=625593774]
 script = ExtResource("24_tabv8")
-state = 21
+player_state_id = 21
 facing_mode = 1
 anim_name = &"crawl_horizontal"
 x_decel_rate = 0.625
 
 [node name="CrawlRoll" type="Node" parent="Components/StateMachine" unique_id=1073156833]
 script = ExtResource("25_ioyab")
-state = 22
+player_state_id = 22
 anim_name = &"crawl_roll"
 
 [node name="SpecialDribble" type="Node" parent="Components/StateMachine" unique_id=300579219]
 script = ExtResource("26_ioyab")
-state = 23
+player_state_id = 23
 anim_name = &"special_dribble1"
 
 [node name="BurstAttack" type="Node" parent="Components/StateMachine" unique_id=1146405807]
 script = ExtResource("27_jwexq")
-state = 24
+player_state_id = 24
 anim_name = &"burst_attack"
 
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]

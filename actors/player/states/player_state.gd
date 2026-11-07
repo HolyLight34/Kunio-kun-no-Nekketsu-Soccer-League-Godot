@@ -27,25 +27,15 @@ enum State {
 	CRAWL_ROLL,
 	SPECIAL_DRIBBLE,
 	BURST_ATTACK,
-	STOMP_BALL,
 } 
-@export_group("State Info")
-@export var state: State
-
-
-@export_group("Capabilities")
-#@export var can_move: bool = true
-
-@export_group("Timing & Frame Data")
-#@export var has_windup: bool = true        # 是否具备前摇硬直
-		 # 前摇延迟 Tick 数（如 3 代表 10 帧）
-# 🌟 定义转向策略枚举
+@export var player_state_id: State
 enum FacingMode {
 	FOLLOW_INPUT, # 自动跟随玩家输入的方向转向（如 Walk, Idle）
 	LOCK,         # 完全锁定方向，拒绝任何转向（如 Attack 前摇、Shoot、Dash）
 	MANUAL        # 由状态内部逻辑在特定的帧/代码中手动控制转向
 }
-
+func get_state_id() -> int:
+	return player_state_id
 @export_group("Facing Control")
 ## 该状态下的转向策略
 @export var facing_mode: FacingMode = FacingMode.FOLLOW_INPUT

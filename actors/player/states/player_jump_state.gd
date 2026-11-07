@@ -7,37 +7,30 @@ func enter(_data):
 		player.player_z_movement.jump(4)
 		player.player_horizontal_movement.halve_y_velocity()
 	await player.player_z_movement.landed
-	change_state(State.LAND)
+	request_state(State.LAND)
 func exit():
 	pass
-func physics_tick() -> void:
+func logic_tick() -> void:
 	player.player_horizontal_movement.apply_air_steering(player.input_component.move_dir)
 	pass
 
-func process(_delta: float) -> void:
-
-	pass
 
 
-func physics_process(_delta: float) -> void:
-	
-	pass
 
-
-func handle_intent(intent: int, _delta: float) -> void:
+func handle_intent(intent: int) -> void:
 	match intent:
 		PlayerIntentResolver.Intent.KICK:
 			if _is_reverse_direction_pressed():
-				change_state(State.BICYCLE_KICK)
+				request_state(State.BICYCLE_KICK)
 			else:
 				player.player_z_movement.jump(4)
-				change_state(State.KICK)
+				request_state(State.KICK)
 
 		PlayerIntentResolver.Intent.PASS:
 			if player.ball_possession == Types.BallPossession.MYSELF:
-				change_state(State.PASS)
+				request_state(State.PASS)
 		PlayerIntentResolver.Intent.TACKLE:
-			change_state(State.AIR_KICK)
+			request_state(State.AIR_KICK)
 
 
 func _is_reverse_direction_pressed() -> bool:

@@ -62,8 +62,6 @@ func get_team_attack_direction() -> Types.TeamAttackDirection:
 
 @onready var pass_target_detector: PassTargetDetector = $PassTargetDetector
 
-#@onready var ball_receiver_area: BallReceiverArea = $InteractionRoot/BallReceiverArea
-
 @onready var player_composite_sprite: PlayerCompositeSprite = $VisualRoot/PlayerCompositeSprite
 
 @onready var ball_contact_handler: BallContactHandler = $Components/BallContactHandler
@@ -94,7 +92,6 @@ var facing_direction := Vector2.LEFT:
 
 func _ready() -> void:
 	_initialize_components()
-
 	endurance_label.text = str(endurance)
 
 
@@ -115,23 +112,22 @@ func _initialize_components() -> void:
 		ball_contact_handler._on_contact_ended
 	)
 	player_contact_handler.initialize(self)
+	player_contact_detector
 	player_contact_detector.contact_started.connect(
 		player_contact_handler._on_contact_started
 	)
 	player_contact_detector.contact_ended.connect(
 		player_contact_handler._on_contact_ended
 	)
-	state_machine.init(self)
-
+	state_machine.initialize(self)
+var intent: PlayerIntentResolver.Intent
+var intent_a: PlayerIntentResolver.Intent
 func _physics_process(delta: float) -> void:
-	var intent: PlayerIntentResolver.Intent = (
+	intent = (
 		player_intent_resolver.get_intent()
 	)
-	state_machine.handle_intent(
-		intent,
-		delta
-	)
-
+	if intent != player_intent_resolver.Intent.IDLE:
+		intent_a = intent
 	_update_pass_search_direction()
 
 
@@ -140,9 +136,9 @@ func _physics_process(delta: float) -> void:
 # ==============================================================================
 
 func logic_tick() -> void:
-	state_machine.physics_tick()
-	player_z_movement.logic_tick()
 	
+	state_machine.logic_tick(intent_a)
+	player_z_movement.logic_tick()
 	player_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
 	_update_facing(
@@ -376,6 +372,7 @@ func close_player_contact_window() -> void:
 # ==============================================================================
 # 17. Strike 处理
 # ==============================================================================
+
 func resolve_tackle(
 	data: TackleData
 ) -> void:
@@ -392,18 +389,15 @@ func resolve_strike(
 	data: StrikeData
 ) -> void:
 	release_ball()
-
 	# 普通角色攻击受伤规则。
 	if data.endurance + 8 >= endurance:
 		state_machine.change_state(
-			PlayerState.State.KNOCKBACK,
-			data.attack_direction
+			PlayerState.State.KNOCKBACK,data
 		)
 
 	else:
 		state_machine.change_state(
-			PlayerState.State.REBOUND,
-			data.attack_direction
+			PlayerState.State.REBOUND,data.attack_direction
 		)
 
 		data.attacker.receive_rebound()
@@ -411,18 +405,15 @@ func resolve_strike(
 	endurance -= data.damage
 func resolve_special_attack(data: StrikeData) -> void:
 	release_ball()
-
 	# 普通角色攻击受伤规则。
 	if data.endurance + 18 >= endurance:
 		state_machine.change_state(
-			PlayerState.State.KNOCKBACK,
-			data.attack_direction
+			PlayerState.State.KNOCKBACK,data
 		)
 
 	else:
 		state_machine.change_state(
-			PlayerState.State.REBOUND,
-			data.attack_direction
+			PlayerState.State.REBOUND,data.attack_direction
 		)
 
 		data.attacker.receive_rebound()

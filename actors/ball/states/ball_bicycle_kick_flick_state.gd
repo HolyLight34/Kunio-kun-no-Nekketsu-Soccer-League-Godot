@@ -33,7 +33,7 @@ const GRAVITY_RAW: int = 0x0080
 const BICYCLE_KICK_FLICK_OFFSET := Vector3i(8, -1, 24)
 
 
-func enter(_data = null) -> void:
+func enter(_data) -> void:
 	
 	ball.ball_z_movement.gravity_enable()
 
@@ -44,7 +44,7 @@ func exit() -> void:
 	pass
 
 
-func physics_tick() -> void:
+func logic_tick() -> void:
 	# $14 后续特殊行为尚未完全确认。
 	# 水平位移暂由 BallHorizontalMovement 负责。
 	pass
