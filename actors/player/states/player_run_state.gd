@@ -4,7 +4,10 @@ func enter(_data) -> void:
 	anim.play(anim_name)
 
 func logic_tick() -> void:
-	player.player_horizontal_movement.set_move_velocity(3,Vector2(player.facing_direction.x,player.input_component.move_dir.y))
+	player.player_horizontal_movement.set_move_velocity(
+		3,
+		Vector2(player.facing_direction.x,player.input_component.move_dir.y
+		).sign())
 
 func exit() -> void:
 	
