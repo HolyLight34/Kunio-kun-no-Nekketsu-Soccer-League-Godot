@@ -1,7 +1,6 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	#player.player_horizontal_movement.stop_immediately()
 	var dz_int = player.carried_ball.get_z_height_integer() - player.get_z_height_integer() 
 	if dz_int < 0 or dz_int >= 16:
 		anim.play("juggle_a")

@@ -1,11 +1,13 @@
 extends PlayerState
 var dir: Vector2
+var init_speed: Vector2
 func enter(_data) -> void:
-	dir = player.facing_direction + player.input_component.move_dir
+	#player.fc_logic_clock.pause()
+	dir = player.facing_direction + (-player.input_component.move_dir)
 	player.player_horizontal_movement.set_move_velocity(
 		4,dir
 	)
-	
+	init_speed = player.player_horizontal_movement.get_horizontal_velocity()
 	print("当前速度：",player.player_horizontal_movement.get_horizontal_velocity())
 	if dir.y < 0:
 		anim.play(anim_name)
@@ -19,8 +21,9 @@ func _on_set_little_velocity() -> void:
 	print("当前速度：",player.player_horizontal_movement.get_horizontal_velocity())
 	pass
 func _on_set_velocity() -> void:
-	player.player_horizontal_movement.set_move_velocity(
-		16,dir
+	init_speed.y = -init_speed.y
+	player.player_horizontal_movement.set_horizontal_velocity(
+		4*init_speed
 	)
 	print("当前速度：",player.player_horizontal_movement.get_horizontal_velocity())
 	pass

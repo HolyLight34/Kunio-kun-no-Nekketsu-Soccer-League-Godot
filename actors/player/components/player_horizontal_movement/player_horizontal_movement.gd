@@ -174,70 +174,20 @@ func stop_immediately() -> void:
 ## 2. 锁定本 Tick 位移
 ## 3. 根据 CLASSIC / SMOOTH 决定如何执行位移
 func step_logic_tick() -> void:
-	clamp_velocity()
+	#clamp_velocity()
 	# 当前速度就是整个 Logic Tick 需要完成的位移。
-	tick_displacement_raw = horizontal_velocity_raw
+	horizontal_position_raw += horizontal_velocity_raw
 	
-	_process_classic_motion()
 # ==============================================================================
 # Classic
 # ==============================================================================
-func _process_classic_motion() -> void:
-	# 一个 Logic Tick 一次完成全部位移。
-	horizontal_position_raw += tick_displacement_raw
-	# 标记当前 Tick 已经全部执行完成。
-	tick_motion_frame = PHYSICS_FRAMES_PER_LOGIC_TICK
-	# FC 规则层的边界处理放在完整 Tick 位移之后。
-	_apply_confirmed_right_boundary()
-# ==============================================================================
-# Smooth
-# ==============================================================================
-func _prepare_smooth_motion() -> void:
-	# 新的一段三帧运动开始。
-	tick_motion_frame = 0
+
 # ==============================================================================
 # Physics Frame
 # ==============================================================================
-func _physics_process(_delta: float) -> void:
-	if tick_motion_frame >= PHYSICS_FRAMES_PER_LOGIC_TICK:
-		return
-	tick_motion_frame += 1
-	horizontal_position_raw += Vector2i(
-		_get_motion_frame_displacement(
-			tick_displacement_raw.x,
-			tick_motion_frame
-		),
-		_get_motion_frame_displacement(
-			tick_displacement_raw.y,
-			tick_motion_frame
-		)
-	)
-	# 只有完整 Logic Tick 位移完成后，
-	# 才执行一次 FC 规则层处理。
-	if tick_motion_frame == PHYSICS_FRAMES_PER_LOGIC_TICK:
-		_apply_confirmed_right_boundary()
 # ==============================================================================
 # 三帧位移分配
 # ==============================================================================
-func _get_motion_frame_displacement(
-	total_displacement_raw: int,
-	frame: int
-) -> int:
-	var current_progress: float = (
-		float(frame)
-		/ float(PHYSICS_FRAMES_PER_LOGIC_TICK)
-	)
-	var previous_progress: float = (
-		float(frame - 1)
-		/ float(PHYSICS_FRAMES_PER_LOGIC_TICK)
-	)
-	var total_moved_now_raw: int = roundi(
-		total_displacement_raw * current_progress
-	)
-	var total_moved_before_raw: int = roundi(
-		total_displacement_raw * previous_progress
-	)
-	return total_moved_now_raw - total_moved_before_raw
 # ==============================================================================
 # FC 速度生成
 # ==============================================================================

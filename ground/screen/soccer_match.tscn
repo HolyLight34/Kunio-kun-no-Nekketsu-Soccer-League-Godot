@@ -220,9 +220,6 @@ position = Vector2(-68, 12)
 script = ExtResource("8_wgvyc")
 rects = Array[Rect2]([Rect2(50, 50, 50, 50), Rect2(0, 0, 42, 54)])
 
-[node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_ye5s7")]
-position = Vector2(8, 21)
-
 [node name="Player" parent="." unique_id=232419937 instance=ExtResource("5_mog0p")]
 position = Vector2(45, 48)
 
@@ -231,6 +228,9 @@ position = Vector2(45, 48)
 team_id = 1
 player_id = 2
 endurance = 60
+
+[node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_ye5s7")]
+position = Vector2(8, 21)
 
 [node name="FCLogicClock" type="Node" parent="." unique_id=113677989]
 script = ExtResource("7_jk64h")
