@@ -1,7 +1,6 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.intent_a = PlayerIntentResolver.Intent.IDLE
 	anim.play(anim_name)
 func exit() -> void:
 	pass

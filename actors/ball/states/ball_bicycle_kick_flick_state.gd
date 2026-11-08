@@ -1,5 +1,4 @@
 
-class_name BallBicycleKickFlickState
 extends BallState
 
 

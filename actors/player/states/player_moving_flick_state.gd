@@ -14,7 +14,7 @@ func on_moving_flick_contact() -> void:
 		return
 
 	flick_executed = true
-	var ball := player.ball
+	var ball := player.carried_ball
 	if ball == null:
 		return
 	ball.receive_moving_flick(player)

@@ -72,7 +72,7 @@ func get_team_attack_direction() -> Types.TeamAttackDirection:
 # 4. 运行状态
 # ==============================================================================
 
-var ball: Ball
+var carried_ball: Ball = null
 
 var ball_possession: Types.BallPossession
 
@@ -112,7 +112,6 @@ func _initialize_components() -> void:
 		ball_contact_handler._on_contact_ended
 	)
 	player_contact_handler.initialize(self)
-	player_contact_detector
 	player_contact_detector.contact_started.connect(
 		player_contact_handler._on_contact_started
 	)
@@ -120,14 +119,8 @@ func _initialize_components() -> void:
 		player_contact_handler._on_contact_ended
 	)
 	state_machine.initialize(self)
-var intent: PlayerIntentResolver.Intent
-var intent_a: PlayerIntentResolver.Intent
-func _physics_process(delta: float) -> void:
-	intent = (
-		player_intent_resolver.get_intent()
-	)
-	if intent != player_intent_resolver.Intent.IDLE:
-		intent_a = intent
+
+func _physics_process(_delta: float) -> void:
 	_update_pass_search_direction()
 
 
@@ -136,8 +129,8 @@ func _physics_process(delta: float) -> void:
 # ==============================================================================
 
 func logic_tick() -> void:
-	
-	state_machine.logic_tick(intent_a)
+	var intent := player_intent_resolver.get_intent()
+	state_machine.logic_tick(intent)
 	player_z_movement.logic_tick()
 	player_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
@@ -267,7 +260,7 @@ func _face_ball() -> void:
 	)
 
 	var ball_x := FixedPoint.to_integer(
-		ball.get_logical_position().x
+		carried_ball.get_logical_position().x
 	)
 
 	if ball_x < player_x:
@@ -282,14 +275,16 @@ func _face_ball() -> void:
 # ==============================================================================
 
 func _on_ball_possession_changed(
-	new_carrier: Player
+	source_ball: Ball,new_carrier: Player
 ) -> void:
 	if new_carrier == null:
+		carried_ball = null
 		ball_possession = (
 			Types.BallPossession.NONE
 		)
 
 	elif new_carrier == self:
+		carried_ball = source_ball
 		ball_possession = (
 			Types.BallPossession.MYSELF
 		)
@@ -305,14 +300,14 @@ func _on_ball_possession_changed(
 		)
 
 
-func release_ball() -> void:
-	if ball == null:
-		return
-
-	if ball.carrier != self:
-		return
-
-	ball.release_from_carrier()
+#func release_ball() -> void:
+	#if carried_ball == null:
+		#return
+#
+	#if carried_ball.carrier != self:
+		#return
+#
+	#carried_ball.release_from_carrier()
 
 
 # ==============================================================================
@@ -324,17 +319,17 @@ func release_ball() -> void:
 # ==============================================================================
 
 func _process_ball_control() -> void:
-	if ball == null:
+	if carried_ball == null:
 		return
 
-	if not ball.can_receive_y_control():
+	if not carried_ball.can_receive_y_control():
 		return
 
 	var move_direction := (
 		input_component.get_move_direction()
 	)
 
-	ball.apply_y_control(
+	carried_ball.apply_y_control(
 		signi(int(move_direction.y))
 	)
 
@@ -380,7 +375,7 @@ func resolve_tackle(
 	## 才会对角色产生受伤效果。
 	if not is_running():
 		return
-	release_ball()
+	#release_ball()
 	state_machine.change_state(
 		PlayerState.State.REBOUND,
 		data.attack_direction
@@ -388,7 +383,7 @@ func resolve_tackle(
 func resolve_strike(
 	data: StrikeData
 ) -> void:
-	release_ball()
+	#release_ball()
 	# 普通角色攻击受伤规则。
 	if data.endurance + 8 >= endurance:
 		state_machine.change_state(
@@ -404,7 +399,7 @@ func resolve_strike(
 
 	endurance -= data.damage
 func resolve_special_attack(data: StrikeData) -> void:
-	release_ball()
+	#release_ball()
 	# 普通角色攻击受伤规则。
 	if data.endurance + 18 >= endurance:
 		state_machine.change_state(
@@ -440,7 +435,7 @@ func _resolve_ball_attack(
 ## 反弹方向由角色自身当前朝向决定，
 ## 调用方不需要知道具体反弹方向规则。
 func receive_rebound() -> void:
-	release_ball()
+	#release_ball()
 
 	state_machine.change_state(
 		PlayerState.State.REBOUND,

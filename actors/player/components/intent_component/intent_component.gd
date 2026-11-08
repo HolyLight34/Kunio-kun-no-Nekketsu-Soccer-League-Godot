@@ -92,42 +92,25 @@ var buffered_b_pressed: bool = false
 # ============================================================
 
 func get_intent() -> Intent:
-	# --------------------------------------------------------
-	# 1. 双击方向
-	# --------------------------------------------------------
+	# 取走本轮之前积累的输入事件
+	var pressed_events := input_component.consume_pressed_events()
 
-	var double_tap_intent := _resolve_double_tap()
+	# 捕捉 A / B
+	_collect_action_buttons(pressed_events)
+
+	# 双击方向
+	var double_tap_intent := _resolve_double_tap(pressed_events)
 
 	if double_tap_intent != Intent.IDLE:
 		return double_tap_intent
 
-
-	# --------------------------------------------------------
-	# 2. 捕捉 A / B
-	# --------------------------------------------------------
-
-	_collect_action_buttons()
-
-
-	# --------------------------------------------------------
-	# 3. 处理 A / B 缓冲
-	# --------------------------------------------------------
-
+	# 处理 A / B 缓冲
 	if is_buffering_buttons:
 		return _resolve_buffered_buttons()
 
-
-	# --------------------------------------------------------
-	# 4. 普通移动
-	# --------------------------------------------------------
-
+	# 普通移动
 	if input_component.move_dir != Vector2.ZERO:
 		return Intent.WALK
-
-
-	# --------------------------------------------------------
-	# 5. 无输入
-	# --------------------------------------------------------
 
 	return Intent.IDLE
 
@@ -136,68 +119,66 @@ func get_intent() -> Intent:
 # 双击方向
 # ============================================================
 
-func _resolve_double_tap() -> Intent:
-	var current_direction: StringName = &""
+func _resolve_double_tap(
+	pressed_events: Array[StringName]
+) -> Intent:
 
-	if input_component.dir_left_just:
-		current_direction = &"left"
+	for event in pressed_events:
+		var current_direction: StringName = &""
 
-	elif input_component.dir_right_just:
-		current_direction = &"right"
+		match event:
+			&"left":
+				current_direction = &"left"
 
-	elif input_component.dir_up_just:
-		current_direction = &"up"
+			&"right":
+				current_direction = &"right"
 
-	elif input_component.dir_down_just:
-		current_direction = &"down"
+			&"up":
+				current_direction = &"up"
 
+			&"down":
+				current_direction = &"down"
 
-	if current_direction == &"":
-		return Intent.IDLE
+		if current_direction == &"":
+			continue
 
+		# 第二次点击同一个方向
+		if (
+			not double_tap_timer.is_stopped()
+			and current_direction == last_tapped_direction
+		):
+			double_tap_timer.stop()
+			last_tapped_direction = &""
 
-	# 第二次点击同一个方向，并且仍处于双击时间窗口内。
-	if (
-		not double_tap_timer.is_stopped()
-		and current_direction == last_tapped_direction
-	):
-		double_tap_timer.stop()
-		last_tapped_direction = &""
+			return Intent.RUN
 
-		return Intent.RUN
-
-
-	# 第一次点击。
-	last_tapped_direction = current_direction
-	double_tap_timer.start()
+		# 第一次点击
+		last_tapped_direction = current_direction
+		double_tap_timer.start()
 
 	return Intent.IDLE
-
 
 # ============================================================
 # 捕捉动作键
 # ============================================================
 
-func _collect_action_buttons() -> void:
-	if (
-		not input_component.btn_a_just
-		and not input_component.btn_b_just
-	):
-		return
+func _collect_action_buttons(
+	pressed_events: Array[StringName]
+) -> void:
 
+	for event in pressed_events:
+		if event != &"a" and event != &"b":
+			continue
 
-	if not is_buffering_buttons:
-		is_buffering_buttons = true
-		button_buffer_frames = 0
+		if not is_buffering_buttons:
+			is_buffering_buttons = true
+			button_buffer_frames = 0
 
+		if event == &"a":
+			buffered_a_pressed = true
 
-	if input_component.btn_a_just:
-		buffered_a_pressed = true
-
-
-	if input_component.btn_b_just:
-		buffered_b_pressed = true
-
+		if event == &"b":
+			buffered_b_pressed = true
 
 # ============================================================
 # 处理 A / B 输入缓冲

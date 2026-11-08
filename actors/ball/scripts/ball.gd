@@ -6,7 +6,10 @@ extends CharacterBody2D
 # 1. 信号
 # ==============================================================================
 
-signal possession_changed(new_carrier: Player)
+signal possession_changed(
+	source_ball: Ball,
+	new_carrier: Player
+)
 var player_interaction_enabled: bool = true:
 	set(value):
 		player_interaction_enabled = value
@@ -117,7 +120,7 @@ var carrier: Player = null:
 			return
 
 		carrier = value
-		possession_changed.emit(carrier)
+		possession_changed.emit(self,carrier)
 
 # ==============================================================================
 # 5. 生命周期

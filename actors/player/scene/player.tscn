@@ -1089,7 +1089,7 @@ tracks/2/keys = {
 }
 
 [sub_resource type="Animation" id="Animation_vbpfx"]
-resource_name = "kick"
+resource_name = "kick_a"
 length = 0.5000016927437857
 step = 0.016666668
 tracks/0/type = "value"
@@ -1698,7 +1698,7 @@ _data = {
 &"juggle_a": SubResource("Animation_a2yjh"),
 &"juggle_b": SubResource("Animation_v7hk2"),
 &"jump": SubResource("Animation_0i15t"),
-&"kick": SubResource("Animation_vbpfx"),
+&"kick_a": SubResource("Animation_vbpfx"),
 &"kick_b": SubResource("Animation_qejq4"),
 &"land": SubResource("Animation_sj8lg"),
 &"moving_flick": SubResource("Animation_f2m0f"),

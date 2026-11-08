@@ -2,10 +2,11 @@ extends PlayerState
 
 func enter(_data):
 	player.player_horizontal_movement.stop_immediately()
-	if player.ball:
+	if player.carried_ball != null:
+		print("你好")
 		anim.play("kick_b")
 	else :
-		anim.play(anim_name)
+		anim.play("kick_a")
 	await anim.animation_finished
 	if player.player_z_movement.is_in_air:
 		request_state(State.JUMP)

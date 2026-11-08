@@ -90,7 +90,6 @@ func change_state(
 	data: Variant = null
 ) -> void:
 	var target_state := get_state(target_state_id)
-
 	if not target_state:
 		return
 
