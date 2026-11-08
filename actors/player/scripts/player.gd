@@ -132,6 +132,10 @@ func _physics_process(_delta: float) -> void:
 func logic_tick() -> void:
 	var intent := player_intent_resolver.get_intent()
 	state_machine.logic_tick(intent)
+	ball_contact_detector.logic_tick()
+	player_contact_detector.logic_tick()
+	ball_contact_handler.logic_tick()
+	player_contact_handler.logic_tick()
 	player_z_movement.logic_tick()
 	player_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
@@ -139,10 +143,7 @@ func logic_tick() -> void:
 		input_component.move_dir.x
 	)
 	entity_position_visual_component.set_shadow_visible(is_in_air())
-	ball_contact_detector.logic_tick()
-	player_contact_detector.logic_tick()
-	ball_contact_handler.logic_tick()
-	player_contact_handler.logic_tick()
+	
 	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
@@ -301,14 +302,14 @@ func _on_ball_possession_changed(
 		)
 
 
-#func release_ball() -> void:
-	#if carried_ball == null:
-		#return
-#
-	#if carried_ball.carrier != self:
-		#return
-#
-	#carried_ball.release_from_carrier()
+func release_ball() -> void:
+	if carried_ball == null:
+		return
+
+	if carried_ball.carrier != self:
+		return
+
+	carried_ball.release_from_carrier()
 
 
 # ==============================================================================
@@ -376,7 +377,7 @@ func resolve_tackle(
 	## 才会对角色产生受伤效果。
 	if not is_running():
 		return
-	#release_ball()
+	release_ball()
 	state_machine.change_state(
 		PlayerState.State.REBOUND,
 		data.attack_direction
@@ -400,7 +401,7 @@ func resolve_strike(
 
 	endurance -= data.damage
 func resolve_special_attack(data: StrikeData) -> void:
-	#release_ball()
+	release_ball()
 	# 普通角色攻击受伤规则。
 	if data.endurance + 18 >= endurance:
 		state_machine.change_state(
@@ -430,13 +431,17 @@ func _resolve_ball_attack(
 # ==============================================================================
 # 18. 外部受伤结果接口
 # ==============================================================================
-
+func receive_juggle() -> void:
+	state_machine.change_state(
+		PlayerState.State.JUGGLE
+	)
+	pass
 ## 让当前角色执行反弹。
 ##
 ## 反弹方向由角色自身当前朝向决定，
 ## 调用方不需要知道具体反弹方向规则。
 func receive_rebound() -> void:
-	#release_ball()
+	release_ball()
 
 	state_machine.change_state(
 		PlayerState.State.REBOUND,

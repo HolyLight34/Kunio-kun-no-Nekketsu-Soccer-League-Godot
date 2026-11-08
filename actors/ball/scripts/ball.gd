@@ -211,13 +211,14 @@ var intent: PlayerIntentResolver.Intent = PlayerIntentResolver.Intent.NONE
 func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	player_contact_detector.logic_tick()
 	state_machine.logic_tick(intent)
+	ball_player_contact_handler.logic_tick()
 	var ground_type := _resolve_ground_type(ground_effect)
 	ball_horizontal_movement.step_logic_tick()
 	ball_z_movement.logic_tick(ground_type,wetness,carrier == null)
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
 	
-	ball_player_contact_handler.logic_tick()
+	
 	entity_position_visual_component.update_position(
 		get_logical_position(),
 		get_z_height()
@@ -336,6 +337,7 @@ func receive_stomped(player: Player) -> void:
 	pass
 func receive_juggle(player: Player) -> void:
 	carrier = player
+	player.receive_juggle()
 	state_machine.change_state(
 		BallState.State.JUGGLE
 	)

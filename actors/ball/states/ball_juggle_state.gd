@@ -4,32 +4,32 @@ extends BallState
 const TARGET_X_OFFSET := 8.0
 const X_CORRECTION_SPEED := 0.1875
 const INITIAL_Z_VELOCITY := 3.0
-const JUGGLE_DURATION_TICKS := 14
+var current_tick: int = 0
 
+const MAX_TICKS: int = 16
 
 var player: Player
 
 
 func enter(_data) -> void:
+	
 	player = ball.carrier
 
 	ball.ball_z_movement.launch(
 		INITIAL_Z_VELOCITY
 	)
 
-
-	ball.tick_timer_component.start_timer(
-		"juggle",
-		JUGGLE_DURATION_TICKS
-	)
-	await ball.tick_timer_component.timer_finished
-	if ball.ball_z_movement.get_z_height_integer() != 0:
-		request_state(State.FREE)
-
+		
 
 func logic_tick() -> void:
+	current_tick += 1
+
+	if current_tick >= MAX_TICKS:
+		request_state(State.FREE)
+		return
 	if ball.ball_z_movement.get_z_height_integer() == 0:
 		request_state(State.GROUND_CARRY)
+		return
 	var player_position := player.get_logical_position()
 	var player_velocity := player.get_horizontal_velocity()
 	var facing_direction := player.get_facing_direction()
@@ -88,6 +88,6 @@ func logic_tick() -> void:
 		+ Ball.PLAYER_CONTROL_Y_OFFSET
 	)
 
-
 func exit() -> void:
+	current_tick = 0
 	player = null
