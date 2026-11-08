@@ -5,6 +5,7 @@ extends CharacterBody2D
 # ==============================================================================
 # 1. 配置
 # ==============================================================================
+@onready var fc_logic_clock: FCLogicClock = $"../FCLogicClock"
 
 @export var team_id: Types.Team
 @export var player_id: int = 1
