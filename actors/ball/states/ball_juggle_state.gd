@@ -30,7 +30,7 @@ func logic_tick() -> void:
 	if ball.ball_z_movement.get_z_height_integer() == 0:
 		request_state(State.GROUND_CARRY)
 		return
-	var player_position := player.get_logical_position()
+	var player_position := player.get_horizontal_position_integer()
 	var player_velocity := player.get_horizontal_velocity()
 	var facing_direction := player.get_facing_direction()
 
@@ -71,7 +71,7 @@ func logic_tick() -> void:
 	ball.ball_horizontal_movement.set_horizontal_velocity(
 		Vector2(
 			x_velocity,
-			0.0
+			player_velocity.y
 		)
 	)
 
@@ -83,11 +83,12 @@ func logic_tick() -> void:
 	#     Ball Y = Player Y + 1
 	# --------------------------------------------------------------------------
 
-	ball.ball_horizontal_movement.set_y_position(
-		player_position.y
-		+ Ball.PLAYER_CONTROL_Y_OFFSET
+	ball.ball_horizontal_movement.sync_position(
+		player_position,false
 	)
+	
 
 func exit() -> void:
 	current_tick = 0
 	player = null
+	ball.ball_horizontal_movement.clear_position_sync()

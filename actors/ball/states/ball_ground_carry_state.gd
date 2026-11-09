@@ -15,6 +15,7 @@ func enter(_data) -> void:
 
 func exit() -> void:
 	ball.ball_horizontal_movement.clear_position_sync()
+	ball.ball_z_movement.clear_z_position_sync()
 	pass
 
 
@@ -40,18 +41,15 @@ func logic_tick() -> void:
 		ball.carrier.get_facing_direction()
 	)
 
-	var target_position := Vector2i(
-		player_position.x
-			+ facing_direction.x * TARGET_X_OFFSET,
-
+	var target_position: Vector2i = Vector2i(
+		player_position.x + facing_direction.x * TARGET_X_OFFSET,
 		player_position.y
-			+ Ball.PLAYER_CONTROL_Y_OFFSET
 	)
 
 
 	ball.ball_horizontal_movement.set_horizontal_velocity(ball.carrier.get_horizontal_velocity())
 	ball.ball_horizontal_movement.sync_position(target_position)
-
-	ball.ball_z_movement.sync_integer_height(
+	ball.ball_z_movement.set_z_velocity(ball.carrier.get_z_velocity())
+	ball.ball_z_movement.sync_z_position(
 		ball.carrier.get_z_height_integer()
 	)

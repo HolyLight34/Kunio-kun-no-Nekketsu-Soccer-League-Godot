@@ -85,8 +85,9 @@ var facing_direction := Vector2.LEFT:
 			return
 
 		facing_direction = value
-
-
+## 获取角色面朝方向
+func get_facing_direction() -> Vector2:
+	return facing_direction
 # ==============================================================================
 # 5. 生命周期 / 初始化
 # ==============================================================================
@@ -208,8 +209,6 @@ func is_running() -> bool:
 # 8. 朝向
 # ==============================================================================
 
-func get_facing_direction() -> Vector2:
-	return facing_direction
 func _update_facing(
 	move_input_x: float
 ) -> void:

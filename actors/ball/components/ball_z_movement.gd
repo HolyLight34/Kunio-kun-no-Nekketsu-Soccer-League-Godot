@@ -207,7 +207,8 @@ func launch(initial_velocity: float) -> void:
 func set_z_height(z_height: float) -> void:
 	z_height_raw = FixedPoint.to_raw(z_height)
 
-
+func set_z_velocity(z_velocity: float) -> void:
+	z_velocity_raw = FixedPoint.to_raw(z_velocity)
 ## 返回足球当前完整 Z 高度。
 ##
 ## 保留 1 / 256 子像素精度。
@@ -230,33 +231,31 @@ func is_in_air() -> bool:
 func gravity_enable() -> void:
 	_gravity_enabled = true
 
+## Z 轴同步目标位置（Q8.8）。
+var sync_z_height_raw: int = 0
 
+## 是否持续同步 Z 轴。
+var is_syncing_z: bool = false
 ## 禁用普通 FC 重力。
 ##
 ## 只停止应用重力，不修改当前 Z 速度。
 func gravity_disable() -> void:
 	_gravity_enabled = false
-## 从当前高度开始保持 Z 高度。
+## 立即同步 Z 轴高度，并设置后续 Logic Tick 的同步规则。
 ##
-## 高度保持期间：
-## - 当前 VZ 清零
-## - 不应用重力
-## - Z 保持当前位置
-## 将足球 Z 的整数部分同步到指定高度。
-##
-## 只修改 Z 的整数部分，
-## 足球自身低 8 位的子像素部分继续保留。
-##
-## FC 持球状态会使用这种方式同步角色高度。
-func sync_integer_height(z_height: float) -> void:
-	var target_raw: int = FixedPoint.to_raw(z_height)
+## position：整数像素高度。
+## 不修改 Z 轴速度。
+func sync_z_position(position: int) -> void:
+	is_syncing_z = true
 
-	z_height_raw = (
-		(target_raw & ~0xFF)
-		| (z_height_raw & 0xFF)
+	sync_z_height_raw = (
+		position * FixedPoint.RAW_ONE
+		+ posmod(z_height_raw, FixedPoint.RAW_ONE)
 	)
 
-
+	z_height_raw = sync_z_height_raw
+func clear_z_position_sync() -> void:
+	is_syncing_z = false
 ## 足球陷入高度 
 func _apply_negative_height_limit() -> void:
 	if z_height_raw >= 0:
@@ -299,7 +298,10 @@ func logic_tick() -> void:
 	if z_velocity_raw == 0 and not is_in_air():
 		return
 
-	z_height_raw += z_velocity_raw
+	if is_syncing_z:
+		z_height_raw = sync_z_height_raw
+	else:
+		z_height_raw += z_velocity_raw
 	# 2. 只有开启重力时才改变 Z 速度。
 	if _gravity_enabled:
 		z_velocity_raw -= GRAVITY_RAW

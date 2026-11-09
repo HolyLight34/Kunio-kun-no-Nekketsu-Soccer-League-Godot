@@ -24,7 +24,7 @@ var player_interaction_enabled: bool = true:
 const COLLISION_HEIGHT: int = 16
 const LEFT_GOAL_TARGET := Vector2(64, 192)
 const RIGHT_GOAL_TARGET := Vector2(832, 192)
-const PLAYER_CONTROL_Y_OFFSET := 1.0
+
 
 # ==============================================================================
 # 场地表面类型
@@ -142,7 +142,8 @@ func _ready() -> void:
 		ball_player_contact_handler._on_contact_ended
 	)
 	
-	
+func get_horizontal_position_integer() -> Vector2:
+	return ball_horizontal_movement.get_horizontal_position_integer()
 func _apply_wetness_shader() -> void:
 	var material := ball_sprite.material as ShaderMaterial
 

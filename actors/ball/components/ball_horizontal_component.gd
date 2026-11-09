@@ -128,7 +128,7 @@ var is_rolling: bool = false
 # ==============================================================================
 # 位置同步
 # ==============================================================================
-
+const PLAYER_CONTROL_Y_OFFSET := 1.0
 ## 当前需要同步的位置（Q8.8）。
 var sync_position_raw: Vector2i = Vector2i.ZERO
 
@@ -163,7 +163,7 @@ func sync_position(
 
 	if sync_y:
 		sync_position_raw.y = (
-			position.y * FixedPoint.RAW_ONE
+			(position.y + 1) * FixedPoint.RAW_ONE
 			+ posmod(horizontal_position_raw.y, FixedPoint.RAW_ONE)
 		)
 
@@ -209,12 +209,6 @@ func set_horizontal_integer_position(position: Vector2i) -> void:
 ## 获取水平位置。
 func get_horizontal_position() -> Vector2:
 	return FixedPoint.vector_from_raw(horizontal_position_raw)
-
-
-## 设置水平 Y 轴位置。
-func set_y_position(position: float) -> void:
-	horizontal_position_raw.y = FixedPoint.to_raw(position)
-
 
 ## 获取水平整数坐标。
 func get_horizontal_position_integer() -> Vector2i:

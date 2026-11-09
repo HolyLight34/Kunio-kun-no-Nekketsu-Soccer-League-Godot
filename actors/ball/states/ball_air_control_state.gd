@@ -16,7 +16,7 @@ func enter(_data) -> void:
 	)
 
 func logic_tick() -> void:
-	var player_position := player.get_logical_position()
+	var player_position := player.get_horizontal_position_integer()
 	var player_velocity := player.get_horizontal_velocity()
 	var facing_direction := player.get_facing_direction()
 	var player_z := player.get_z_height_integer()
@@ -35,14 +35,8 @@ func logic_tick() -> void:
 		+ facing_direction.x * TARGET_X_OFFSET
 	)
 
-	var target_x_int := FixedPoint.to_integer(
-		target_x
-	)
-
-	var ball_x_int := FixedPoint.to_integer(
-		ball.get_logical_position().x
-	)
-
+	var ball_x := ball.get_horizontal_position_integer().x
+	
 	# --------------------------------------------------------------------------
 	# X 速度
 	#
@@ -60,16 +54,16 @@ func logic_tick() -> void:
 
 	var x_velocity := player_velocity.x
 
-	if ball_x_int < target_x_int:
+	if ball_x < target_x:
 		x_velocity += X_CORRECTION_SPEED
 
-	elif ball_x_int > target_x_int:
+	elif ball_x > target_x:
 		x_velocity -= X_CORRECTION_SPEED
 
 	ball.ball_horizontal_movement.set_horizontal_velocity(
 		Vector2(
 			x_velocity,
-			0.0
+			player_velocity.y
 		)
 	)
 
@@ -81,9 +75,8 @@ func logic_tick() -> void:
 	#     Player Y + 1
 	# --------------------------------------------------------------------------
 
-	ball.ball_horizontal_movement.set_y_position(
-		player_position.y
-		+ Ball.PLAYER_CONTROL_Y_OFFSET
+	ball.ball_horizontal_movement.sync_position(
+		player_position,false
 	)
 
 
