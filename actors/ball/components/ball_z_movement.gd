@@ -113,7 +113,19 @@ const MIN_NEGATIVE_Z_MID: int = 0xFC
 # ==============================================================================
 # FC 足球触地反弹损耗
 # ==============================================================================
+var ground_type: Ball.GroundType
+var ball_wetness: Ball.Wetness
+var can_bounce: bool = true
 
+
+func update_environment(
+	new_ground_type: Ball.GroundType,
+	new_ball_wetness: Ball.Wetness,
+	new_can_bounce: bool
+) -> void:
+	ground_type = new_ground_type
+	ball_wetness = new_ball_wetness
+	can_bounce = new_can_bounce
 ## FC 足球触地时使用的反弹速度损耗表。
 ##
 ## 数据来源：
@@ -230,14 +242,6 @@ func gravity_disable() -> void:
 ## - 当前 VZ 清零
 ## - 不应用重力
 ## - Z 保持当前位置
-func start_height_hold() -> void:
-	z_velocity_raw = 0
-	gravity_disable()
-
-
-## 结束高度保持，恢复普通重力。
-func stop_height_hold() -> void:
-	gravity_enable()
 ## 将足球 Z 的整数部分同步到指定高度。
 ##
 ## 只修改 Z 的整数部分，
@@ -287,11 +291,7 @@ func _apply_negative_height_limit() -> void:
 ##
 ## BallZMovement 不负责获取这些外部事实，
 ## 只根据它们执行对应的 Z 轴物理规则。
-func logic_tick(
-	ground_type: Ball.GroundType,
-	wetness: Ball.Wetness,
-	can_bounce: bool
-) -> void:
+func logic_tick() -> void:
 	
 
 	# 没有 Z 速度，并且整数高度也已经归零，
@@ -308,30 +308,19 @@ func logic_tick(
 	# 足球只有下降并且 Z < 0 时才触地。
 	if z_height_raw < 0 and z_velocity_raw < 0:
 		started_descending.emit()
-		_process_landing(
-			ground_type,
-			wetness,
-			can_bounce
-		)
+		_process_landing()
 
 
 # ==============================================================================
 # 落地处理
 # ==============================================================================
 
-func _process_landing(
-	ground_type: Ball.GroundType,
-	wetness: Ball.Wetness,
-	can_bounce: bool
-) -> void:
+func _process_landing() -> void:
 
-	_apply_landing_height_correction(ground_type)
+	_apply_landing_height_correction()
 	_apply_negative_height_limit()
 	if can_bounce:
-		_apply_rebound_velocity_raw(
-			ground_type,
-			wetness
-		)
+		_apply_rebound_velocity_raw()
 	else:
 		z_velocity_raw = 0
 
@@ -363,7 +352,7 @@ func _process_landing(
 ## 应用 FC 足球触地后的高度修正规则。
 ##
 ## 清除 Z 的整数部分，只保留低 8 位子像素。
-func _apply_landing_height_correction(ground_type) -> void:
+func _apply_landing_height_correction() -> void:
 	if (
 		ground_type == Ball.GroundType.SWAMP
 		or
@@ -378,20 +367,14 @@ func _apply_landing_height_correction(ground_type) -> void:
 # ==============================================================================
 
 ## 根据当前触地速度计算并应用 FC 反弹速度。
-func _apply_rebound_velocity_raw(
-	ground_type: Ball.GroundType,
-	wetness: Ball.Wetness
-) -> void:
+func _apply_rebound_velocity_raw() -> void:
 	var impact_velocity_raw: int = abs(z_velocity_raw)
 
 	var rebound_velocity_raw: int = (
 		(impact_velocity_raw - 1) >> 1
 	)
 
-	rebound_velocity_raw -= _get_bounce_loss_raw(
-		ground_type,
-		wetness
-	)
+	rebound_velocity_raw -= _get_bounce_loss_raw()
 
 	z_velocity_raw = maxi(
 		rebound_velocity_raw,
@@ -401,12 +384,9 @@ func _apply_rebound_velocity_raw(
 
 ## 根据地面类型与足球湿润程度，
 ## 获取 FC 反弹公式使用的固定速度损耗。
-func _get_bounce_loss_raw(
-	ground_type: Ball.GroundType,
-	wetness: Ball.Wetness
-) -> int:
+func _get_bounce_loss_raw() -> int:
 	var wet_index: int = (
-		1 if wetness == Ball.Wetness.HEAVY_WET else 0
+		1 if ball_wetness == Ball.Wetness.HEAVY_WET else 0
 	)
 
 	return FC_BOUNCE_LOSS_RAW[int(ground_type)][wet_index]

@@ -213,8 +213,10 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	state_machine.logic_tick(intent)
 	ball_player_contact_handler.logic_tick()
 	var ground_type := _resolve_ground_type(ground_effect)
-	ball_horizontal_movement.step_logic_tick()
-	ball_z_movement.logic_tick(ground_type,wetness,carrier == null)
+	ball_horizontal_movement.update_environment(ground_type,wetness)
+	ball_horizontal_movement.logic_tick()
+	ball_z_movement.update_environment(ground_type,wetness,carrier == null)
+	ball_z_movement.logic_tick()
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
 	
