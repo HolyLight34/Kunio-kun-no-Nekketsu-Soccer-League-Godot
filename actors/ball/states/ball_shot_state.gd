@@ -19,19 +19,17 @@ extends BallState
 ## 后续应从比赛难度配置获取。
 const TEST_HEIGHT_THRESHOLD: int = 28
 
-## 每次进入或退出状态时更新，防止旧 await 继续执行。
-var _execution_id: int = 0
-
-
+var current_tick: int
+var result: BallShotResult
+const MAX_TICKS: int = 16
 func enter(data: KickData) -> void:
-	_execution_id += 1
-	var current_execution: int = _execution_id
-
+	current_tick = 0
+	ball.set_player_interaction_enabled(false)
 	# ================================================================
 	# 1. 计算射门参数
 	# ================================================================
 
-	var result: BallShotResult = ball.action_calculator.calculate_shot(
+	result = ball.action_calculator.calculate_shot(
 		ball.get_logical_position(),
 		ball.get_z_height(),
 		data,
@@ -75,62 +73,38 @@ func enter(data: KickData) -> void:
 	# ================================================================
 	# 4. 初始化动画和攻击判定
 	# ================================================================
-
 	if result.height_category == BallShotResult.ShotHeightCategory.HIGH_AIR:
 		anim.play(anim_name)
-
-	# ================================================================
-	# 5. 无重力持续阶段
-	# ================================================================
+	
 
 
-	ball.tick_timer_component.start_timer(
-		"shot",
-		result.duration_ticks
-	)
-	print(result.duration_ticks)
-	await ball.tick_timer_component.timer_finished
+func logic_tick() -> void:
+	current_tick += 1
+	if current_tick == 2:
+		ball.set_player_interaction_enabled(true)
+	if current_tick >= result.duration_ticks:
 
-	if not _is_execution_valid(current_execution):
-		return
-
-	ball.ball_z_movement.gravity_enable()
+		ball.ball_z_movement.gravity_enable()
 
 	# ================================================================
 	# 6. 高空射门落地处理
 	# ================================================================
 
-	if result.height_category == BallShotResult.ShotHeightCategory.HIGH_AIR:
-		await ball.ball_z_movement.landed
+		if result.height_category == BallShotResult.ShotHeightCategory.HIGH_AIR:
+			await ball.ball_z_movement.landed
 
-		if not _is_execution_valid(current_execution):
-			return
-
-		ball.ball_horizontal_movement.set_horizontal_velocity(
+			ball.ball_horizontal_movement.set_horizontal_velocity(
 			result.horizontal_velocity * 2.0
-		)
+			)
 
-		ball.ball_z_movement.launch(4)
+			ball.ball_z_movement.launch(4)
 
 		# 暂时保留原来的高空射门后续状态行为。
-		return
+			return
 
-	request_state(State.FREE)
-
-
-func logic_tick() -> void:
+		request_state(State.FREE)
 	pass
 
 
 func exit() -> void:
-	_execution_id += 1
-
 	ball.ball_z_movement.gravity_enable()
-
-
-## 判断当前异步执行是否仍然有效。
-func _is_execution_valid(execution_id: int) -> bool:
-	return (
-		is_inside_tree()
-		and execution_id == _execution_id
-	)

@@ -31,13 +31,6 @@ func logic_tick() -> void:
 	#     角色逻辑 Y + 控球偏移
 	# --------------------------------------------------------------------------
 
-	#var target_position := Vector2i(
-		#player_position.x,
-#
-		#player_position.y
-			#+ Ball.PLAYER_CONTROL_Y_OFFSET
-	#)
-
 
 	# --------------------------------------------------------------------------
 	# 同步足球水平位置
@@ -45,8 +38,6 @@ func logic_tick() -> void:
 	# 携带期间足球保持在角色对应的控球位置。
 	# --------------------------------------------------------------------------
 
-	#ball.ball_horizontal_movement.set_horizontal_integer_position(
-		#target_position
-	#)
+	ball.ball_horizontal_movement.sync_position(player_position)
 	
 	pass

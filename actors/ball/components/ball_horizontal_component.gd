@@ -188,7 +188,8 @@ func clear_position_sync() -> void:
 func set_horizontal_position(position: Vector2) -> void:
 	horizontal_position_raw = FixedPoint.vector_to_raw(position)
 
-
+func set_horizontal_position_raw(position_raw: Vector2i) -> void:
+	horizontal_position_raw = position_raw
 ## 设置水平整数坐标，保留原有子像素。
 func set_horizontal_integer_position(position: Vector2i) -> void:
 	var raw_position := horizontal_position_raw
@@ -209,7 +210,8 @@ func set_horizontal_integer_position(position: Vector2i) -> void:
 ## 获取水平位置。
 func get_horizontal_position() -> Vector2:
 	return FixedPoint.vector_from_raw(horizontal_position_raw)
-
+func get_horizontal_position_raw() -> Vector2i:
+	return horizontal_position_raw
 ## 获取水平整数坐标。
 func get_horizontal_position_integer() -> Vector2i:
 	return FixedPoint.raw_vector_to_integer(horizontal_position_raw)
@@ -219,7 +221,8 @@ func get_horizontal_position_integer() -> Vector2i:
 func set_horizontal_velocity(velocity: Vector2) -> void:
 	horizontal_velocity_raw = FixedPoint.vector_to_raw(velocity)
 
-
+func set_horizontal_velocity_raw(velocity_raw: Vector2i) -> void:
+	horizontal_velocity_raw = velocity_raw
 ## 获取水平速度。
 func get_horizontal_velocity() -> Vector2:
 	return FixedPoint.vector_from_raw(horizontal_velocity_raw)

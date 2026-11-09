@@ -258,9 +258,6 @@ func get_z_bounds() -> Vector2:
 ## 3. 检查双方 Z 轴是否重叠。
 ## 4. 判断接触开始或结束。
 func logic_tick() -> void:
-	if not is_inside_tree():
-		return
-
 	if not monitoring:
 		_clear_target()
 		return

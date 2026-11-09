@@ -133,16 +133,16 @@ func _physics_process(_delta: float) -> void:
 func logic_tick() -> void:
 	var intent := player_intent_resolver.get_intent()
 	state_machine.logic_tick(intent)
-	ball_contact_detector.logic_tick()
-	player_contact_detector.logic_tick()
-	ball_contact_handler.logic_tick()
-	player_contact_handler.logic_tick()
 	player_z_movement.logic_tick()
 	player_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
 	_update_facing(
 		input_component.move_dir.x
 	)
+	ball_contact_detector.logic_tick()
+	player_contact_detector.logic_tick()
+	ball_contact_handler.logic_tick()
+	player_contact_handler.logic_tick()
 	entity_position_visual_component.set_shadow_visible(is_in_air())
 	
 	entity_position_visual_component.update_position(

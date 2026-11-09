@@ -16,7 +16,8 @@ var player_interaction_enabled: bool = true:
 
 		if is_instance_valid(player_contact_detector):
 			player_contact_detector.set_interaction_enabled(value)
-
+func set_player_interaction_enabled(enabled: bool) -> void:
+	player_interaction_enabled = enabled
 # ==============================================================================
 # 2. 常量
 # ==============================================================================
@@ -210,9 +211,7 @@ func _resolve_ground_type(
 # ==============================================================================
 var intent: PlayerIntentResolver.Intent = PlayerIntentResolver.Intent.NONE
 func logic_tick(ground_effect: Types.GroundEffect) -> void:
-	player_contact_detector.logic_tick()
 	state_machine.logic_tick(intent)
-	ball_player_contact_handler.logic_tick()
 	var ground_type := _resolve_ground_type(ground_effect)
 	ball_horizontal_movement.update_environment(ground_type,wetness)
 	ball_horizontal_movement.logic_tick()
@@ -220,6 +219,8 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	ball_z_movement.logic_tick()
 	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
+	player_contact_detector.logic_tick()
+	ball_player_contact_handler.logic_tick()
 	
 	
 	entity_position_visual_component.update_position(
@@ -461,8 +462,10 @@ func get_z_velocity() -> float:
 
 
 func resolve_kick(data: KickData) -> void:
+	#player_interaction_enabled = false
 	release_from_carrier()
 	state_machine.change_state(BallState.State.SHOT,data)
+	
 func _resolve_ball(data: BallData) -> void:
 	if data.attack_direction.x != 0:
 		ball_horizontal_movement.set_horizontal_velocity(Vector2(data.attack_direction.x * 2.25,0))
