@@ -384,7 +384,7 @@ func resolve_tackle(
 func resolve_strike(
 	data: StrikeData
 ) -> void:
-	#release_ball()
+	release_ball()
 	# 普通角色攻击受伤规则。
 	if data.endurance + 8 >= endurance:
 		state_machine.change_state(

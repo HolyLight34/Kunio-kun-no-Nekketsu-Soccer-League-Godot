@@ -2,6 +2,7 @@
 class_name BallHorizontalMovement
 extends Node
 
+@onready var ball: Ball = $"../.."
 
 ## 足球水平运动组件
 ##
@@ -287,10 +288,6 @@ func apply_landing_decay() -> void:
 # ROLLING 衰减
 # ==============================================================================
 
-## 正式进入普通地面滚动状态。
-func roll() -> void:
-	is_rolling = true
-
 
 ## 执行一个 Logic Tick 的滚动衰减。
 ## 这里只修改速度。
@@ -334,7 +331,8 @@ func process_rolling_velocity() -> void:
 func logic_tick() -> void:
 
 	# 1. 处理本 Tick 速度。
-	if is_rolling:
+	if ball.can_roll() and horizontal_velocity_raw != Vector2i.ZERO:
+		is_rolling = true
 		process_rolling_velocity()
 
 	# 2. 判断滚动是否彻底停止。

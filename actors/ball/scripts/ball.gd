@@ -75,7 +75,6 @@ var wetness: Wetness = Wetness.DRY:
 
 @onready var state_machine: StateMachine = $StateMachine
 
-@onready var tick_timer_component: TickTimerComponent = $Components/TickTimerComponent
 
 @onready var ball_horizontal_movement: BallHorizontalMovement = (
 	$Components/BallHorizontalMovement
@@ -132,9 +131,9 @@ func _ready() -> void:
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
 	)
-	ball_z_movement.finished.connect(
-		ball_horizontal_movement.roll
-	)
+	#ball_z_movement.finished.connect(
+		#ball_horizontal_movement.roll
+	#)
 	ball_player_contact_handler.initialize(self)
 	player_contact_detector.contact_started.connect(
 		ball_player_contact_handler._on_contact_started
@@ -217,7 +216,6 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	ball_horizontal_movement.logic_tick()
 	ball_z_movement.update_environment(ground_type,wetness,carrier == null)
 	ball_z_movement.logic_tick()
-	tick_timer_component.logic_tick()
 	step_animation_component.advance_tick()
 	player_contact_detector.logic_tick()
 	ball_player_contact_handler.logic_tick()
@@ -399,12 +397,16 @@ func apply_y_control(direction: int) -> void:
 # ==============================================================================
 # 11. 外部动作接口
 # ==============================================================================
-
+func can_roll() -> bool:
+	return (
+		not carrier
+		and ball_z_movement.is_on_ground()
+	)
 
 func receive_stationary_flick() -> void:
 	stationary_flick_active = true
 	release_from_carrier()
-	
+	ball_horizontal_movement.stop_immediately()
 	ball_z_movement.launch(8)
 
 	state_machine.change_state(

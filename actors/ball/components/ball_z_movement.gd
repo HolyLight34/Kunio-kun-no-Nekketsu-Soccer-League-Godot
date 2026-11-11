@@ -95,8 +95,6 @@ extends Node
 ## 足球每次触地时发送。
 signal landed
 
-## 足球彻底结束本次 Z 轴运动时发送。
-signal finished
 ## 足球开始下降
 signal started_descending
 # ==============================================================================
@@ -256,6 +254,8 @@ func sync_z_position(position: int) -> void:
 	z_height_raw = sync_z_height_raw
 func clear_z_position_sync() -> void:
 	is_syncing_z = false
+func is_on_ground() -> bool:
+	return not is_in_air() and z_velocity_raw == 0
 ## 足球陷入高度 
 func _apply_negative_height_limit() -> void:
 	if z_height_raw >= 0:
@@ -344,8 +344,6 @@ func _process_landing() -> void:
 	# --------------------------------------------------------------------------
 
 	z_velocity_raw = 0
-	finished.emit()
-
 
 # ==============================================================================
 # FC 落地高度修正

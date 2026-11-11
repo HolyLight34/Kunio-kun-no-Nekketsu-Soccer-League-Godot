@@ -82,7 +82,7 @@ func logic_tick() -> void:
 	current_tick += 1
 	if current_tick == 2:
 		ball.set_player_interaction_enabled(true)
-	if current_tick >= result.duration_ticks:
+	if current_tick > result.duration_ticks:
 
 		ball.ball_z_movement.gravity_enable()
 
