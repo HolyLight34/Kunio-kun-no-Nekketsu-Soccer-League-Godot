@@ -7,7 +7,7 @@ func enter(_data) -> void:
 	else :
 		anim.play("juggle_b")
 	await player.step_animation_component.animation_finished
-	request_state(State.RUN)
+	request_state(Types.PlayerStateType.RUN)
 	pass
 
 

@@ -8,8 +8,8 @@ func enter(_data):
 		anim.play("kick_a")
 	await anim.animation_finished
 	if player.player_z_movement.is_in_air:
-		request_state(State.JUMP)
-	request_state(State.IDLE)
+		request_state(Types.PlayerStateType.JUMP)
+	request_state(Types.PlayerStateType.IDLE)
 	pass
 func _on_kick_with_ball() -> void:
 	player.carried_ball.resolve_kick(_create_kick_data())

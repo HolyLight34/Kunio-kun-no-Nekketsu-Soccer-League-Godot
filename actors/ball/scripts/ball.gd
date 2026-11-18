@@ -208,9 +208,8 @@ func _resolve_ground_type(
 # ==============================================================================
 # 6. Logic Tick
 # ==============================================================================
-var intent: PlayerIntentResolver.Intent = PlayerIntentResolver.Intent.NONE
 func logic_tick(ground_effect: Types.GroundEffect) -> void:
-	state_machine.logic_tick(intent)
+	state_machine.logic_tick()
 	var ground_type := _resolve_ground_type(ground_effect)
 	ball_horizontal_movement.update_environment(ground_type,wetness)
 	ball_horizontal_movement.logic_tick()

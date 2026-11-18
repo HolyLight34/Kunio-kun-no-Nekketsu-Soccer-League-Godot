@@ -1,14 +1,33 @@
 class_name Types
 extends RefCounted
 
-enum HitType {
-	PASS,
+enum PlayerStateType {
+	IDLE,
+	WALK,
+	RUN,
+	BRAKE,
+	JUMP,
+	HURT,
+	LAND,
 	KICK,
-	STRIKE,
+	ELBOW_STRIKE,
+	PASS,
 	TACKLE,
-	BALL_ATTACK,
-	BALL,
-}
+	STATIONARY_FLICK,
+	CHEST_TRAP,
+	MOVING_FLICK,
+	BICYCLE_KICK,
+	REBOUND,
+	KNOCKBACK,
+	JUGGLE,
+	AIR_KICK,
+	DIVING_HEADER,
+	CRAWL,
+	CRAWL_HORIZONTAL,
+	CRAWL_ROLL,
+	SPECIAL_DRIBBLE,
+	BURST_ATTACK,
+} 
 enum BallContactAction {
 	KICK,
 	PASS,
@@ -34,6 +53,25 @@ enum ShotMode {
 enum Team {
 	TEAM_1,
 	TEAM_2,
+}
+# Types.gd
+enum InputButtonType {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	A,
+	B,
+	START,
+	SELECT,
+}
+
+enum PlayerCommandType {
+	NONE,
+	A,
+	B,
+	A_B,
+	DOUBLE_TAP,
 }
 enum BallPossession {
 	NONE,       # 当前无人持球

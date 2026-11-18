@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://cmi6kmwh30t0f" path="res://actors/player/states/player_brake_state.gd" id="9_fkbio"]
 [ext_resource type="Script" uid="uid://blvvckdk3cqyi" path="res://actors/player/states/player_jump_state.gd" id="10_vwqy1"]
 [ext_resource type="PackedScene" uid="uid://dl8wemvojp0xc" path="res://actors/player/components/input_component/input_component.tscn" id="11_k3ida"]
-[ext_resource type="PackedScene" uid="uid://bokbnkhtyfu57" path="res://actors/player/components/intent_component/intent_component.tscn" id="12_33t0o"]
 [ext_resource type="Script" uid="uid://dalui86j5j70t" path="res://actors/player/states/player_kick_state.gd" id="14_ptkv0"]
 [ext_resource type="Script" uid="uid://b0b27tswgwg7v" path="res://actors/player/states/player_stationary_flick_state.gd" id="15_tg3sl"]
 [ext_resource type="Script" uid="uid://sbey23vww8d" path="res://actors/player/states/player_elbow_strike_state.gd" id="15_wkl3h"]
@@ -84,34 +83,22 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Components/StateMachine/CrawlHorizontal:is_decelerate")
+tracks/3/path = NodePath("FacingRoot/BallContactDetector:shape_id")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true]
+"values": [15]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/4/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [15]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -274,7 +261,7 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id="Animation_3lvlc"]
 resource_name = "brake"
-length = 0.1500016744898632
+length = 1.000001718820818
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1711,10 +1698,10 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jwexq"]
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_00m30"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
 size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "state_machine")]
@@ -1802,10 +1789,6 @@ anim_name = &"pass"
 
 [node name="Tackle" type="Node" parent="Components/StateMachine" unique_id=309175364]
 script = ExtResource("17_sgsyk")
-player_state_id = 10
-facing_mode = 1
-anim_name = &"tackle"
-x_decel_rate = 0.625
 
 [node name="StationaryFlick" type="Node" parent="Components/StateMachine" unique_id=208771649]
 script = ExtResource("15_tg3sl")
@@ -1891,8 +1874,6 @@ anim_name = &"burst_attack"
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
 
-[node name="PlayerIntentResolver" parent="Components" unique_id=698967064 instance=ExtResource("12_33t0o")]
-
 [node name="PlayerZMovement" type="Node" parent="Components" unique_id=1092353589]
 script = ExtResource("20_pw4o6")
 
@@ -1915,6 +1896,10 @@ script = ExtResource("34_q7lff")
 [node name="PlayerContactHandler" type="Node" parent="Components" unique_id=372940807]
 script = ExtResource("35_00m30")
 
+[node name="CommandResolver" type="Node" parent="Components" unique_id=1555224198]
+
+[node name="CommandExecutor" type="Node" parent="Components" unique_id=1250802690]
+
 [node name="VisualRoot" type="Node2D" parent="." unique_id=1064463610]
 
 [node name="PlayerCompositeSprite" parent="VisualRoot" unique_id=487019932 instance=ExtResource("28_t3a7u")]
@@ -1934,7 +1919,7 @@ label_offset = Vector2(-90, -70)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FacingRoot/BallContactDetector" unique_id=1246057184]
 position = Vector2(-7, 0)
-shape = SubResource("RectangleShape2D_q7lff")
+shape = SubResource("RectangleShape2D_jwexq")
 
 [node name="PlayerContactDetector" type="Area2D" parent="FacingRoot" unique_id=635738517 node_paths=PackedStringArray("source")]
 visible = false
@@ -1947,7 +1932,7 @@ shape_id = 1
 facing_left = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FacingRoot/PlayerContactDetector" unique_id=229072069]
-shape = SubResource("RectangleShape2D_00m30")
+shape = SubResource("RectangleShape2D_q7lff")
 
 [node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
 

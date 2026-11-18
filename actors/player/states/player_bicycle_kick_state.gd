@@ -1,7 +1,6 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	#player.fc_logic_clock.pause()
 	player.player_horizontal_movement.stop_immediately()
 	player.player_z_movement.jump(4)
 	if player.carried_ball:
@@ -11,7 +10,7 @@ func enter(_data) -> void:
 	
 	await anim.animation_finished
 	if player.player_z_movement.is_in_air:
-		request_state(State.JUMP)
+		request_state(Types.PlayerStateType.JUMP)
 	pass
 
 ## 动画事件：触发倒钩挑球。

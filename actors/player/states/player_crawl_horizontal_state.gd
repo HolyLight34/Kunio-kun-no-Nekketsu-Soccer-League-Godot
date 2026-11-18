@@ -3,7 +3,7 @@ var is_decelerate: bool = true
 func enter(_data) -> void:
 	anim.play(anim_name)
 	await player.step_animation_component.animation_finished
-	request_state(State.CRAWL)
+	request_state(Types.PlayerStateType.CRAWL)
 	pass
 
 func exit() -> void:
@@ -16,5 +16,5 @@ func physics_tick() -> void:
 		
 
 func on_set_move_velocity() -> void:
-	player.player_horizontal_movement.set_move_velocity(4,player.input_component.move_dir)
+	player.player_horizontal_movement.set_move_velocity(4,player.input_component.input_direction)
 	pass

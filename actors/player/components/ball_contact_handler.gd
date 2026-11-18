@@ -95,7 +95,7 @@ func _process_ball_contact() -> void:
 
 		Ball.ReceiveType.BALL_HIT:
 			player.state_machine.request_state(
-				PlayerState.State.KNOCKBACK,
+				Types.PlayerStateType.KNOCKBACK,
 				#-player.facing_direction
 			)
 			return
@@ -104,7 +104,7 @@ func _process_ball_contact() -> void:
 			if player.get_z_velocity() < 0:
 				player.is_stomping_ball = true
 				player.player_z_movement.set_rest_height(13)
-				player.state_machine.request_state(PlayerState.State.LAND)
+				player.state_machine.request_state(Types.PlayerStateType.LAND)
 				player.ball.receive_stomped(player)
 			else :
 				player.ball.receive_ground_pickup(player)
@@ -136,13 +136,13 @@ func _process_ball_contact() -> void:
 		_target_ball.receive_juggle(player)
 
 		player.state_machine.request_state(
-			PlayerState.State.JUGGLE
+			Types.PlayerStateType.JUGGLE
 		)
 		return
 
 	# 站在地面接到空中球：胸停。
 	player.state_machine.request_state(
-		PlayerState.State.CHEST_TRAP
+		Types.PlayerStateType.CHEST_TRAP
 	)
 	_target_ball.receive_air_control(player)
 	

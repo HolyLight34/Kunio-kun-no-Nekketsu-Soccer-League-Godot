@@ -15,7 +15,7 @@ func enter(_data) -> void:
 	else :
 		player.player_horizontal_movement.set_move_velocity(6,player.facing_direction)
 	await player.player_z_movement.landed
-	request_state(State.LAND)
+	request_state(Types.PlayerStateType.LAND)
 	pass
 
 

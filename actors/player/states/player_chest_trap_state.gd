@@ -16,5 +16,5 @@ func exit() -> void:
 
 func logic_tick() -> void:
 	if player.carried_ball.get_z_height_integer() == 0:
-		request_state(State.IDLE)
+		request_state(Types.PlayerStateType.IDLE)
 	pass

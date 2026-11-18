@@ -64,21 +64,21 @@ func _handle_contact() -> void:
 		_target_player.resolve_strike(_create_strike_data(5))
 		return
 	if ball.stationary_flick_active:
-		if _target_player.state_machine.is_in_state(PlayerState.State.RUN):
+		if _target_player.state_machine.is_in_state(Types.PlayerStateType.RUN):
 			ball.receive_juggle(_target_player)
 			return
-		if _target_player.is_moving():
+		if _target_player.state_machine.is_in_state(Types.PlayerStateType.WALK) or _target_player.state_machine.is_in_state(Types.PlayerStateType.RUN) or _target_player.state_machine.is_in_state(Types.PlayerStateType.JUMP):
 			ball.receive_air_control(_target_player)
 			if _target_player.get_z_height_integer() == 0:
 				ball.receive_air_control(_target_player)
-				_target_player.state_machine.change_state(PlayerState.State.CHEST_TRAP)
+				_target_player.state_machine.change_state(Types.PlayerStateType.CHEST_TRAP)
 		return
 	if ball.get_z_height_integer() == 0 and !ball.ball_z_movement.is_rising():
 		ball.receive_ground_pickup(_target_player)
 		return
 	if ball.is_in_air() and _target_player.get_z_height_integer() == 0:
 		ball.receive_air_control(_target_player)
-		_target_player.state_machine.change_state(PlayerState.State.CHEST_TRAP)
+		_target_player.state_machine.change_state(Types.PlayerStateType.CHEST_TRAP)
 	pass
 func _create_strike_data(
 	damage: int

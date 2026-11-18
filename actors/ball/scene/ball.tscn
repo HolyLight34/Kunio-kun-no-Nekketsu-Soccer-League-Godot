@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="9_iwjb2"]
 [ext_resource type="Script" uid="uid://c0ysvbqp6b6gy" path="res://actors/ball/states/ball_juggle_state.gd" id="9_ospjx"]
 [ext_resource type="Script" uid="uid://cpibcbfuii3bw" path="res://actors/ball/states/ball_stomped_state.gd" id="10_ospjx"]
-[ext_resource type="Script" uid="uid://ddgryvlc3eucy" path="res://shared/timing/tick_timer_component.gd" id="11_aduox"]
 [ext_resource type="Shader" uid="uid://cmy87af5bto26" path="res://actors/ball/assets/ball_palette.gdshader" id="11_au374"]
 [ext_resource type="Script" uid="uid://bgqh3h3ph1wuq" path="res://actors/ball/components/ball_z_movement.gd" id="11_begx4"]
 [ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="12_d7d46"]
@@ -110,7 +109,9 @@ shader_parameter/white_color = Color(0, 0, 0, 1)
 shader_parameter/black_color = Color(0, 0, 0, 1)
 shader_parameter/red_color = Color(0, 0, 0, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_br07o"]
+[sub_resource type="GDScript" id="GDScript_ospjx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ospjx"]
 size = Vector2(16, 12)
 
 [node name="Ball" type="CharacterBody2D" unique_id=630695448]
@@ -179,7 +180,7 @@ vframes = 2
 script = ExtResource("14_1xsu1")
 
 [node name="TickTimerComponent" type="Node" parent="Components" unique_id=1976622560]
-script = ExtResource("11_aduox")
+script = SubResource("GDScript_ospjx")
 
 [node name="EntityPositionVisualComponent" type="Node" parent="Components" unique_id=1813904894 node_paths=PackedStringArray("position_target", "visual_pivot", "shadow_sprite")]
 script = ExtResource("14_h8xgc")
@@ -206,7 +207,7 @@ shape_library = ExtResource("18_6t48i")
 shape_id = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerContactDetector" unique_id=1112721686]
-shape = SubResource("RectangleShape2D_br07o")
+shape = SubResource("RectangleShape2D_ospjx")
 
 [connection signal="landed" from="Components/BallZMovement" to="." method="_on_ball_z_movement_landed"]
 [connection signal="area_entered" from="PlayerContactDetector" to="PlayerContactDetector" method="_on_area_entered"]

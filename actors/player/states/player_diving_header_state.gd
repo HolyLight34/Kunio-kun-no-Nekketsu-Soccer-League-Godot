@@ -5,7 +5,7 @@ func enter(_data):
 	player.player_z_movement.jump(3)
 	anim.play(anim_name)
 	await player.player_z_movement.landed
-	request_state(State.CRAWL)
+	request_state(Types.PlayerStateType.CRAWL)
 	pass
 
 func exit() -> void:
@@ -15,5 +15,5 @@ func exit() -> void:
 
 
 func logic_tick() -> void:
-	player.player_horizontal_movement.apply_air_steering(player.input_component.move_dir)
+	player.player_horizontal_movement.apply_air_steering(player.input_component.input_direction)
 	pass

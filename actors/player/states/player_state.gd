@@ -1,34 +1,7 @@
 class_name PlayerState
 extends EntityState # 继承自你的通用 State
 
-enum State {
-	IDLE,
-	WALK,
-	RUN,
-	BRAKE,
-	JUMP,
-	HURT,
-	LAND,
-	KICK,
-	ELBOW_STRIKE,
-	PASS,
-	TACKLE,
-	STATIONARY_FLICK,
-	CHEST_TRAP,
-	MOVING_FLICK,
-	BICYCLE_KICK,
-	REBOUND,
-	KNOCKBACK,
-	JUGGLE,
-	AIR_KICK,
-	DIVINGHEADER,
-	CRAWL,
-	CRAWL_HORIZONTAL,
-	CRAWL_ROLL,
-	SPECIAL_DRIBBLE,
-	BURST_ATTACK,
-} 
-@export var player_state_id: State
+@export var player_state_id: Types.PlayerStateType
 enum FacingMode {
 	FOLLOW_INPUT, # 自动跟随玩家输入的方向转向（如 Walk, Idle）
 	LOCK,         # 完全锁定方向，拒绝任何转向（如 Attack 前摇、Shoot、Dash）

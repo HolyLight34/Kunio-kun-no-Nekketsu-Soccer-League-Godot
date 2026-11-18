@@ -14,7 +14,7 @@ func enter(_data) -> void:
 	else :
 		anim.play("special_dribble2")
 	await anim.animation_finished
-	request_state(State.RUN)
+	request_state(Types.PlayerStateType.RUN)
 	pass
 func _on_set_little_velocity() -> void:
 	player.player_horizontal_movement.stop_immediately()

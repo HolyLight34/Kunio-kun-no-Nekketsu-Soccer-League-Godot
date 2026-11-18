@@ -66,21 +66,9 @@ func initialize(actor_node: CharacterBody2D) -> void:
 
 
 ## 每个对象逻辑步调用一次
-func logic_tick(intent) -> void:
-	if intent != PlayerIntentResolver.Intent.NONE:
-		handle_intent(intent)
-
+func logic_tick() -> void:
 	if current_state:
 		current_state.logic_tick()
-
-
-## 处理输入意图
-func handle_intent(
-	intent: PlayerIntentResolver.Intent,
-) -> void:
-	if current_state:
-		current_state.handle_intent(intent)
-
 
 ## 切换状态
 ## 立即退出当前状态并进入目标状态。

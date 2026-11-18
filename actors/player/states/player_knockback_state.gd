@@ -12,7 +12,7 @@ func enter(data: StrikeData) -> void:
 	var knockback_direction: Vector2
 	knockback_direction = _calculate_knockback_direction(
 		attack_direction,
-		player.input_component.last_move_direction
+		player.input_component.last_input_direction
 	)
 	player.player_horizontal_movement.set_horizontal_velocity(
 		knockback_direction * 2
@@ -24,7 +24,7 @@ func enter(data: StrikeData) -> void:
 	else :
 		anim.play("down_back")
 	await player.step_animation_component.animation_finished
-	request_state(State.LAND)
+	request_state(Types.PlayerStateType.LAND)
 	pass
 func _is_hit_from_front(attack_direction) -> bool:
 	return player.facing_direction != attack_direction

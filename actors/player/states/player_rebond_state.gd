@@ -9,7 +9,7 @@ func enter(attack_direction: Vector2) -> void:
 	else:
 		anim.play("hurt_back")
 	await player.step_animation_component.animation_finished
-	request_state(State.IDLE)
+	request_state(Types.PlayerStateType.IDLE)
 	pass
 func _is_hit_from_front(attack_direction) -> bool:
 	return player.facing_direction != attack_direction

@@ -1,47 +1,60 @@
-
 class_name InputComponent
 extends Node
 
 
-@export_group("Input Actions")
-@export var action_up: StringName = "ui_up"
-@export var action_down: StringName = "ui_down"
-@export var action_left: StringName = "ui_left"
-@export var action_right: StringName = "ui_right"
+const FUNCTION_BUTTONS: Array[Types.InputButtonType] = [
+	Types.InputButtonType.A,
+	Types.InputButtonType.B,
+	Types.InputButtonType.START,
+	Types.InputButtonType.SELECT,
+]
 
-@export var action_a: StringName = "btn_a"
-@export var action_b: StringName = "btn_b"
-@export var action_start: StringName = "btn_start"
-@export var action_select: StringName = "btn_select"
+@export_group("Input Actions")
+@export var action_up: StringName = &"ui_up"
+@export var action_down: StringName = &"ui_down"
+@export var action_left: StringName = &"ui_left"
+@export var action_right: StringName = &"ui_right"
+
+@export var action_a: StringName = &"btn_a"
+@export var action_b: StringName = &"btn_b"
+@export var action_start: StringName = &"btn_start"
+@export var action_select: StringName = &"btn_select"
 
 @export var player: Player
 
 
 # ============================================================
-# 持续输入状态
+# 当前输入状态
 # ============================================================
 
-var move_dir: Vector2 = Vector2.ZERO
-var last_move_direction: Vector2 = Vector2.RIGHT
+## 当前输入方向。
+var input_direction: Vector2 = Vector2.ZERO
 
-var btn_a: bool = false
-var btn_b: bool = false
+## 最后一次非零输入方向。
+var last_input_direction: Vector2 = Vector2.RIGHT
 
-var btn_start: bool = false
-var btn_select: bool = false
+## 当前处于按住状态的所有原始按键。
+var _held_buttons: Array[Types.InputButtonType] = []
 
 
 # ============================================================
-# 输入事件队列
-#
-# 只记录按下事件。
-# 由 Logic Tick 消费。
+# 待处理输入事件
 # ============================================================
 
-var _pending_pressed_events: Array[StringName] = []
+## 尚未交给 Logic Tick 的按下事件。
+var _pending_pressed_events: Array[Types.InputButtonType] = []
 
+## 尚未交给 Logic Tick 的释放事件。
+var _pending_released_events: Array[Types.InputButtonType] = []
+
+
+# ============================================================
+# 初始化
+# ============================================================
 
 func _ready() -> void:
+	assert(player != null, "InputComponent: player 未设置")
+
 	if player.player_id >= 3:
 		return
 
@@ -56,62 +69,131 @@ func _ready() -> void:
 	action_select = "p%d_button_select" % player.player_id
 
 
-## 每个 Physics Frame 采集一次输入
-func _physics_process(_delta: float) -> void:
-	_update_held_inputs()
-	_collect_pressed_events()
+# ============================================================
+# 原始输入事件采集
+# ============================================================
+
+## 接收原始输入事件。
+func _input(event: InputEvent) -> void:
+	if event.is_echo():
+		return
+
+	_record_event(event, action_up, Types.InputButtonType.UP)
+	_record_event(event, action_down, Types.InputButtonType.DOWN)
+	_record_event(event, action_left, Types.InputButtonType.LEFT)
+	_record_event(event, action_right, Types.InputButtonType.RIGHT)
+
+	_record_event(event, action_a, Types.InputButtonType.A)
+	_record_event(event, action_b, Types.InputButtonType.B)
+	_record_event(event, action_start, Types.InputButtonType.START)
+	_record_event(event, action_select, Types.InputButtonType.SELECT)
 
 
-## 更新持续输入
-func _update_held_inputs() -> void:
-	move_dir = Input.get_vector(
+## 记录按下和释放事件。
+func _record_event(
+	event: InputEvent,
+	action: StringName,
+	button_type: Types.InputButtonType
+) -> void:
+	if event.is_action_pressed(action):
+		# 已经按住，不重复记录。
+		if _held_buttons.has(button_type):
+			return
+
+		_held_buttons.append(button_type)
+		_pending_pressed_events.append(button_type)
+
+	elif event.is_action_released(action):
+		# 当前没有按住，不记录重复释放。
+		if not _held_buttons.has(button_type):
+			return
+
+		_held_buttons.erase(button_type)
+		_pending_released_events.append(button_type)
+
+
+# ============================================================
+# 移动方向采集
+# ============================================================
+
+## 在创建 Logic Tick 输入快照时更新。
+func _update_move_direction() -> void:
+	input_direction = Input.get_vector(
 		action_left,
 		action_right,
 		action_up,
 		action_down
 	)
 
-	if move_dir != Vector2.ZERO:
-		last_move_direction = move_dir
-
-	btn_a = Input.is_action_pressed(action_a)
-	btn_b = Input.is_action_pressed(action_b)
-
-	btn_start = Input.is_action_pressed(action_start)
-	btn_select = Input.is_action_pressed(action_select)
+	if input_direction != Vector2.ZERO:
+		last_input_direction =input_direction
 
 
-## 收集瞬时按下事件
-func _collect_pressed_events() -> void:
-	_record_pressed(action_up, &"up")
-	_record_pressed(action_down, &"down")
-	_record_pressed(action_left, &"left")
-	_record_pressed(action_right, &"right")
+# ============================================================
+# 方向位合并
+# ============================================================
 
-	_record_pressed(action_a, &"a")
-	_record_pressed(action_b, &"b")
-
-	_record_pressed(action_start, &"start")
-	_record_pressed(action_select, &"select")
-
-
-## 记录按键事件
-func _record_pressed(
-	action: StringName,
-	event_name: StringName
-) -> void:
-	if Input.is_action_just_pressed(action):
-		_pending_pressed_events.append(event_name)
+## 将单个方向按键转换为方向位。
+func _get_direction_bit(button_type: Types.InputButtonType) -> int:
+	match button_type:
+		Types.InputButtonType.RIGHT:
+			return InputFrame.DirectionBits.RIGHT
+		Types.InputButtonType.LEFT:
+			return InputFrame.DirectionBits.LEFT
+		Types.InputButtonType.DOWN:
+			return InputFrame.DirectionBits.DOWN
+		Types.InputButtonType.UP:
+			return InputFrame.DirectionBits.UP
+		_:
+			return InputFrame.DirectionBits.NONE
 
 
-## 获取并清空已经采集的输入事件
-func consume_pressed_events() -> Array[StringName]:
-	var events := _pending_pressed_events.duplicate()
+## 合并当前逻辑帧内所有新方向输入。
+func _collect_direction_bits() -> int:
+	var direction_bits: int = InputFrame.DirectionBits.NONE
 
+	for button_type in _pending_pressed_events:
+		direction_bits |= _get_direction_bit(button_type)
+
+	return direction_bits
+
+
+# ============================================================
+# 输入快照
+# ============================================================
+
+## 创建当前逻辑 Tick 的输入快照。
+func create_input_frame(logic_tick: int) -> InputFrame:
+	_update_move_direction()
+
+	var frame := InputFrame.new()
+
+	frame.logic_tick = logic_tick
+	frame.input_direction = input_direction
+
+	# 合并本 Tick 的方向按下事件。
+	frame.direction_bits = _collect_direction_bits()
+
+	# 当前持续按住的功能按钮。
+	for button_type in FUNCTION_BUTTONS:
+		if _held_buttons.has(button_type):
+			frame.held_buttons.append(button_type)
+
+	# 复制按下和释放事件。
+	frame.pressed_events = _pending_pressed_events.duplicate()
+	frame.released_events = _pending_released_events.duplicate()
+
+	# 清理已经交付的瞬时事件。
 	_pending_pressed_events.clear()
+	_pending_released_events.clear()
 
-	return events
+	return frame
 
 
-func get_move_direction() -> Vector2:
-	return move_dir
+# ============================================================
+# 公共接口
+# ============================================================
+
+## 获取当前移动方向。
+func get_input_direction() -> Vector2:
+	return input_direction

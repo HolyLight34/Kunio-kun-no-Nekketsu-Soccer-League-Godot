@@ -38,9 +38,9 @@ func get_team_attack_direction() -> Types.TeamAttackDirection:
 # 3. 节点引用
 # ==============================================================================
 
-@onready var player_intent_resolver: PlayerIntentResolver = (
-	$Components/PlayerIntentResolver
-)
+#@onready var player_intent_resolver: PlayerIntentResolver = (
+	#$Components/PlayerIntentResolver
+#)
 
 @onready var player_horizontal_movement: PlayerHorizontalMovement = (
 	$Components/PlayerHorizontalMovement
@@ -69,6 +69,7 @@ func get_team_attack_direction() -> Types.TeamAttackDirection:
 @onready var player_contact_handler: PlayerContactHandler = $Components/PlayerContactHandler
 @onready var player_contact_detector: HitBox = $FacingRoot/PlayerContactDetector
 
+
 # ==============================================================================
 # 4. 运行状态
 # ==============================================================================
@@ -91,8 +92,9 @@ func get_facing_direction() -> Vector2:
 # ==============================================================================
 # 5. 生命周期 / 初始化
 # ==============================================================================
-
+var input_matcher := InputCommandMatcher.new()
 func _ready() -> void:
+	
 	_initialize_components()
 	endurance_label.text = str(endurance)
 
@@ -102,10 +104,10 @@ func _initialize_components() -> void:
 		position
 	)
 
-	player_intent_resolver.init(
-		self,
-		input_component
-	)
+	#player_intent_resolver.init(
+		#self,
+		#input_component
+	#)
 	ball_contact_handler.initialize(self)
 	ball_contact_detector.contact_started.connect(
 		ball_contact_handler._on_contact_started
@@ -129,15 +131,57 @@ func _physics_process(_delta: float) -> void:
 # ==============================================================================
 # 6. Logic Tick
 # ==============================================================================
+#func debug_test_command_resolver() -> void:
 
+	##var events := input_component.consume_pressed_events()
+#
+	#if events.is_empty():
+		#return
+#
+	#var context := PlayerCommandContext.new()
+	#context.initialize(self, events)
+
+	#var matched_rule := command_resolver.resolve(context)
+
+	#if matched_rule:
+		#print("MATCHED!")
+		#print("Target State: ", matched_rule.target_state_id)
+#
+		#command_executor.execute(matched_rule)
+	#else:
+		#print("NO MATCH")
+var input_tick: int = 0
 func logic_tick() -> void:
-	var intent := player_intent_resolver.get_intent()
-	state_machine.logic_tick(intent)
+	input_tick += 1
+	 # 1. 获取当前输入快照。
+	var frame := input_component.create_input_frame(input_tick)
+
+	input_matcher.process_frame(frame)
+
+	if not frame.pressed_events.is_empty():
+		print(
+		"Tick=", frame.logic_tick,
+		" pressed=", frame.pressed_events,
+		" held=", frame.held_buttons
+	)
+
+	var commands := input_matcher.get_recognized_commands()
+	var dir = frame.input_direction
+	var curr = state_machine.get_current_state_id()
+	if not commands.is_empty():
+		print(
+		"Tick=", frame.logic_tick,
+		" commands=", commands
+	)
+	var tar_state := PlayerCommandHandler.resolve_next_state(commands,curr,dir,ball_possession,facing_direction)
+	if curr != tar_state:
+		state_machine.change_state(tar_state)
+	state_machine.logic_tick()
 	player_z_movement.logic_tick()
 	player_horizontal_movement.step_logic_tick()
 	step_animation_component.advance_tick()
 	_update_facing(
-		input_component.move_dir.x
+		input_component.input_direction.x
 	)
 	ball_contact_detector.logic_tick()
 	player_contact_detector.logic_tick()
@@ -327,7 +371,7 @@ func _process_ball_control() -> void:
 		return
 
 	var move_direction := (
-		input_component.get_move_direction()
+		input_component.get_input_direction()
 	)
 
 	carried_ball.apply_y_control(
@@ -341,9 +385,9 @@ func _process_ball_control() -> void:
 
 func _update_pass_search_direction() -> void:
 
-	if input_component.move_dir != Vector2.ZERO:
+	if input_component.input_direction != Vector2.ZERO:
 		pass_target_detector.set_search_direction(
-			input_component.move_dir
+			input_component.input_direction
 		)
 	else:
 		pass_target_detector.set_search_direction(
@@ -378,7 +422,7 @@ func resolve_tackle(
 		return
 	release_ball()
 	state_machine.change_state(
-		PlayerState.State.REBOUND,
+		Types.PlayerStateType.REBOUND,
 		data.attack_direction
 	)
 func resolve_strike(
@@ -388,12 +432,12 @@ func resolve_strike(
 	# 普通角色攻击受伤规则。
 	if data.endurance + 8 >= endurance:
 		state_machine.change_state(
-			PlayerState.State.KNOCKBACK,data
+			Types.PlayerStateType.KNOCKBACK,data
 		)
 
 	else:
 		state_machine.change_state(
-			PlayerState.State.REBOUND,data.attack_direction
+			Types.PlayerStateType.REBOUND,data.attack_direction
 		)
 
 		data.attacker.receive_rebound()
@@ -404,12 +448,12 @@ func resolve_special_attack(data: StrikeData) -> void:
 	# 普通角色攻击受伤规则。
 	if data.endurance + 18 >= endurance:
 		state_machine.change_state(
-			PlayerState.State.KNOCKBACK,data
+			Types.PlayerStateType.KNOCKBACK,data
 		)
 
 	else:
 		state_machine.change_state(
-			PlayerState.State.REBOUND,data.attack_direction
+			Types.PlayerStateType.REBOUND,data.attack_direction
 		)
 
 		data.attacker.receive_rebound()
@@ -424,7 +468,7 @@ func _resolve_ball_attack(
 ) -> void:
 	endurance -= data.damage
 	state_machine.change_state(
-			PlayerState.State.KNOCKBACK,
+			Types.PlayerStateType.KNOCKBACK,
 			data.attack_direction
 		)
 # ==============================================================================
@@ -432,7 +476,7 @@ func _resolve_ball_attack(
 # ==============================================================================
 func receive_juggle() -> void:
 	state_machine.change_state(
-		PlayerState.State.JUGGLE
+		Types.PlayerStateType.JUGGLE
 	)
 	pass
 ## 让当前角色执行反弹。
@@ -443,6 +487,6 @@ func receive_rebound() -> void:
 	release_ball()
 
 	state_machine.change_state(
-		PlayerState.State.REBOUND,
+		Types.PlayerStateType.REBOUND,
 		-facing_direction
 	)
