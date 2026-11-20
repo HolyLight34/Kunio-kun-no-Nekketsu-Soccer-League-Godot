@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cd56s8raml18p"]
 
 [ext_resource type="Script" uid="uid://p1cdhkx1ltci" path="res://actors/player/scripts/player.gd" id="2_w62lr"]
-[ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://actors/player/components/state_machine/state_machine.tscn" id="4_74h0t"]
+[ext_resource type="PackedScene" uid="uid://wkj53q4jixl7" path="res://shared/state_machine/state_machine.tscn" id="4_74h0t"]
 [ext_resource type="Script" uid="uid://dc2notl5lvls4" path="res://actors/player/states/player_idle_state.gd" id="4_bbc2b"]
 [ext_resource type="Script" uid="uid://bl4h3qijae758" path="res://actors/player/states/player_walk_state.gd" id="5_iykej"]
 [ext_resource type="Script" uid="uid://bhaf3nf6g0yow" path="res://actors/player/states/player_run_state.gd" id="8_llfb5"]
@@ -19,25 +19,25 @@
 [ext_resource type="Script" uid="uid://c1ovn4hmpr3vy" path="res://actors/player/states/player_bicycle_kick_state.gd" id="18_6npms"]
 [ext_resource type="Script" uid="uid://bis2p6dof0fnc" path="res://actors/player/states/player_rebond_state.gd" id="19_a2yjh"]
 [ext_resource type="Script" uid="uid://c7egvgnf4b3l3" path="res://actors/player/states/player_juggle_state.gd" id="20_a2yjh"]
-[ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://actors/player/assets/blob_shadow.png" id="20_c0821"]
-[ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/z_axis_component/player_z_movement.gd" id="20_pw4o6"]
+[ext_resource type="Texture2D" uid="uid://bbua2rmiwlrv5" path="res://shared/assets/blob_shadow.png" id="20_c0821"]
+[ext_resource type="Script" uid="uid://bvb20bbho1dpc" path="res://actors/player/components/player_z_movement.gd" id="20_pw4o6"]
 [ext_resource type="Script" uid="uid://cc6oarany78mb" path="res://actors/player/states/player_knockback_state.gd" id="20_t3a7u"]
 [ext_resource type="Script" uid="uid://crqd02cg5txao" path="res://actors/player/states/player_air_kick_state.gd" id="21_6npms"]
 [ext_resource type="Script" uid="uid://dkr6ax0b1nns8" path="res://actors/player/states/player_diving_header_state.gd" id="22_a2yjh"]
-[ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement/player_horizontal_movement.gd" id="23_c8mko"]
+[ext_resource type="Script" uid="uid://dlwwab8aoit6k" path="res://actors/player/components/player_horizontal_movement.gd" id="23_c8mko"]
 [ext_resource type="Script" uid="uid://bjsg7teu45xbj" path="res://actors/player/states/player_crawl_state.gd" id="23_t3a7u"]
 [ext_resource type="Script" uid="uid://45555rpu7aeu" path="res://shared/visual/entity_position_visual_component.gd" id="24_h2l6i"]
 [ext_resource type="Script" uid="uid://cv1ir0w80wf4i" path="res://actors/player/states/player_crawl_horizontal_state.gd" id="24_tabv8"]
-[ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://actors/player/components/step_animation_component/step_animation_component.gd" id="25_h2l6i"]
+[ext_resource type="Script" uid="uid://b3ep7t8383ev1" path="res://shared/visual/step_animation_component.gd" id="25_h2l6i"]
 [ext_resource type="Script" uid="uid://wr8ukgpumqce" path="res://actors/player/states/player_crawl_roll_state.gd" id="25_ioyab"]
 [ext_resource type="Script" uid="uid://by50n32ijsyw" path="res://actors/player/states/player_special_dribble_state.gd" id="26_ioyab"]
 [ext_resource type="Script" uid="uid://coeeo1ogwg8ju" path="res://actors/player/states/player_burst_attack_state.gd" id="27_jwexq"]
-[ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/ball/scene/pass_target_detector.gd" id="28_iy78e"]
-[ext_resource type="PackedScene" uid="uid://3raieqvx5gc4" path="res://actors/player/scripts/player_composite_sprite.tscn" id="28_t3a7u"]
+[ext_resource type="Script" uid="uid://uwukpne6fgtg" path="res://actors/player/components/pass_target_detector.gd" id="28_iy78e"]
+[ext_resource type="PackedScene" uid="uid://3raieqvx5gc4" path="res://actors/player/scenes/player_composite_sprite.tscn" id="28_t3a7u"]
 [ext_resource type="Script" uid="uid://k8fsdivda4cg" path="res://actors/player/components/ball_contact_handler.gd" id="34_q7lff"]
 [ext_resource type="Script" uid="uid://ds1ji6g4h6wgo" path="res://actors/player/components/player_contact_handler.gd" id="35_00m30"]
-[ext_resource type="Script" uid="uid://dvxfjxm76qnxw" path="res://shared/combat/player_hit_box.gd" id="35_q7lff"]
-[ext_resource type="Resource" uid="uid://1ubmftao2hyg" path="res://fc_shape_library.tres" id="36_q7lff"]
+[ext_resource type="Script" uid="uid://dvxfjxm76qnxw" path="res://shared/combat/hit_box.gd" id="35_q7lff"]
+[ext_resource type="Resource" uid="uid://1ubmftao2hyg" path="res://shared/combat/fc_shape_library.tres" id="36_q7lff"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bbc2b"]
 size = Vector2(0, 0)
@@ -492,25 +492,13 @@ tracks/0/keys = {
 "update": 1,
 "values": [3, 30]
 }
-tracks/1/type = "value"
+tracks/1/type = "method"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Components/StateMachine/CrawlHorizontal:is_decelerate")
+tracks/1/path = NodePath("Components/StateMachine/CrawlHorizontal")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.15),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Components/StateMachine/CrawlHorizontal")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0.15),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -518,25 +506,25 @@ tracks/2/keys = {
 "method": &"on_set_move_velocity"
 }]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("FacingRoot/BallContactDetector:shape_id")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("FacingRoot/BallContactDetector:shape_id")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [4]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("FacingRoot/PlayerContactDetector:shape_id")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -1698,10 +1686,10 @@ _data = {
 &"walk": SubResource("Animation_kdubu")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_jwexq"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h4eg8"]
 size = Vector2(22, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7lff"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_m813y"]
 size = Vector2(16, 8)
 
 [node name="Player" type="CharacterBody2D" unique_id=232419937 node_paths=PackedStringArray("input_component", "state_machine")]
@@ -1741,135 +1729,131 @@ initial_state = NodePath("Idle")
 
 [node name="Idle" type="Node" parent="Components/StateMachine" unique_id=28491428]
 script = ExtResource("4_bbc2b")
-anim_name = &"idle"
+default_anim = &"idle"
 x_decel_rate = 0.75
 
 [node name="Run" type="Node" parent="Components/StateMachine" unique_id=369123949]
 script = ExtResource("8_llfb5")
 player_state_id = 2
 facing_mode = 1
-anim_name = &"run"
+default_anim = &"run"
 
 [node name="Brake" type="Node" parent="Components/StateMachine" unique_id=1404277443]
 script = ExtResource("9_fkbio")
 player_state_id = 3
 facing_mode = 1
-anim_name = &"brake"
+default_anim = &"brake"
 x_decel_rate = 1.0
 
 [node name="Jump" type="Node" parent="Components/StateMachine" unique_id=178965631]
 script = ExtResource("10_vwqy1")
 player_state_id = 4
 facing_mode = 1
-anim_name = &"jump"
+default_anim = &"jump"
 
 [node name="Walk" type="Node" parent="Components/StateMachine" unique_id=691485942]
 script = ExtResource("5_iykej")
 player_state_id = 1
-anim_name = &"walk"
+default_anim = &"walk"
 x_decel_rate = 0.75
 
 [node name="Land" type="Node" parent="Components/StateMachine" unique_id=760253809]
 script = ExtResource("17_ptkv0")
 player_state_id = 6
-anim_name = &"land"
+default_anim = &"land"
 x_decel_rate = 1.0
 
 [node name="Kick" type="Node" parent="Components/StateMachine" unique_id=1329134799]
 script = ExtResource("14_ptkv0")
 player_state_id = 7
 facing_mode = 1
-anim_name = &"kick"
 
 [node name="Pass" type="Node" parent="Components/StateMachine" unique_id=2005233895]
 script = ExtResource("16_imh8g")
 player_state_id = 9
 facing_mode = 1
-anim_name = &"pass"
+default_anim = &"pass"
 
 [node name="Tackle" type="Node" parent="Components/StateMachine" unique_id=309175364]
 script = ExtResource("17_sgsyk")
+default_anim = &"tackle"
 
 [node name="StationaryFlick" type="Node" parent="Components/StateMachine" unique_id=208771649]
 script = ExtResource("15_tg3sl")
 player_state_id = 11
-anim_name = &"stationary_flick"
+default_anim = &"stationary_flick"
 
 [node name="ChestTrap" type="Node" parent="Components/StateMachine" unique_id=1281698851]
 script = ExtResource("16_pj4mo")
 player_state_id = 12
-anim_name = &"chest_trap"
 
 [node name="MovingFlick" type="Node" parent="Components/StateMachine" unique_id=79259128]
 script = ExtResource("17_f2m0f")
 player_state_id = 13
-anim_name = &"moving_flick"
+default_anim = &"moving_flick"
 
 [node name="BicycleKick" type="Node" parent="Components/StateMachine" unique_id=1901457681]
 script = ExtResource("18_6npms")
 player_state_id = 14
 facing_mode = 1
-anim_name = &"bicycle_kick"
 
 [node name="Rebond" type="Node" parent="Components/StateMachine" unique_id=178303586]
 script = ExtResource("19_a2yjh")
 player_state_id = 15
-anim_name = &"hurt_rebound_front"
+default_anim = &"hurt_rebound_front"
 
 [node name="Knockback" type="Node" parent="Components/StateMachine" unique_id=1674390075]
 script = ExtResource("20_t3a7u")
 player_state_id = 16
-anim_name = &"hurt_knockback_front"
+default_anim = &"hurt_knockback_front"
 
 [node name="Juggle" type="Node" parent="Components/StateMachine" unique_id=881898648]
 script = ExtResource("20_a2yjh")
 player_state_id = 17
-anim_name = &"juggle"
 
 [node name="ElbowStrike" type="Node" parent="Components/StateMachine" unique_id=850088266]
 script = ExtResource("15_wkl3h")
 player_state_id = 8
 facing_mode = 1
-anim_name = &"elbow_strike"
+default_anim = &"elbow_strike"
 
 [node name="AirKick" type="Node" parent="Components/StateMachine" unique_id=474948466]
 script = ExtResource("21_6npms")
 player_state_id = 18
-anim_name = &"air_kick"
+default_anim = &"air_kick"
 
 [node name="DivingHeader" type="Node" parent="Components/StateMachine" unique_id=1691839296]
 script = ExtResource("22_a2yjh")
 player_state_id = 19
-anim_name = &"diving_header"
+default_anim = &"diving_header"
 
 [node name="Crawl" type="Node" parent="Components/StateMachine" unique_id=506194449]
 script = ExtResource("23_t3a7u")
 player_state_id = 20
 facing_mode = 1
-anim_name = &"crawl"
+default_anim = &"crawl"
 x_decel_rate = 0.625
 
 [node name="CrawlHorizontal" type="Node" parent="Components/StateMachine" unique_id=625593774]
 script = ExtResource("24_tabv8")
 player_state_id = 21
 facing_mode = 1
-anim_name = &"crawl_horizontal"
+default_anim = &"crawl_horizontal"
 x_decel_rate = 0.625
 
 [node name="CrawlRoll" type="Node" parent="Components/StateMachine" unique_id=1073156833]
 script = ExtResource("25_ioyab")
 player_state_id = 22
-anim_name = &"crawl_roll"
+default_anim = &"crawl_roll"
 
 [node name="SpecialDribble" type="Node" parent="Components/StateMachine" unique_id=300579219]
 script = ExtResource("26_ioyab")
 player_state_id = 23
-anim_name = &"special_dribble1"
 
 [node name="BurstAttack" type="Node" parent="Components/StateMachine" unique_id=1146405807]
 script = ExtResource("27_jwexq")
 player_state_id = 24
-anim_name = &"burst_attack"
+default_anim = &"burst_attack"
 
 [node name="InputComponent" parent="Components" unique_id=1137772524 node_paths=PackedStringArray("player") instance=ExtResource("11_k3ida")]
 player = NodePath("../..")
@@ -1877,9 +1861,9 @@ player = NodePath("../..")
 [node name="PlayerZMovement" type="Node" parent="Components" unique_id=1092353589]
 script = ExtResource("20_pw4o6")
 
-[node name="StepAnimationComponent" type="Node" parent="Components" unique_id=603595167 node_paths=PackedStringArray("anim_player")]
+[node name="StepAnimationComponent" type="Node" parent="Components" unique_id=603595167 node_paths=PackedStringArray("animation_player")]
 script = ExtResource("25_h2l6i")
-anim_player = NodePath("../../AnimationPlayer")
+animation_player = NodePath("../../AnimationPlayer")
 
 [node name="PlayerHorizontalMovement" type="Node" parent="Components" unique_id=769462864]
 script = ExtResource("23_c8mko")
@@ -1895,10 +1879,6 @@ script = ExtResource("34_q7lff")
 
 [node name="PlayerContactHandler" type="Node" parent="Components" unique_id=372940807]
 script = ExtResource("35_00m30")
-
-[node name="CommandResolver" type="Node" parent="Components" unique_id=1555224198]
-
-[node name="CommandExecutor" type="Node" parent="Components" unique_id=1250802690]
 
 [node name="VisualRoot" type="Node2D" parent="." unique_id=1064463610]
 
@@ -1919,7 +1899,7 @@ label_offset = Vector2(-90, -70)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FacingRoot/BallContactDetector" unique_id=1246057184]
 position = Vector2(-7, 0)
-shape = SubResource("RectangleShape2D_jwexq")
+shape = SubResource("RectangleShape2D_h4eg8")
 
 [node name="PlayerContactDetector" type="Area2D" parent="FacingRoot" unique_id=635738517 node_paths=PackedStringArray("source")]
 visible = false
@@ -1932,7 +1912,7 @@ shape_id = 1
 facing_left = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FacingRoot/PlayerContactDetector" unique_id=229072069]
-shape = SubResource("RectangleShape2D_q7lff")
+shape = SubResource("RectangleShape2D_m813y")
 
 [node name="InteractionRoot" type="Node2D" parent="." unique_id=101183572]
 

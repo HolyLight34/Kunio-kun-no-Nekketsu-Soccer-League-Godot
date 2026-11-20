@@ -1,12 +1,12 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	if player.input_component.input_direction != Vector2.ZERO:
+	if player.input_component.input_direction.x != 0 and player.input_component.input_direction.y == 0:
 		player.set_facing_direction(player.input_component.input_direction)
-	anim.play(anim_name)
+	play_anim(default_anim)
 
 func logic_tick() -> void:
-	player.player_horizontal_movement.set_move_velocity(
+	h_move.set_move_velocity(
 		3,
 		Vector2(player.facing_direction.x,player.input_component.input_direction.y
 		).sign())

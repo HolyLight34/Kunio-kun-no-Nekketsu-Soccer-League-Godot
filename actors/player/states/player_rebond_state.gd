@@ -5,7 +5,7 @@ func enter(attack_direction: Vector2) -> void:
 	player.player_horizontal_movement.set_horizontal_velocity(attack_direction*6)
 
 	if _is_hit_from_front(attack_direction):
-		anim.play(anim_name)
+		anim.play(default_anim)
 	else:
 		anim.play("hurt_back")
 	await player.step_animation_component.animation_finished

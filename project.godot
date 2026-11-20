@@ -32,10 +32,6 @@ window/size/window_height_override=1200
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/simple_gdscript_formatter/plugin.cfg")
-
 [input]
 
 p1_move_up={

@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	anim.play(anim_name)
+	anim.play(default_anim)
 	await player.step_animation_component.animation_finished
 	if player.input_component.input_direction != Vector2.ZERO:
 		if player.input_component.input_direction.x != 0:

@@ -3,7 +3,7 @@ extends PlayerState
 func enter(_data):
 	player.player_horizontal_movement.set_horizontal_velocity(4*player.facing_direction)
 	player.player_z_movement.jump(3)
-	anim.play(anim_name)
+	anim.play(default_anim)
 	await player.player_z_movement.landed
 	request_state(Types.PlayerStateType.CRAWL)
 	pass

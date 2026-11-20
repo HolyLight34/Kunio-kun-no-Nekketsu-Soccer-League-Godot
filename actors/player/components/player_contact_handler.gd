@@ -12,12 +12,6 @@ var player: Player
 
 var _target_player: Player = null
 
-enum PlayerContactAction {
-	NORMAL_ATTACK,
-	SPECIAL_ATTACK,
-	TEAM_UP,
-	SLIDE_TACKLE,
-}
 
 var _action_window_active: bool = false
 var current_action: Types.PlayerContactAction
@@ -78,15 +72,15 @@ func _handle_contact() -> void:
 	if not _action_window_active:
 		return
 	match current_action:
-		PlayerContactAction.NORMAL_ATTACK:
+		Types.PlayerContactAction.NORMAL_ATTACK:
 			_target_player.resolve_strike(_create_strike_data(2))
-		PlayerContactAction.SPECIAL_ATTACK:
+		Types.PlayerContactAction.SPECIAL_ATTACK:
 			_target_player.resolve_special_attack(_create_strike_data(2))
 			player.endurance -= 1
 			pass
-		PlayerContactAction.TEAM_UP:
+		Types.PlayerContactAction.TEAM_UP:
 			pass
-		PlayerContactAction.SLIDE_TACKLE:
+		Types.PlayerContactAction.SLIDE_TACKLE:
 			_target_player.resolve_tackle(_create_tackle_data())
 			pass
 func _create_strike_data(

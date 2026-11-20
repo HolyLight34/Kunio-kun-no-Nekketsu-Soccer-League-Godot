@@ -8,7 +8,7 @@ func enter(_data) -> void:
 		player.player_horizontal_movement.set_move_velocity(6,player.facing_direction)
 	
 	player.player_z_movement.jump(2)
-	anim.play(anim_name)
+	anim.play(default_anim)
 	await player.player_z_movement.descending
 	if player.input_component.move_dir != Vector2.ZERO:
 		player.player_horizontal_movement.set_move_velocity(3,dir)

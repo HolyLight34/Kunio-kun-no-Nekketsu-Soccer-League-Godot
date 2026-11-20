@@ -4,7 +4,7 @@ var flick_executed: bool = false
 func enter(_data) -> void:
 	flick_executed = false
 	player.player_horizontal_movement.stop_immediately()
-	anim.play(anim_name)
+	anim.play(default_anim)
 	await player.step_animation_component.animation_finished
 	request_state(Types.PlayerStateType.IDLE)
 	pass

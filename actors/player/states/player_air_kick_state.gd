@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	anim.play(anim_name)
+	anim.play(default_anim)
 	player.player_z_movement.jump(1.5)
 	await player.player_z_movement.landed
 	request_state(Types.PlayerStateType.LAND)

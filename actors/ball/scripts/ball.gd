@@ -215,7 +215,7 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 	ball_horizontal_movement.logic_tick()
 	ball_z_movement.update_environment(ground_type,wetness,carrier == null)
 	ball_z_movement.logic_tick()
-	step_animation_component.advance_tick()
+	step_animation_component.logic_tick()
 	player_contact_detector.logic_tick()
 	ball_player_contact_handler.logic_tick()
 	
@@ -381,7 +381,7 @@ func unregister_receiver(player: Player) -> void:
 # ==============================================================================
 
 func can_receive_y_control() -> bool:
-	return state_machine.current_state.name == "Shot"
+	return state_machine.is_in_state(BallState.State.SHOT)
 
 ## 让外部角色可以控制球的y运动
 func apply_y_control(direction: int) -> void:

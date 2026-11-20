@@ -1,8 +1,8 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	player.player_horizontal_movement.stop_immediately()
-	anim.play(anim_name)
+	h_move.stop_immediately()
+	anim.play(default_anim)
 	await anim.animation_finished
 	request_state(Types.PlayerStateType.IDLE)
 	pass

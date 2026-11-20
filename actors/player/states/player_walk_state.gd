@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	anim.play(anim_name)
+	play_anim(default_anim)
 	pass
 
 

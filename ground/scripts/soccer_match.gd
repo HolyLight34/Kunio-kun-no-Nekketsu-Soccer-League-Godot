@@ -40,7 +40,7 @@ func _ready() -> void:
 	_setup_players()
 	
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	fc_logic_debugger.set_physics_data(
 		player.get_player_position(),
 		player.get_player_velocity(),

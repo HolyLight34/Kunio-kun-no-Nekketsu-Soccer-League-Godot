@@ -173,7 +173,7 @@ func stop_immediately() -> void:
 ## 1. 修正当前速度
 ## 2. 锁定本 Tick 位移
 ## 3. 根据 CLASSIC / SMOOTH 决定如何执行位移
-func step_logic_tick() -> void:
+func logic_tick() -> void:
 	#clamp_velocity()
 	# 当前速度就是整个 Logic Tick 需要完成的位移。
 	horizontal_position_raw += horizontal_velocity_raw

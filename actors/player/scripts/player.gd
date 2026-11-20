@@ -5,7 +5,6 @@ extends CharacterBody2D
 # ==============================================================================
 # 1. 配置
 # ==============================================================================
-@onready var fc_logic_clock: FCLogicClock = $"../FCLogicClock"
 
 @export var team_id: Types.Team
 @export var player_id: int = 1
@@ -104,10 +103,6 @@ func _initialize_components() -> void:
 		position
 	)
 
-	#player_intent_resolver.init(
-		#self,
-		#input_component
-	#)
 	ball_contact_handler.initialize(self)
 	ball_contact_detector.contact_started.connect(
 		ball_contact_handler._on_contact_started
@@ -123,6 +118,9 @@ func _initialize_components() -> void:
 		player_contact_handler._on_contact_ended
 	)
 	state_machine.initialize(self)
+	step_animation_component.animation_finished.connect(
+		state_machine.notify_animation_finished
+	)
 
 func _physics_process(_delta: float) -> void:
 	_update_pass_search_direction()
@@ -131,25 +129,7 @@ func _physics_process(_delta: float) -> void:
 # ==============================================================================
 # 6. Logic Tick
 # ==============================================================================
-#func debug_test_command_resolver() -> void:
 
-	##var events := input_component.consume_pressed_events()
-#
-	#if events.is_empty():
-		#return
-#
-	#var context := PlayerCommandContext.new()
-	#context.initialize(self, events)
-
-	#var matched_rule := command_resolver.resolve(context)
-
-	#if matched_rule:
-		#print("MATCHED!")
-		#print("Target State: ", matched_rule.target_state_id)
-#
-		#command_executor.execute(matched_rule)
-	#else:
-		#print("NO MATCH")
 var input_tick: int = 0
 func logic_tick() -> void:
 	input_tick += 1
@@ -178,8 +158,8 @@ func logic_tick() -> void:
 		state_machine.change_state(tar_state)
 	state_machine.logic_tick()
 	player_z_movement.logic_tick()
-	player_horizontal_movement.step_logic_tick()
-	step_animation_component.advance_tick()
+	player_horizontal_movement.logic_tick()
+	step_animation_component.logic_tick()
 	_update_facing(
 		input_component.input_direction.x
 	)
@@ -243,10 +223,6 @@ func is_moving() -> bool:
 		or
 		player_z_movement.get_z_velocity() != 0.0
 	)
-
-
-func is_running() -> bool:
-	return state_machine.current_state.name == "Run"
 
 
 # ==============================================================================
@@ -418,7 +394,7 @@ func resolve_tackle(
 ) -> void:
 	## 铲球只有在目标正在跑动时，
 	## 才会对角色产生受伤效果。
-	if not is_running():
+	if not state_machine.is_in_state(Types.PlayerStateType.RUN):
 		return
 	release_ball()
 	state_machine.change_state(

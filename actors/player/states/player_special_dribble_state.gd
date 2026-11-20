@@ -10,9 +10,9 @@ func enter(_data) -> void:
 	init_speed = player.player_horizontal_movement.get_horizontal_velocity()
 	print("当前速度：",player.player_horizontal_movement.get_horizontal_velocity())
 	if dir.y < 0:
-		anim.play(anim_name)
+		anim.play(&"special_dribble1")
 	else :
-		anim.play("special_dribble2")
+		anim.play(&"special_dribble2")
 	await anim.animation_finished
 	request_state(Types.PlayerStateType.RUN)
 	pass

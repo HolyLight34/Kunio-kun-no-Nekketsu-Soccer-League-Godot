@@ -1,7 +1,7 @@
 extends PlayerState
 var is_decelerate: bool = true
 func enter(_data) -> void:
-	anim.play(anim_name)
+	anim.play(default_anim)
 	await player.step_animation_component.animation_finished
 	request_state(Types.PlayerStateType.CRAWL)
 	pass

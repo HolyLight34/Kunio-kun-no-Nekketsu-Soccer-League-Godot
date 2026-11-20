@@ -2,7 +2,7 @@ extends PlayerState
 
 
 func enter(_data) -> void:
-	anim.play(anim_name)
+	anim.play(default_anim)
 	if player.input_component.input_direction == Vector2.ZERO:
 		player.player_horizontal_movement.set_horizontal_velocity(5*player.facing_direction)
 	else :

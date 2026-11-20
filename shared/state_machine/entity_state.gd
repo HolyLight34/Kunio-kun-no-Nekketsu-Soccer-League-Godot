@@ -11,7 +11,7 @@ signal transition_requested(
 	data: Variant
 )
 var actor: CharacterBody2D
-@export var anim_name: StringName = &""
+@export var default_anim: StringName = &""
 var anim: StepAnimationComponent:
 	get:
 		return actor.step_animation_component
@@ -19,9 +19,7 @@ var anim: StepAnimationComponent:
 ## 当前状态下的 X 轴衰减率
 @export var x_decel_rate: float = 0.0
 
-func handle_intent(_intent: int) -> void:
-	pass
-	
+
 func logic_tick() -> void:
 	pass
 
@@ -36,10 +34,12 @@ func request_state(
 		data
 	)
 
-func enter(data) -> void:
+func enter(_data) -> void:
 	pass
 
-
+## 动画播放完成时由 StateMachine 通知（需要的状态重写它即可）。
+func on_animation_finished(_anim_name: StringName) -> void:
+	pass
 func exit()-> void:
 	pass # 离开状态时（清理工作）
 

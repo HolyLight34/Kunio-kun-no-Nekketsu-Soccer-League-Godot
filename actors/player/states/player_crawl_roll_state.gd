@@ -1,7 +1,7 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	anim.play(anim_name)
+	anim.play(default_anim)
 	player.player_horizontal_movement.set_horizontal_velocity(
 		Vector2(0,3*player.input_component.input_direction.y)
 	)

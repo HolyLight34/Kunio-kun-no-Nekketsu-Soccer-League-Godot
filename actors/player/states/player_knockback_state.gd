@@ -4,7 +4,7 @@ extends PlayerState
 func enter(data: StrikeData) -> void:
 	var attack_direction = data.attack_direction
 	if _is_hit_from_front(attack_direction):
-		anim.play(anim_name)
+		anim.play(default_anim)
 		
 	else :
 		anim.play("hurt_back")
