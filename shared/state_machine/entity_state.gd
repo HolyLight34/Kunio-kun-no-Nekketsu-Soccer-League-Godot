@@ -1,4 +1,4 @@
-@icon("res://entities/state.svg")
+@icon("res://shared/state_machine/state.svg")
 class_name EntityState
 extends Node
 ## 获取状态编号，由子类实现
