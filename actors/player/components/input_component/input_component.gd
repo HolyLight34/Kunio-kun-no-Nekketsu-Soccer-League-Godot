@@ -27,6 +27,9 @@ const FUNCTION_BUTTONS: Array[Types.InputButtonType] = [
 # 当前输入状态
 # ============================================================
 
+## 是否启用玩家输入采集（AI 或非受控角色设为 false）。
+var _is_input_enabled: bool = true
+
 ## 当前输入方向。
 var input_direction: Vector2 = Vector2.ZERO
 
@@ -55,7 +58,8 @@ var _pending_released_events: Array[Types.InputButtonType] = []
 func _ready() -> void:
 	assert(player != null, "InputComponent: player 未设置")
 
-	if player.player_id >= 3:
+	if player.player_id < 0 or player.player_id >= 3:
+		set_input_enabled(false)
 		return
 
 	action_up = "p%d_move_up" % player.player_id
@@ -67,6 +71,24 @@ func _ready() -> void:
 	action_b = "p%d_button_b" % player.player_id
 	action_start = "p%d_button_start" % player.player_id
 	action_select = "p%d_button_select" % player.player_id
+
+	set_input_enabled(true)
+
+
+# ============================================================
+# 输入开关
+# ============================================================
+
+## 开启或关闭本角色的玩家输入采集。
+func set_input_enabled(enabled: bool) -> void:
+	_is_input_enabled = enabled
+	set_process_input(enabled)
+
+	if not enabled:
+		input_direction = Vector2.ZERO
+		_held_buttons.clear()
+		_pending_pressed_events.clear()
+		_pending_released_events.clear()
 
 
 # ============================================================
@@ -118,6 +140,10 @@ func _record_event(
 
 ## 在创建 Logic Tick 输入快照时更新。
 func _update_move_direction() -> void:
+	if not _is_input_enabled:
+		input_direction = Vector2.ZERO
+		return
+
 	input_direction = Input.get_vector(
 		action_left,
 		action_right,
@@ -126,7 +152,7 @@ func _update_move_direction() -> void:
 	)
 
 	if input_direction != Vector2.ZERO:
-		last_input_direction =input_direction
+		last_input_direction = input_direction
 
 
 # ============================================================

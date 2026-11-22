@@ -193,9 +193,8 @@ texture = ExtResource("4_1j8wh")
 [sub_resource type="TileSet" id="TileSet_cmi3i"]
 sources/0 = SubResource("TileSetAtlasSource_7fp5k")
 
-[node name="SoccerMatch" type="Node" unique_id=765779945 node_paths=PackedStringArray("ball")]
+[node name="SoccerMatch" type="Node" unique_id=765779945]
 script = ExtResource("1_o3ya4")
-ball = NodePath("Ball")
 
 [node name="GrassField" type="Node" parent="." unique_id=1317661432]
 script = ExtResource("9_xnvpj")
@@ -225,9 +224,27 @@ position = Vector2(45, 48)
 
 [node name="Player2" parent="." unique_id=58757353 instance=ExtResource("5_mog0p")]
 position = Vector2(45, 48)
+player_id = 3
+endurance = 60
+
+[node name="Player3" parent="." unique_id=255106548 instance=ExtResource("5_mog0p")]
+position = Vector2(45, 48)
+player_id = 3
+
+[node name="Player4" parent="." unique_id=1771926018 instance=ExtResource("5_mog0p")]
+position = Vector2(45, 48)
 team_id = 1
 player_id = 2
-endurance = 60
+
+[node name="Player5" parent="." unique_id=1411135472 instance=ExtResource("5_mog0p")]
+position = Vector2(45, 48)
+team_id = 1
+player_id = 3
+
+[node name="Player6" parent="." unique_id=1076250743 instance=ExtResource("5_mog0p")]
+position = Vector2(45, 48)
+team_id = 1
+player_id = 3
 
 [node name="Ball" parent="." unique_id=630695448 instance=ExtResource("6_ye5s7")]
 position = Vector2(8, 21)

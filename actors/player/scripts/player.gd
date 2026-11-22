@@ -5,7 +5,7 @@ extends CharacterBody2D
 # ==============================================================================
 # 1. 配置
 # ==============================================================================
-
+var soccer_match: SoccerMatch
 @export var team_id: Types.Team
 @export var player_id: int = 1
 
@@ -25,8 +25,6 @@ extends CharacterBody2D
 # 2. 常量
 # ==============================================================================
 
-const COLLISION_HEIGHT: int = 32
-
 ## 当前角色所属队伍的进攻方向。
 @export var team_attack_direction: Types.TeamAttackDirection = Types.TeamAttackDirection.RIGHT
 
@@ -37,9 +35,6 @@ func get_team_attack_direction() -> Types.TeamAttackDirection:
 # 3. 节点引用
 # ==============================================================================
 
-#@onready var player_intent_resolver: PlayerIntentResolver = (
-	#$Components/PlayerIntentResolver
-#)
 
 @onready var player_horizontal_movement: PlayerHorizontalMovement = (
 	$Components/PlayerHorizontalMovement
@@ -135,7 +130,8 @@ func logic_tick() -> void:
 	input_tick += 1
 	 # 1. 获取当前输入快照。
 	var frame := input_component.create_input_frame(input_tick)
-
+	var nearest_ally := soccer_match.get_nearest_player_to_ball(self)
+	var is_nearest := (nearest_ally == self)
 	input_matcher.process_frame(frame)
 
 	if not frame.pressed_events.is_empty():
@@ -153,7 +149,7 @@ func logic_tick() -> void:
 		"Tick=", frame.logic_tick,
 		" commands=", commands
 	)
-	var tar_state := PlayerCommandHandler.resolve_next_state(commands,curr,dir,ball_possession,facing_direction)
+	var tar_state := PlayerCommandHandler.resolve_next_state(commands,curr,dir,ball_possession,facing_direction,is_nearest)
 	if curr != tar_state:
 		state_machine.change_state(tar_state)
 	state_machine.logic_tick()

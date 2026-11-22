@@ -16,12 +16,15 @@ static func resolve_next_state(
 	input_direction: Vector2,
 	current_ball_possession: Types.BallPossession,
 	facing_direction: Vector2,
+	is_nearest_to_ball: bool
 ) -> Types.PlayerStateType:
 	if not _can_accept_command(current_state):
 		return current_state
 
 	# 1. 优先解释按键指令（按当前球权分类）
 	if not commands.is_empty():
+		if not is_nearest_to_ball and (commands.has(Types.PlayerCommandType.A) or commands.has(Types.PlayerCommandType.B)):
+			return Types.PlayerStateType.ORDER
 		var action_state := current_state
 		match current_ball_possession:
 			Types.BallPossession.NONE:
