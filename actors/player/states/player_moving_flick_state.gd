@@ -4,11 +4,11 @@ var flick_executed: bool = false
 func enter(_data) -> void:
 	flick_executed = false
 	player.player_horizontal_movement.stop_immediately()
-	anim.play(default_anim)
-	await player.step_animation_component.animation_finished
-	request_state(Types.PlayerStateType.IDLE)
+	step_anim.play(default_anim)
 	pass
-
+func logic_tick() -> void:
+	if step_anim.is_finished():
+		request_state(Types.PlayerStateType.IDLE)
 func on_moving_flick_contact() -> void:
 	if flick_executed:
 		return

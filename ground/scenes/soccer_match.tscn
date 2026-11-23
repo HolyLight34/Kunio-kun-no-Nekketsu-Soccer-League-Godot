@@ -235,6 +235,7 @@ player_id = 3
 position = Vector2(45, 48)
 team_id = 1
 player_id = 2
+endurance = 80
 
 [node name="Player5" parent="." unique_id=1411135472 instance=ExtResource("5_mog0p")]
 position = Vector2(45, 48)

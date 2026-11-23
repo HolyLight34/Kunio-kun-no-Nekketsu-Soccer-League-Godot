@@ -2,7 +2,7 @@ extends PlayerState
 
 
 func enter(_data):
-	play_anim(default_anim)
+	step_anim.play(default_anim)
 	pass
 func logic_tick() -> void:
 	h_move.decelerate_x_and_stop_y(x_decel_rate)

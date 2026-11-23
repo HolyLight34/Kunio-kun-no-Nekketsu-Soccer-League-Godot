@@ -74,7 +74,7 @@ func enter(data: KickData) -> void:
 	# 4. 初始化动画和攻击判定
 	# ================================================================
 	if result.height_category == BallShotResult.ShotHeightCategory.HIGH_AIR:
-		anim.play(default_anim)
+		step_anim.play(default_anim)
 	
 
 

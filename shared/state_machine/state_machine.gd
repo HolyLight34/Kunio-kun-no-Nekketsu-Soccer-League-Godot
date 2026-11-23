@@ -69,10 +69,7 @@ func initialize(actor_node: CharacterBody2D) -> void:
 func logic_tick() -> void:
 	if current_state:
 		current_state.logic_tick()
-## 接收外部动画完成通知，转发给当前激活的状态。
-func notify_animation_finished(anim_name: StringName) -> void:
-	if current_state != null:
-		current_state.on_animation_finished(anim_name)
+
 ## 切换状态
 ## 立即退出当前状态并进入目标状态。
 ## data 会传递给目标状态的 enter()。

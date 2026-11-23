@@ -2,12 +2,13 @@ extends PlayerState
 
 
 func enter(data: StrikeData) -> void:
+	player.fc_logic_clock.pause()
 	var attack_direction = data.attack_direction
 	if _is_hit_from_front(attack_direction):
-		anim.play(default_anim)
+		step_anim.play(default_anim)
 		
 	else :
-		anim.play("hurt_back")
+		step_anim.play("hurt_back")
 	player.player_z_movement.jump(4)
 	var knockback_direction: Vector2
 	knockback_direction = _calculate_knockback_direction(
@@ -20,15 +21,13 @@ func enter(data: StrikeData) -> void:
 	await player.player_z_movement.landed
 	player.player_horizontal_movement.set_horizontal_velocity(Vector2.ZERO)
 	if _is_hit_from_front(attack_direction):
-		anim.play("down_front")
+		step_anim.play("down_front")
 	else :
-		anim.play("down_back")
-	await player.step_animation_component.animation_finished
-	request_state(Types.PlayerStateType.LAND)
+		step_anim.play("down_back")
+	
 	pass
 func _is_hit_from_front(attack_direction) -> bool:
 	return player.facing_direction != attack_direction
-
 func _calculate_knockback_direction(
 	attack_direction: Vector2,
 	last_move_direction: Vector2
@@ -72,6 +71,8 @@ func exit() -> void:
 
 
 func logic_tick() -> void:
+	if step_anim.is_finished():
+		request_state(Types.PlayerStateType.LAND)
 	pass
 func handle_intent(_intent: int) -> void:
 	pass

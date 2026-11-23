@@ -7,6 +7,7 @@ const ACCEPTABLE_STATES: Array[Types.PlayerStateType] = [
 	Types.PlayerStateType.WALK,
 	Types.PlayerStateType.RUN,
 	Types.PlayerStateType.JUMP,
+	Types.PlayerStateType.LAND
 ]
 
 
@@ -40,7 +41,11 @@ static func resolve_next_state(
 			return action_state
 
 		# 通用双击奔跑（所有球权下规则相同，统一写在这里）
-		if commands.has(Types.PlayerCommandType.DOUBLE_TAP) and _can_start_run(current_state):
+		var has_double_tap := (
+			commands.has(Types.PlayerCommandType.DOUBLE_TAP_HORIZONTAL)
+			or commands.has(Types.PlayerCommandType.DOUBLE_TAP_VERTICAL)
+			)
+		if has_double_tap and _can_start_run(current_state):
 			return Types.PlayerStateType.RUN
 
 	# 2. 没有触发特殊指令时，再处理普通方向移动切换
@@ -116,7 +121,8 @@ static func _resolve_myself_command(
 		if current_state == Types.PlayerStateType.JUMP and _is_opposite_facing(input_direction, facing_direction):
 			return Types.PlayerStateType.BICYCLE_KICK
 		return Types.PlayerStateType.KICK
-
+	if commands.has(Types.PlayerCommandType.DOUBLE_TAP_VERTICAL):
+		return Types.PlayerStateType.SPECIAL_DRIBBLE
 	return current_state
 
 
@@ -136,6 +142,7 @@ static func _resolve_opponent_command(
 	current_state: Types.PlayerStateType,
 	_facing_direction: Vector2,
 ) -> Types.PlayerStateType:
+	print(current_state)
 	if commands.has(Types.PlayerCommandType.A_B):
 		if current_state == Types.PlayerStateType.JUMP:
 			return Types.PlayerStateType.PASS
@@ -147,6 +154,9 @@ static func _resolve_opponent_command(
 		return Types.PlayerStateType.TACKLE
 
 	if commands.has(Types.PlayerCommandType.B):
+		if current_state == Types.PlayerStateType.LAND:
+			print("你好")
+			return Types.PlayerStateType.BURST_ATTACK
 		return Types.PlayerStateType.ELBOW_STRIKE
 
 	return current_state

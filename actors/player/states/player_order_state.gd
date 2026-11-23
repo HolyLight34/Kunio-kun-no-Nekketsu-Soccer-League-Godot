@@ -1,14 +1,14 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	play_anim(default_anim)
+	player.fc_logic_clock.pause()
+	step_anim.play(default_anim)
 
 func logic_tick() -> void:
 	h_move.decelerate_x_and_stop_y(x_decel_rate)
-	pass
+	if step_anim.is_finished():
+		request_state(Types.PlayerStateType.IDLE)
 
 func exit() -> void:
 	
 	pass
-func on_animation_finished(_anim_name: StringName) -> void:
-	request_state(Types.PlayerStateType.IDLE)

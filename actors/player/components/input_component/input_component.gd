@@ -124,9 +124,9 @@ func _record_event(
 
 		_held_buttons.append(button_type)
 		_pending_pressed_events.append(button_type)
-
+	# 
 	elif event.is_action_released(action):
-		# 当前没有按住，不记录重复释放。
+		# 过滤无对应按下的孤立/重复释放（如切窗口、切人控制或同动作多键绑定），保证按下与释放成对。
 		if not _held_buttons.has(button_type):
 			return
 
@@ -181,8 +181,17 @@ func _collect_direction_bits() -> int:
 	for button_type in _pending_pressed_events:
 		direction_bits |= _get_direction_bit(button_type)
 
-	return direction_bits
+	# 同轴反方向同时按下时相互抵消（与 Input.get_vector 及 FC 十字键逻辑一致）。
+	const HORIZONTAL_MASK := InputFrame.DirectionBits.LEFT | InputFrame.DirectionBits.RIGHT
+	const VERTICAL_MASK := InputFrame.DirectionBits.UP | InputFrame.DirectionBits.DOWN
 
+	if (direction_bits & HORIZONTAL_MASK) == HORIZONTAL_MASK:
+		direction_bits &= ~HORIZONTAL_MASK
+
+	if (direction_bits & VERTICAL_MASK) == VERTICAL_MASK:
+		direction_bits &= ~VERTICAL_MASK
+
+	return direction_bits
 
 # ============================================================
 # 输入快照

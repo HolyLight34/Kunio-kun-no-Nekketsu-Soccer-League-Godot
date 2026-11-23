@@ -108,7 +108,7 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id="Animation_jgjso"]
 resource_name = "air_kick"
-length = 0.7000017031745985
+length = 1.000001718820818
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -213,7 +213,7 @@ tracks/1/path = NodePath("VisualRoot/PlayerCompositeSprite:scale")
 tracks/1/interp = 0
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.55),
+"times": PackedFloat32Array(0, 0.7),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(-1, 1), Vector2(1, 1)]
@@ -438,7 +438,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_ioyab"]
 resource_name = "crawl"
-length = 0.1
+length = 0.35000168492067607
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -491,7 +491,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.15),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [3, 30]
+"values": [30, 3]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -725,7 +725,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_gb5ua"]
 resource_name = "elbow_strike"
-length = 0.30000168231297286
+length = 0.35000168492067607
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -821,6 +821,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_26oqr"]
 resource_name = "hurt_knockback_front"
+length = 1.000001718820818
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -861,7 +862,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_wwmeh"]
 resource_name = "hurt_rebound_front"
-length = 1.000001718820818
+length = 1.6500017527209596
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1066,7 +1067,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_vbpfx"]
 resource_name = "kick_a"
-length = 0.5000016927437857
+length = 0.5500016953514889
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1121,6 +1122,7 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_qejq4"]
 resource_name = "kick_b"
+length = 0.5500016953514889
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1312,7 +1314,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_j5ji6"]
 resource_name = "pass"
-length = 0.4000016875283793
+length = 0.4500016901360825
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1365,10 +1367,10 @@ tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.10000001),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.10000001, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [21, 0]
+"values": [21, 0, 21]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -1541,7 +1543,7 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id="Animation_igwkh"]
 resource_name = "stationary_flick"
-length = 0.2000016770975664
+length = 0.25000167970526965
 step = 0.016666668
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1651,7 +1653,7 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id="Animation_kdubu"]
 resource_name = "walk"
-length = 0.4000016875283793
+length = 0.4
 loop_mode = 1
 step = 0.016666668
 tracks/0/type = "value"
@@ -1661,10 +1663,10 @@ tracks/0/path = NodePath("VisualRoot/PlayerCompositeSprite:frame")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.10000001, 0.20000002, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.10000001, 0.20000002, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
-"values": [19, 0, 20, 0]
+"values": [19, 0, 20, 0, 19]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -1819,6 +1821,7 @@ default_anim = &"pass"
 
 [node name="Tackle" type="Node" parent="Components/StateMachine" unique_id=309175364]
 script = ExtResource("17_sgsyk")
+player_state_id = 10
 default_anim = &"tackle"
 
 [node name="StationaryFlick" type="Node" parent="Components/StateMachine" unique_id=208771649]

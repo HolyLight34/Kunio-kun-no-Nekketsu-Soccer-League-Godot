@@ -107,6 +107,7 @@ func _collect_teams() -> void:
 
 		var current_player := child as Player
 		current_player.soccer_match = self
+		current_player.fc_logic_clock = fc_logic_clock
 		ball.possession_changed.connect(
 			current_player._on_ball_possession_changed
 		)

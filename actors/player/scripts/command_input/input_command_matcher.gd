@@ -7,10 +7,14 @@ extends RefCounted
 # ============================================================
 
 ## 方向双击允许的最大逻辑 Tick 间隔。
-var double_tap_window: int = 15
+var double_tap_window: int = 5
 
 ## A、B 单键确认延迟（逻辑 Tick 数）。
 const SINGLE_BUTTON_DELAY_TICKS: int = 1
+
+## 水平与垂直方向位掩码。
+const HORIZONTAL_MASK: int = InputFrame.DirectionBits.LEFT | InputFrame.DirectionBits.RIGHT
+const VERTICAL_MASK: int = InputFrame.DirectionBits.UP | InputFrame.DirectionBits.DOWN
 
 
 # ============================================================
@@ -62,7 +66,7 @@ func process_frame(frame: InputFrame) -> void:
 # 方向双击
 # ============================================================
 
-## 根据方向位和时间间隔识别方向双击。
+## 根据方向位和时间间隔，分别识别水平/垂直方向双击。
 func _process_direction_input(
 	current_bits: int,
 	current_tick: int
@@ -70,19 +74,22 @@ func _process_direction_input(
 	if current_bits == InputFrame.DirectionBits.NONE:
 		return
 
-	var is_double_tap := false
+	var matched_bits: int = InputFrame.DirectionBits.NONE
 
 	if _last_direction_tick >= 0:
 		var interval := current_tick - _last_direction_tick
 
 		if interval > 0 and interval <= double_tap_window:
-			is_double_tap = (_last_direction_bits & current_bits) != 0
+			matched_bits = _last_direction_bits & current_bits
 
 	_last_direction_bits = current_bits
 	_last_direction_tick = current_tick
 
-	if is_double_tap:
-		_recognized_commands.append(Types.PlayerCommandType.DOUBLE_TAP)
+	if (matched_bits & HORIZONTAL_MASK) != 0:
+		_recognized_commands.append(Types.PlayerCommandType.DOUBLE_TAP_HORIZONTAL)
+
+	if (matched_bits & VERTICAL_MASK) != 0:
+		_recognized_commands.append(Types.PlayerCommandType.DOUBLE_TAP_VERTICAL)
 
 
 # ============================================================

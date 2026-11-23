@@ -6,6 +6,7 @@ extends CharacterBody2D
 # 1. 配置
 # ==============================================================================
 var soccer_match: SoccerMatch
+var fc_logic_clock: FCLogicClock
 @export var team_id: Types.Team
 @export var player_id: int = 1
 
@@ -113,9 +114,9 @@ func _initialize_components() -> void:
 		player_contact_handler._on_contact_ended
 	)
 	state_machine.initialize(self)
-	step_animation_component.animation_finished.connect(
-		state_machine.notify_animation_finished
-	)
+	#step_animation_component.animation_finished.connect(
+		#state_machine.notify_animation_finished
+	#)
 
 func _physics_process(_delta: float) -> void:
 	_update_pass_search_direction()
@@ -136,7 +137,7 @@ func logic_tick() -> void:
 
 	if not frame.pressed_events.is_empty():
 		print(
-		"Tick=", frame.logic_tick,
+		"Tick=", Engine.get_physics_frames(),
 		" pressed=", frame.pressed_events,
 		" held=", frame.held_buttons
 	)

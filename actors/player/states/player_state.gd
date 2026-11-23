@@ -24,9 +24,3 @@ var h_move: PlayerHorizontalMovement:
 
 var z_move: PlayerZMovement:
 	get: return player.player_z_movement
-
-var step_anim: StepAnimationComponent:
-	get: return player.step_animation_component
-# PlayerState.gd（基类）
-func play_anim(anim_name: StringName, duration_ticks: int = -1) -> void:
-	player.step_animation_component.play(anim_name, duration_ticks)

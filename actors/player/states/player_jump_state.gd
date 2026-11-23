@@ -2,7 +2,7 @@ extends PlayerState
 
 
 func enter(_data):
-	play_anim(default_anim)
+	step_anim.play(default_anim)
 	if not player.is_in_air():
 		z_move.jump(4)
 		h_move.halve_y_velocity()

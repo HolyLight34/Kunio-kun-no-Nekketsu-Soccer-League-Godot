@@ -72,7 +72,8 @@ enum PlayerCommandType {
 	A,
 	B,
 	A_B,
-	DOUBLE_TAP,
+	DOUBLE_TAP_HORIZONTAL,
+	DOUBLE_TAP_VERTICAL,
 }
 enum BallPossession {
 	NONE,       # 当前无人持球

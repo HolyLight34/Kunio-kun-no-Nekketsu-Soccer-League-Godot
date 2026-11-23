@@ -3,7 +3,7 @@ extends PlayerState
 func enter(_data) -> void:
 	if player.input_component.input_direction.x != 0 and player.input_component.input_direction.y == 0:
 		player.set_facing_direction(player.input_component.input_direction)
-	play_anim(default_anim)
+	step_anim.play(default_anim)
 
 func logic_tick() -> void:
 	h_move.set_move_velocity(

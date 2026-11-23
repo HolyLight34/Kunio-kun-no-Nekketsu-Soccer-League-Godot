@@ -1,10 +1,12 @@
 extends PlayerState
 
 func enter(_data) -> void:
-	anim.play(default_anim)
-	await anim.animation_finished
-	request_state(Types.PlayerStateType.IDLE)
-
+	#player.fc_logic_clock.pause()
+	step_anim.play(default_anim)
+	
+func logic_tick() -> void:
+	if step_anim.is_finished():
+		request_state(Types.PlayerStateType.IDLE)
 func exit() -> void:
 	player.close_player_contact_window()
 	pass

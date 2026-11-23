@@ -1,16 +1,17 @@
 extends PlayerState
 var dir: Vector2
 func enter(_data) -> void:
-	dir = player.input_component.move_dir
-	if player.input_component.move_dir != Vector2.ZERO:
+	player.fc_logic_clock.pause()
+	dir = player.input_component.input_direction
+	if player.input_component.input_direction != Vector2.ZERO:
 		player.player_horizontal_movement.set_move_velocity(6,dir)
 	else :
 		player.player_horizontal_movement.set_move_velocity(6,player.facing_direction)
 	
 	player.player_z_movement.jump(2)
-	anim.play(default_anim)
+	step_anim.play(default_anim)
 	await player.player_z_movement.descending
-	if player.input_component.move_dir != Vector2.ZERO:
+	if player.input_component.input_direction != Vector2.ZERO:
 		player.player_horizontal_movement.set_move_velocity(3,dir)
 	else :
 		player.player_horizontal_movement.set_move_velocity(6,player.facing_direction)
