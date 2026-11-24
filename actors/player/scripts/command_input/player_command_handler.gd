@@ -45,6 +45,8 @@ static func resolve_next_state(
 			commands.has(Types.PlayerCommandType.DOUBLE_TAP_HORIZONTAL)
 			or commands.has(Types.PlayerCommandType.DOUBLE_TAP_VERTICAL)
 			)
+		if current_state == Types.PlayerStateType.RUN and has_double_tap:
+			return Types.PlayerStateType.DASH
 		if has_double_tap and _can_start_run(current_state):
 			return Types.PlayerStateType.RUN
 

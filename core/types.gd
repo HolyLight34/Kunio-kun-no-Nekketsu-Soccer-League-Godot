@@ -28,6 +28,7 @@ enum PlayerStateType {
 	SPECIAL_DRIBBLE,
 	BURST_ATTACK,
 	ORDER,
+	DASH,
 } 
 enum BallContactAction {
 	KICK,
