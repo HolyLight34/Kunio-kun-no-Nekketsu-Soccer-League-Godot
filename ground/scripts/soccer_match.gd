@@ -22,7 +22,7 @@ extends Node
 @onready var ball: Ball = $Ball
 
 @onready var fc_logic_clock: FCLogicClock = $FCLogicClock
-@onready var field: Field = $GrassField
+@onready var field: Field = $FieldGrassLightWet
 var ball_action_calculator := BallActionCalculator.new()
 var team1: Array[Player] = []
 var team2: Array[Player] = []
@@ -70,7 +70,6 @@ static func calc_distance_score(a_pos: Vector2i, b_pos: Vector2i) -> int:
 	return mini(major + (major >> shift), 255)
 func _ready() -> void:
 	fc_logic_clock.logic_tick.connect(_on_logic_tick)
-	ball.set_base_ground_type(field.get_ground_type())
 	var field_data := field.create_ball_field_data()
 	ball_action_calculator.setup(field_data)
 	ball.action_calculator = ball_action_calculator
@@ -90,11 +89,14 @@ func _on_logic_tick() -> void:
 	for child in get_children():
 		if child is Player:
 			var current_player := child as Player
-			current_player.logic_tick()
-	var ball_ground_effect := field.get_ground_effect_at(
-		ball.get_logical_position()
+			var ground_type := field.get_ground_type_at(
+		current_player.get_horizontal_position_integer()
+		)
+			current_player.logic_tick(ground_type)
+	var ground_type := field.get_ground_type_at(
+		ball.get_horizontal_position_integer()
 	)
-	ball.logic_tick(ball_ground_effect)
+	ball.logic_tick(ground_type)
 
 	
 

@@ -12,7 +12,7 @@ var player: Player
 
 
 func enter(_data) -> void:
-	
+	#ball.fc_logic_clock.pause()
 	player = ball.carrier
 
 	ball.ball_z_movement.launch(

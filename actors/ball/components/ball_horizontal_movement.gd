@@ -94,13 +94,13 @@ const LANDING_DECAY_TABLE: Array = [
 # 环境数据
 # ==============================================================================
 
-var ground_type: Ball.GroundType
+var ground_type: Types.GroundType
 var ball_wetness: Ball.Wetness
 
 
 ## 更新足球当前物理环境。
 func update_environment(
-	new_ground_type: Ball.GroundType,
+	new_ground_type: Types.GroundType,
 	new_ball_wetness: Ball.Wetness
 ) -> void:
 	ground_type = new_ground_type

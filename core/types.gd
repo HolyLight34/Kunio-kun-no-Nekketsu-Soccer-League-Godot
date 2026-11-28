@@ -82,12 +82,10 @@ enum BallPossession {
 	TEAMMATE,   # 队友持球
 	OPPONENT,   # 对手持球
 }
-enum BaseGroundType {
+
+enum GroundType {
 	NORMAL,
-	SAND,
-}
-enum GroundEffect {
-	NONE,
 	PUDDLE,
 	SWAMP,
+	SAND
 }

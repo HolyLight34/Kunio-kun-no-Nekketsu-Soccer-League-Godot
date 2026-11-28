@@ -1,7 +1,6 @@
 class_name Player
 extends CharacterBody2D
 
-
 # ==============================================================================
 # 1. 配置
 # ==============================================================================
@@ -114,9 +113,6 @@ func _initialize_components() -> void:
 		player_contact_handler._on_contact_ended
 	)
 	state_machine.initialize(self)
-	#step_animation_component.animation_finished.connect(
-		#state_machine.notify_animation_finished
-	#)
 
 func _physics_process(_delta: float) -> void:
 	_update_pass_search_direction()
@@ -127,7 +123,7 @@ func _physics_process(_delta: float) -> void:
 # ==============================================================================
 
 var input_tick: int = 0
-func logic_tick() -> void:
+func logic_tick(ground_type: Types.GroundType) -> void:
 	input_tick += 1
 	 # 1. 获取当前输入快照。
 	var frame := input_component.create_input_frame(input_tick)

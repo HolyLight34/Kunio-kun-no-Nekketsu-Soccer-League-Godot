@@ -22,7 +22,6 @@ func set_player_interaction_enabled(enabled: bool) -> void:
 # 2. 常量
 # ==============================================================================
 
-const COLLISION_HEIGHT: int = 16
 const LEFT_GOAL_TARGET := Vector2(64, 192)
 const RIGHT_GOAL_TARGET := Vector2(832, 192)
 
@@ -91,20 +90,14 @@ var wetness: Wetness = Wetness.DRY:
 @onready var entity_position_visual_component: EntityPositionVisualComponent = $Components/EntityPositionVisualComponent
 @onready var player_contact_detector: HitBox = $PlayerContactDetector
 @onready var ball_player_contact_handler: BallPlayerContactHandler = $Components/BallPlayerContactHandler
+@onready var fc_logic_clock: FCLogicClock = $"../FCLogicClock"
 
 
 ## 角色拾取候选数组
 var _receiver_candidates: Array[Player] = []
 
-var _base_ground_type: Types.BaseGroundType = Types.BaseGroundType.NORMAL
 var stationary_flick_active := false
 var action_calculator: BallActionCalculator
-enum GroundType {
-	NORMAL,
-	PUDDLE,
-	SWAMP,
-	SAND,
-}
 
 enum ReceiveType {
 	NONE,
@@ -118,8 +111,11 @@ var carrier: Player = null:
 	set(value):
 		if carrier == value:
 			return
-
 		carrier = value
+		if carrier:
+			ball_z_movement.bounce_enabled = false
+		else :
+			ball_z_movement.bounce_enabled = true
 		possession_changed.emit(self,carrier)
 
 # ==============================================================================
@@ -131,9 +127,6 @@ func _ready() -> void:
 	ball_z_movement.landed.connect(
 		ball_horizontal_movement.apply_landing_decay
 	)
-	#ball_z_movement.finished.connect(
-		#ball_horizontal_movement.roll
-	#)
 	ball_player_contact_handler.initialize(self)
 	player_contact_detector.contact_started.connect(
 		ball_player_contact_handler._on_contact_started
@@ -191,30 +184,15 @@ func _apply_wetness_shader() -> void:
 				"red_color",
 				HEAVY_WET_RED
 			)
-func _resolve_ground_type(
-	ground_effect: Types.GroundEffect
-) -> GroundType:
-	match ground_effect:
-		Types.GroundEffect.PUDDLE:
-			return GroundType.PUDDLE
 
-		Types.GroundEffect.SWAMP:
-			return GroundType.SWAMP
-
-	if _base_ground_type == Types.BaseGroundType.SAND:
-		return GroundType.SAND
-
-	return GroundType.NORMAL
 # ==============================================================================
 # 6. Logic Tick
 # ==============================================================================
-func logic_tick(ground_effect: Types.GroundEffect) -> void:
+func logic_tick(ground_type: Types.GroundType) -> void:
 	state_machine.logic_tick()
-	var ground_type := _resolve_ground_type(ground_effect)
 	ball_horizontal_movement.update_environment(ground_type,wetness)
 	ball_horizontal_movement.logic_tick()
-	ball_z_movement.update_environment(ground_type,wetness,carrier == null)
-	ball_z_movement.logic_tick()
+	ball_z_movement.logic_tick(ground_type,wetness)
 	step_animation_component.logic_tick()
 	player_contact_detector.logic_tick()
 	ball_player_contact_handler.logic_tick()
@@ -225,12 +203,9 @@ func logic_tick(ground_effect: Types.GroundEffect) -> void:
 		get_z_height()
 	)
 	_update_visual()
-	_update_wetness(ground_effect)
+	_update_wetness(ground_type)
 
-func set_base_ground_type(
-	ground_type: Types.BaseGroundType
-) -> void:
-	_base_ground_type = ground_type
+
 	
 ## 清除足球累计湿度。
 ##
@@ -239,8 +214,8 @@ func clear_wetness() -> void:
 	_wetness_value = 0
 	
 ## 根据足球当前所在的特殊地形更新湿度。
-func _update_wetness(ground_effect: Types.GroundEffect) -> void:
-	if ground_effect != Types.GroundEffect.PUDDLE:
+func _update_wetness(ground_type: Types.GroundType) -> void:
+	if ground_type != Types.GroundType.PUDDLE:
 		return
 
 	_wetness_value = mini(
@@ -270,8 +245,6 @@ func get_receive_type() -> ReceiveType:
 	# 但足球正在向上运动，不能作为地面球拾取。
 	if ball_z_movement.is_rising():
 		return ReceiveType.NONE
-	#if get_z_height_integer() < 0:
-		#return ReceiveType.AIR_CONTROL
 	# 普通地面球。
 	return ReceiveType.GROUND_PICKUP
 # ==============================================================================
@@ -335,7 +308,8 @@ func receive_stomped(player: Player) -> void:
 	state_machine.change_state(
 		BallState.State.STOMPED
 	)
-	pass
+	
+	
 func receive_juggle(player: Player) -> void:
 	carrier = player
 	player.receive_juggle()
@@ -365,15 +339,6 @@ func register_receiver(player: Player) -> void:
 ## 将角色移出接球候选名单。
 func unregister_receiver(player: Player) -> void:
 	_receiver_candidates.erase(player)
-
-
-### 返回第一个满足 XYZ 接触条件的角色。
-#func get_receiver() -> Player:
-	#for player in _receiver_candidates:
-		#if _is_z_overlapping(player):
-			#return player
-#
-	#return null
 
 
 # ==============================================================================

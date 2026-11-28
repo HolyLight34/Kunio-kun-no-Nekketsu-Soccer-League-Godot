@@ -62,7 +62,7 @@ const BICYCLE_KICK_FLICK_OFFSET := Vector3i(
 
 
 func enter(_data) -> void:
-	ball.ball_z_movement.gravity_enable()
+	ball.ball_z_movement.gravity_enabled = false
 
 	_initialize_action_14()
 

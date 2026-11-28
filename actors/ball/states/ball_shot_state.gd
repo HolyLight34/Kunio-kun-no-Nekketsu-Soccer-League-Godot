@@ -48,7 +48,7 @@ func enter(data: KickData) -> void:
 	# 2. 初始化 Z 轴
 	# ================================================================
 
-	ball.ball_z_movement.gravity_disable()
+	ball.ball_z_movement.gravity_enabled = false
 
 	ball.ball_z_movement.set_z_height(
 		result.initial_z_height
@@ -84,7 +84,7 @@ func logic_tick() -> void:
 		ball.set_player_interaction_enabled(true)
 	if current_tick > result.duration_ticks:
 
-		ball.ball_z_movement.gravity_enable()
+		ball.ball_z_movement.gravity_enabled = true
 
 	# ================================================================
 	# 6. 高空射门落地处理
@@ -107,4 +107,4 @@ func logic_tick() -> void:
 
 
 func exit() -> void:
-	ball.ball_z_movement.gravity_enable()
+	ball.ball_z_movement.gravity_enabled = true

@@ -1,4 +1,3 @@
-
 class_name Field
 extends Node
 
@@ -9,8 +8,7 @@ extends Node
 ## 足球场的场地信息入口。
 ##
 ## 负责：
-## - 保存基础地面类型。
-## - 查询特殊地形效果。
+## - 通过 TileMapLayer 查询指定位置的地面类型。
 ## - 处理球场坐标镜像。
 ## - 为 BallActionCalculator 提供初始化所需的场地数据。
 ##
@@ -25,11 +23,11 @@ extends Node
 ## 场地配置
 ## =============================================================================
 
-## 基础地面类型。
-@export var ground_type: Types.BaseGroundType = Types.BaseGroundType.NORMAL
+## 球场地形图块层（用于按坐标查询 Custom Data）。
+@export var terrain_tile_map: TileMapLayer
 
-## 特殊地形区域。
-var _special_ground_regions: Array[SpecialGroundRegion] = []
+## TileSet 中自定义数据层的名称（与编辑器里配置的名字保持一致）。
+const TERRAIN_DATA_LAYER := "ground_type"
 
 
 ## =============================================================================
@@ -58,40 +56,24 @@ const LEFT_SHOT_GRAVITY_REFERENCE_X: int = 272
 
 
 ## =============================================================================
-## 生命周期
-## =============================================================================
-
-func _ready() -> void:
-	_collect_special_ground_regions()
-
-
-## =============================================================================
 ## 地形查询
 ## =============================================================================
 
-## 返回当前球场的基础地面类型。
-func get_ground_type() -> Types.BaseGroundType:
-	return ground_type
-
-
-## 返回指定位置的特殊地形效果。
-func get_ground_effect_at(
+## 返回指定位置的地面类型。
+func get_ground_type_at(
 	world_position: Vector2
-) -> Types.GroundEffect:
-	for region in _special_ground_regions:
-		if region.contains_point(world_position):
-			return region.effect
+) -> Types.GroundType:
+	if terrain_tile_map == null:
+		return Types.GroundType.NORMAL
 
-	return Types.GroundEffect.NONE
+	var cell: Vector2i = terrain_tile_map.local_to_map(
+		terrain_tile_map.to_local(world_position)
+	)
+	var tile_data: TileData = terrain_tile_map.get_cell_tile_data(cell)
+	if tile_data == null:
+		return Types.GroundType.NORMAL
 
-
-## 收集 Field 直接子节点中的特殊地形区域。
-func _collect_special_ground_regions() -> void:
-	_special_ground_regions.clear()
-
-	for child in get_children():
-		if child is SpecialGroundRegion:
-			_special_ground_regions.append(child)
+	return tile_data.get_custom_data(TERRAIN_DATA_LAYER) as Types.GroundType
 
 
 ## =============================================================================

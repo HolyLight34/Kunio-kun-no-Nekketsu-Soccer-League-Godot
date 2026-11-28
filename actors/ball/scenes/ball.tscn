@@ -145,8 +145,6 @@ ball_state_id = 1
 [node name="Shot" type="Node" parent="StateMachine" unique_id=408952036]
 script = ExtResource("4_b5n0i")
 ball_state_id = 2
-default_anim = null
-x_decel_rate = null
 
 [node name="AirControl" type="Node" parent="StateMachine" unique_id=79705925]
 script = ExtResource("8_l8wax")
